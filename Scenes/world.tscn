@@ -1,9 +1,9 @@
 [gd_scene load_steps=12 format=3 uid="uid://dx8jada7b251p"]
 
-[ext_resource type="PackedScene" uid="uid://dv5bghnvwdfi" path="res://node_3d.tscn" id="1_8j60k"]
 [ext_resource type="Texture2D" uid="uid://bnj4w0g8yge03" path="res://Assets/DxI0X41X0AUwQSM.jpg" id="1_a02cp"]
 [ext_resource type="PackedScene" uid="uid://c42acbs3qdkdi" path="res://Scenes/player.tscn" id="2_5a7ea"]
 [ext_resource type="PackedScene" uid="uid://bh12jayv0ufap" path="res://Scenes/Boss.tscn" id="3_8j60k"]
+[ext_resource type="PackedScene" uid="uid://bvbohtjna2pxg" path="res://Scenes/boss2.tscn" id="4_8j60k"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_go701"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -41,12 +41,13 @@ uv1_triplanar = true
 
 [node name="World" type="Node3D"]
 
-[node name="Player" parent="." instance=ExtResource("2_5a7ea")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.1601048, 0.9072442, 8.83518)
+[node name="BOSS" parent="." instance=ExtResource("3_8j60k")]
+process_mode = 4
+transform = Transform3D(-4.7617e-06, 0, -108.935, 0, 108.935, 0, 108.935, 0, -4.7617e-06, 3.9055061, 0.39543223, 5.3922195)
+visible = false
 
-[node name="Node3D" parent="." instance=ExtResource("1_8j60k")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.839895, 0.9072442, 8.83518)
-player_path = NodePath("../Player")
+[node name="Player" parent="." instance=ExtResource("2_5a7ea")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.266474, 0.9072442, 8.83518)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_8j60k")
@@ -93,7 +94,6 @@ use_collision = true
 radius = 3.921875
 height = 7.370117
 
-[node name="BOSS" parent="." instance=ExtResource("3_8j60k")]
-process_mode = 4
-transform = Transform3D(-4.7617e-06, 0, -108.935, 0, 108.935, 0, 108.935, 0, -4.7617e-06, 3.9055066, 0.3793857, 5.3922195)
-player_path = NodePath("../Player")
+[node name="bos2" parent="." node_paths=PackedStringArray("player") instance=ExtResource("4_8j60k")]
+transform = Transform3D(1.535, 0, 0, 0, 1.535, 0, 0, 0, 1.535, 2.407247, 0.34066072, 5.9856935)
+player = NodePath("../Player")

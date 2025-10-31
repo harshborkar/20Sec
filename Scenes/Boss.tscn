@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=4 uid="uid://bh12jayv0ufap"]
+[gd_scene load_steps=49 format=4 uid="uid://bh12jayv0ufap"]
 
 [ext_resource type="Script" uid="uid://bbftyo3cvk1g8" path="res://Scripts/boss.gd" id="1_6tp3b"]
 [ext_resource type="Texture2D" uid="uid://d3dme8ryqb2fj" path="res://Assets/lowpoly-boss-monster-guy/textures/MB_T_10006.png" id="1_me6e5"]
@@ -7,6 +7,10 @@
 [ext_resource type="Animation" uid="uid://ljsnqn1egd6h" path="res://Assets/lowpoly-boss-monster-guy/Animations/Taunt.res" id="4_ouxnj"]
 [ext_resource type="Animation" uid="uid://chhsb54d3p8of" path="res://Assets/lowpoly-boss-monster-guy/Animations/Walk.res" id="5_ouxnj"]
 [ext_resource type="Animation" uid="uid://ditgvxa2pehyf" path="res://Assets/lowpoly-boss-monster-guy/Animations/Injured.res" id="6_6tp3b"]
+[ext_resource type="Animation" uid="uid://ljdqns3vyhkv" path="res://Assets/lowpoly-boss-monster-guy/Animations/Walk_back.res" id="8_avs7u"]
+[ext_resource type="Animation" uid="uid://d8vuo8mud5q5" path="res://Assets/lowpoly-boss-monster-guy/Animations/Walk_Fwd.res" id="9_e6qxx"]
+[ext_resource type="Animation" uid="uid://jbhs0ymqdhwu" path="res://Assets/lowpoly-boss-monster-guy/Animations/Walk_left.res" id="10_6njix"]
+[ext_resource type="Animation" uid="uid://bnfw7bgfnyk5l" path="res://Assets/lowpoly-boss-monster-guy/Animations/Walk_right.res" id="11_gj2j4"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ek6t8"]
 resource_name = "Material #36"
@@ -1573,8 +1577,34 @@ _data = {
 &"Slash": ExtResource("3_j5nlm"),
 &"Taunt": ExtResource("4_ouxnj"),
 &"Walk": ExtResource("5_ouxnj"),
+&"Walk_Fwd": ExtResource("9_e6qxx"),
+&"Walk_back": ExtResource("8_avs7u"),
+&"Walk_left": ExtResource("10_6njix"),
+&"Walk_right": ExtResource("11_gj2j4"),
 &"mixamo_com": SubResource("Animation_yy3nu")
 }
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_6njix"]
+animation = &"Walk_Fwd"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_gj2j4"]
+animation = &"Walk_back"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_sbogr"]
+animation = &"Walk_left"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ly62n"]
+animation = &"Walk_right"
+
+[sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_sbogr"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_6njix")
+blend_point_0/pos = Vector2(0, 1)
+blend_point_1/node = SubResource("AnimationNodeAnimation_gj2j4")
+blend_point_1/pos = Vector2(0, -1)
+blend_point_2/node = SubResource("AnimationNodeAnimation_sbogr")
+blend_point_2/pos = Vector2(-1, 0)
+blend_point_3/node = SubResource("AnimationNodeAnimation_ly62n")
+blend_point_3/pos = Vector2(1, 0)
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_0gjka"]
 animation = &"Injured"
@@ -1593,55 +1623,103 @@ animation = &"Walk"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_6njix"]
 xfade_time = 0.3
+advance_mode = 2
 advance_condition = &"taunt"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_gj2j4"]
 xfade_time = 0.2
 switch_mode = 2
+advance_mode = 2
 advance_condition = &"walk"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_sbogr"]
 xfade_time = 0.2
+advance_mode = 2
 advance_condition = &"kick"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ly62n"]
 xfade_time = 0.2
+advance_mode = 2
 advance_condition = &"slash"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ohr08"]
 xfade_time = 0.3
 switch_mode = 2
+advance_mode = 2
 advance_condition = &"kick"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_wa1i8"]
 xfade_time = 0.2
 switch_mode = 2
+advance_mode = 2
 advance_condition = &"slash"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_p8vu2"]
 xfade_time = 0.2
+advance_mode = 2
 advance_condition = &"injured"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_7k66r"]
 xfade_time = 0.2
+advance_mode = 2
 advance_condition = &"injured"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_6r7pj"]
 xfade_time = 0.2
 switch_mode = 2
+advance_mode = 2
 advance_condition = &"walk"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ij1pr"]
 xfade_time = 0.2
 switch_mode = 2
+advance_mode = 2
 advance_condition = &"walk"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_nitbp"]
 xfade_time = 0.2
 switch_mode = 2
+advance_mode = 2
 advance_condition = &"walk"
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_6tp3b"]
+xfade_time = 0.2
+advance_mode = 2
+advance_condition = &"walk"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_0gjka"]
+xfade_time = 0.2
+switch_mode = 2
+advance_mode = 2
+advance_condition = &"taunt"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_iy1o6"]
+xfade_time = 0.2
+switch_mode = 2
+advance_mode = 2
+advance_condition = &"taunt"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_cnrqi"]
+xfade_time = 0.2
+advance_mode = 2
+advance_condition = &"taunt"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_avs7u"]
+xfade_time = 0.2
+advance_mode = 2
+advance_condition = &"slash"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_e6qxx"]
+xfade_time = 0.2
+advance_mode = 2
+advance_condition = &"kick"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_3h3yq"]
+advance_mode = 2
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_iy1o6"]
+states/BlendSpace2D/node = SubResource("AnimationNodeBlendSpace2D_sbogr")
+states/BlendSpace2D/position = Vector2(170, 293)
 states/End/position = Vector2(927, 136)
 states/Injured/node = SubResource("AnimationNodeAnimation_0gjka")
 states/Injured/position = Vector2(1369, 354)
@@ -1649,24 +1727,24 @@ states/Kick/node = SubResource("AnimationNodeAnimation_iy1o6")
 states/Kick/position = Vector2(696, 264)
 states/Slash/node = SubResource("AnimationNodeAnimation_cnrqi")
 states/Slash/position = Vector2(458, 392)
-states/Start/position = Vector2(159, 175)
+states/Start/position = Vector2(145, 61)
 states/Taunt/node = SubResource("AnimationNodeAnimation_avs7u")
-states/Taunt/position = Vector2(324, 198)
+states/Taunt/position = Vector2(329, 203)
 states/Walk/node = SubResource("AnimationNodeAnimation_e6qxx")
 states/Walk/position = Vector2(533, 112)
-transitions = ["Start", "Taunt", SubResource("AnimationNodeStateMachineTransition_6njix"), "Taunt", "Walk", SubResource("AnimationNodeStateMachineTransition_gj2j4"), "Walk", "Kick", SubResource("AnimationNodeStateMachineTransition_sbogr"), "Walk", "Slash", SubResource("AnimationNodeStateMachineTransition_ly62n"), "Slash", "Kick", SubResource("AnimationNodeStateMachineTransition_ohr08"), "Kick", "Slash", SubResource("AnimationNodeStateMachineTransition_wa1i8"), "Slash", "Injured", SubResource("AnimationNodeStateMachineTransition_p8vu2"), "Kick", "Injured", SubResource("AnimationNodeStateMachineTransition_7k66r"), "Injured", "Walk", SubResource("AnimationNodeStateMachineTransition_6r7pj"), "Slash", "Walk", SubResource("AnimationNodeStateMachineTransition_ij1pr"), "Kick", "Walk", SubResource("AnimationNodeStateMachineTransition_nitbp")]
-graph_offset = Vector2(150, 120)
+transitions = ["Start", "Taunt", SubResource("AnimationNodeStateMachineTransition_6njix"), "Taunt", "Walk", SubResource("AnimationNodeStateMachineTransition_gj2j4"), "Walk", "Kick", SubResource("AnimationNodeStateMachineTransition_sbogr"), "Walk", "Slash", SubResource("AnimationNodeStateMachineTransition_ly62n"), "Slash", "Kick", SubResource("AnimationNodeStateMachineTransition_ohr08"), "Kick", "Slash", SubResource("AnimationNodeStateMachineTransition_wa1i8"), "Slash", "Injured", SubResource("AnimationNodeStateMachineTransition_p8vu2"), "Kick", "Injured", SubResource("AnimationNodeStateMachineTransition_7k66r"), "Injured", "Walk", SubResource("AnimationNodeStateMachineTransition_6r7pj"), "Slash", "Walk", SubResource("AnimationNodeStateMachineTransition_ij1pr"), "Kick", "Walk", SubResource("AnimationNodeStateMachineTransition_nitbp"), "Start", "Walk", SubResource("AnimationNodeStateMachineTransition_6tp3b"), "Slash", "Taunt", SubResource("AnimationNodeStateMachineTransition_0gjka"), "Kick", "Taunt", SubResource("AnimationNodeStateMachineTransition_iy1o6"), "Walk", "Taunt", SubResource("AnimationNodeStateMachineTransition_cnrqi"), "Taunt", "Slash", SubResource("AnimationNodeStateMachineTransition_avs7u"), "Taunt", "Kick", SubResource("AnimationNodeStateMachineTransition_e6qxx"), "Start", "BlendSpace2D", SubResource("AnimationNodeStateMachineTransition_3h3yq")]
+graph_offset = Vector2(-38, 125)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6tp3b"]
 radius = 0.12011719
 height = 0.3948059
 
-[node name="BOSS" type="CharacterBody3D"]
+[node name="BOSS" type="CharacterBody3D" groups=["BOSS"]]
 transform = Transform3D(52.925, 0, 0, 0, 52.925, 0, 0, 0, 52.925, 0, 0, 0)
 script = ExtResource("1_6tp3b")
 
 [node name="MB_M_10006" type="Node3D" parent="."]
-transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+transform = Transform3D(0.9999996, 0, 0, 0, 0.9999993, 0, 0, 0, 0.99999964, 0, 0, 0)
 
 [node name="Skeleton3D" type="Skeleton3D" parent="MB_M_10006"]
 bones/0/name = "Bip001"
@@ -1879,7 +1957,7 @@ bone_name = "Bip001 L Foot"
 bone_idx = 4
 
 [node name="Bip001 L Toe0" type="Node3D" parent="MB_M_10006/Skeleton3D/Bip001 L Toe0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.004043059, 0.0037242065, -3.8146972e-10)
+transform = Transform3D(0.083827816, -0.99639034, -0.013383612, 0.99599004, 0.08335778, 0.032485876, -0.031252984, -0.016053164, 0.9993826, 0.004043059, 0.0037242065, -3.8146972e-10)
 
 [node name="Bip001 L Toe0Nub" type="Node3D" parent="MB_M_10006/Skeleton3D/Bip001 L Toe0/Bip001 L Toe0"]
 transform = Transform3D(1, -1.2246064e-16, 2.2984552e-15, 1.2246064e-16, 1, -3.5527137e-15, 2.2984552e-15, -3.5527137e-15, -1, 0.00028917845, 0, 0)
@@ -1890,7 +1968,7 @@ bone_name = "Bip001 R Foot"
 bone_idx = 7
 
 [node name="Bip001 R Toe0" type="Node3D" parent="MB_M_10006/Skeleton3D/Bip001 R Toe0"]
-transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0.0026861387, 0.0037242065, 0)
+transform = Transform3D(0.29811415, -0.93547076, -0.1897951, 0.9488756, 0.3120415, -0.047590446, 0.103743434, -0.1659046, 0.9806695, 0.0026861387, 0.0037242065, 0)
 
 [node name="Bip001 R Toe0Nub" type="Node3D" parent="MB_M_10006/Skeleton3D/Bip001 R Toe0/Bip001 R Toe0"]
 transform = Transform3D(1, -3.5527137e-15, 2.2984516e-15, 3.5527137e-15, 1, 8.1657406e-30, -2.2984516e-15, 0, 1, 0.00028917845, 0, 0)
@@ -1936,6 +2014,7 @@ bone_idx = 27
 transform = Transform3D(1, -1.2246064e-16, 0, 1.2246064e-16, 1, 0, 0, 0, -1, 0.0025783353, -7.6293943e-10, 0)
 
 [node name="MB_M_100061" type="MeshInstance3D" parent="MB_M_10006/Skeleton3D"]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
 mesh = SubResource("ArrayMesh_sljh4")
 skin = SubResource("Skin_erxdg")
 
@@ -1952,8 +2031,10 @@ parameters/conditions/kick = false
 parameters/conditions/slash = false
 parameters/conditions/taunt = false
 parameters/conditions/walk = false
+parameters/BlendSpace2D/blend_position = Vector2(0, -0.59641254)
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_height_offset = 1.0
 debug_enabled = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
