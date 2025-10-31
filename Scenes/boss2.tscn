@@ -1,7 +1,7 @@
 [gd_scene load_steps=40 format=4 uid="uid://bvbohtjna2pxg"]
 
 [ext_resource type="Texture2D" uid="uid://bimp7ao3pr2c8" path="res://Assets/Standing Walk Right (1)_0.png" id="1_00amk"]
-[ext_resource type="Script" uid="uid://boehyyb2kijdr" path="res://Scenes/boss_2.gd" id="1_b5h4d"]
+[ext_resource type="Script" uid="uid://boehyyb2kijdr" path="res://Scripts/boss_2.gd" id="1_b5h4d"]
 [ext_resource type="Texture2D" uid="uid://1xlpy72atbce" path="res://Assets/Standing Walk Right (1)_1.png" id="2_o7rb6"]
 [ext_resource type="Animation" uid="uid://cii01i3mt47ba" path="res://Assets/boss2/w_bkwd.res" id="4_78f74"]
 [ext_resource type="Animation" uid="uid://cdviytsheyd66" path="res://Assets/boss2/w_fwd.res" id="5_x72gp"]
@@ -667,6 +667,9 @@ animation = &"w_right"
 animation = &"w_fwd"
 
 [sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_q5qqr"]
+resource_local_to_scene = false
+resource_name = ""
+auto_triangles = true
 blend_point_0/node = SubResource("AnimationNodeAnimation_b5h4d")
 blend_point_0/pos = Vector2(0, 1)
 blend_point_1/node = SubResource("AnimationNodeAnimation_78f74")
@@ -675,6 +678,13 @@ blend_point_2/node = SubResource("AnimationNodeAnimation_x72gp")
 blend_point_2/pos = Vector2(-1, 0)
 blend_point_3/node = SubResource("AnimationNodeAnimation_y7cr1")
 blend_point_3/pos = Vector2(0, -1)
+min_space = Vector2(-1, -1)
+max_space = Vector2(1, 1)
+snap = Vector2(0.1, 0.1)
+x_label = "x"
+y_label = "y"
+blend_mode = 0
+sync = false
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_q5qqr"]
 animation = &"jump_attack"
