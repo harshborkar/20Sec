@@ -243,9 +243,6 @@ func start_dash():
 	
 	handle_animations()
 	#get time when action is pressed and released max time is 1.5  secs after that the speed or distencc e of the dash wont increase
-	
-	handle_animations()
-	#get time when action is pressed and released max time is 1.5  secs after that the speed or distencc e of the dash wont increase
 
 func handle_animations() -> void:
 	match state:
