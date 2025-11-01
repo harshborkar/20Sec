@@ -223,7 +223,7 @@ func start_dash():
 	var dash_speed = lerp(DASH_MIN_SPEED, DASH_MAX_SPEED, charge_ratio)
 
 	# Forward direction based on where player is facing
-	dash_direction = -transform.basis.z.normalized()
+	dash_direction = -visuals.global_transform.basis.z.normalized()
 
 	velocity = dash_direction * dash_speed
 	dash_timer = DASH_DURATION
