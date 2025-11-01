@@ -9,7 +9,7 @@
 shader = ExtResource("1_gefmm")
 
 [sub_resource type="Gradient" id="Gradient_mglt7"]
-colors = PackedColorArray(18.892157, 14.803501, 18.892157, 1, 0, 0, 0, 0)
+colors = PackedColorArray(0, 273323.38, 348446.03, 1, 0, 0, 0, 0)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_2jtx5"]
 gradient = SubResource("Gradient_mglt7")
@@ -28,7 +28,7 @@ resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("2_d7bl5")
 shader_parameter/tex = ExtResource("3_6gtgw")
-shader_parameter/uv_offset = Vector2(0.61442554, 0)
+shader_parameter/uv_offset = Vector2(0.94848174, 0.34883875)
 shader_parameter/color_ramp = SubResource("GradientTexture1D_2jtx5")
 shader_parameter/curve = SubResource("CurveTexture_wtyah")
 shader_parameter/emmission_transform = Projection(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
@@ -38,17 +38,18 @@ shader_parameter/flags = 42
 material = SubResource("ShaderMaterial_vlsxt")
 
 [node name="GPUTrail3D" type="GPUParticles3D"]
-transform = Transform3D(1, 0, 0, 0, 0.87979794, -0.47534785, 0, 0.47534785, 0.87979794, -0.6177769, -0.4809476, 0.8053929)
-amount = 20
-lifetime = 20.0
+transform = Transform3D(1, 0, 0, 0, 0.87979794, -0.47534785, 0, 0.47534785, 0.87979794, -0.6177769, -0.4809476, -1.7999136)
+amount = 36
+lifetime = 36.0
 explosiveness = 1.0
 fixed_fps = 60
 process_material = SubResource("ShaderMaterial_cl1jm")
 draw_pass_1 = SubResource("QuadMesh_5aqjm")
 script = ExtResource("4_5r6gu")
-length = 20
-length_seconds = 0.3333333333333333
+length = 36
+length_seconds = 0.6
 texture = ExtResource("3_6gtgw")
+scroll = Vector2(0.305, 0)
 color_ramp = SubResource("GradientTexture1D_2jtx5")
 curve = SubResource("CurveTexture_wtyah")
 use_red_as_alpha = true
