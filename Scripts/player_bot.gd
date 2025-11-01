@@ -44,7 +44,7 @@ func _input(event: InputEvent) -> void:
 
 		# Clamp vertical look (limit how far player can look up/down)
 		var rotation_x = camera_mount.rotation_degrees.x
-		rotation_x = clamp(rotation_x, -50, 50) # adjust limits as needed
+		rotation_x = clamp(rotation_x, -10, 20) # adjust limits as needed
 		camera_mount.rotation_degrees.x = rotation_x
 
 
@@ -113,7 +113,7 @@ func _physics_process(delta: float) -> void:
 			state = STATE.IDLE
 
 	# --- APPLY MOVEMENT ---
-	if direction != Vector3.ZERO:
+	if direction != Vector3.ZERO and can_move():
 		visuals.look_at(position + direction)
 		velocity.x = direction.x * current_speed
 		velocity.z = direction.z * current_speed
