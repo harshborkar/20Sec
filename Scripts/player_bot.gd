@@ -222,12 +222,27 @@ func start_dash():
 	var charge_ratio = dash_charge_time / DASH_MAX_CHARGE_TIME
 	var dash_speed = lerp(DASH_MIN_SPEED, DASH_MAX_SPEED, charge_ratio)
 
-	# Forward direction based on where player is facing
-	dash_direction = -visuals.global_transform.basis.z.normalized()
+	# --- MODIFIED BLOCK ---
+	
+	# 1. Get current directional input, just like in _physics_process
+	var input_dir: Vector2 = Input.get_vector("Left", "Right", "Fwd", "Bkwd")
+	
+	# 2. Calculate the world-space direction based on the player's *current rotation*
+	#    (This works for both targeting and free-look)
+	dash_direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+
+	# 3. If the player is NOT holding any direction, default to "forward"
+	#    (Forward relative to camera, or forward towards enemy if targeting)
+	if dash_direction == Vector3.ZERO:
+		dash_direction = -transform.basis.z.normalized()
+	
+	# --- END MODIFIED BLOCK ---
 
 	velocity = dash_direction * dash_speed
 	dash_timer = DASH_DURATION
-
+	
+	handle_animations()
+	#get time when action is pressed and released max time is 1.5  secs after that the speed or distencc e of the dash wont increase
 	
 	handle_animations()
 	#get time when action is pressed and released max time is 1.5  secs after that the speed or distencc e of the dash wont increase
