@@ -113,7 +113,7 @@ func _physics_process(delta: float) -> void:
 			state = STATE.IDLE
 
 	# --- APPLY MOVEMENT ---
-	if direction != Vector3.ZERO:
+	if direction != Vector3.ZERO and can_move():
 		visuals.look_at(position + direction)
 		velocity.x = direction.x * current_speed
 		velocity.z = direction.z * current_speed

@@ -1,23 +1,56 @@
-[gd_scene load_steps=4 format=3 uid="uid://c42acbs3qdkdi"]
+[gd_scene load_steps=12 format=3 uid="uid://c42acbs3qdkdi"]
 
-[ext_resource type="Script" uid="uid://diguvnrbk1e5q" path="res://Scripts/character_body_3d.gd" id="1_v0iea"]
+[ext_resource type="Shader" uid="uid://767bp1vovxnm" path="res://addons/GPUTrail-main/shaders/trail.gdshader" id="1_vgqql"]
+[ext_resource type="Shader" uid="uid://bjjwip4xx7jbi" path="res://addons/GPUTrail-main/shaders/trail_draw_pass.gdshader" id="2_fkybt"]
+[ext_resource type="Texture2D" uid="uid://140s5jg1f8fr" path="res://Assets/T_VFX_Trail223.png" id="3_x3wgy"]
+[ext_resource type="Script" uid="uid://c1lpjwppp5xuk" path="res://addons/GPUTrail-main/GPUTrail3D.gd" id="4_3smsa"]
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_f60y1"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cl1jm"]
+shader = ExtResource("1_vgqql")
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_v0iea"]
+[sub_resource type="Gradient" id="Gradient_mglt7"]
+colors = PackedColorArray(18.892157, 14.803501, 18.892157, 1, 0, 0, 0, 0)
 
-[node name="Player" type="CharacterBody3D"]
-script = ExtResource("1_v0iea")
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_2jtx5"]
+gradient = SubResource("Gradient_mglt7")
+use_hdr = true
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-shape = SubResource("CapsuleShape3D_f60y1")
+[sub_resource type="Curve" id="Curve_t1bkm"]
+bake_resolution = 16
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-mesh = SubResource("CapsuleMesh_v0iea")
+[sub_resource type="CurveTexture" id="CurveTexture_wtyah"]
+curve = SubResource("Curve_t1bkm")
 
-[node name="Head" type="Node3D" parent="."]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vlsxt"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_fkybt")
+shader_parameter/tex = ExtResource("3_x3wgy")
+shader_parameter/uv_offset = Vector2(0.61442554, 0)
+shader_parameter/color_ramp = SubResource("GradientTexture1D_2jtx5")
+shader_parameter/curve = SubResource("CurveTexture_wtyah")
+shader_parameter/emmission_transform = Projection(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
+shader_parameter/flags = 42
 
-[node name="Camera3D" type="Camera3D" parent="Head"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.779038, -0.76586866)
+[sub_resource type="QuadMesh" id="QuadMesh_5aqjm"]
+material = SubResource("ShaderMaterial_vlsxt")
+
+[node name="GPUTrail3D" type="GPUParticles3D"]
+transform = Transform3D(1, 0, 0, 0, 0.87979794, -0.47534785, 0, 0.47534785, 0.87979794, -0.6177769, -0.4809476, 0.8053929)
+amount = 20
+lifetime = 20.0
+explosiveness = 1.0
+fixed_fps = 60
+process_material = SubResource("ShaderMaterial_cl1jm")
+draw_pass_1 = SubResource("QuadMesh_5aqjm")
+script = ExtResource("4_3smsa")
+length = 20
+length_seconds = 0.3333333333333333
+texture = ExtResource("3_x3wgy")
+color_ramp = SubResource("GradientTexture1D_2jtx5")
+curve = SubResource("CurveTexture_wtyah")
+use_red_as_alpha = true
+_defaults_have_been_set = true
+metadata/_custom_type_script = "uid://c1lpjwppp5xuk"
