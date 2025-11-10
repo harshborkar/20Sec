@@ -89,3 +89,7 @@ Attack={
 
 3d_physics/layer_2="hurtbox"
 3d_physics/layer_3="hitbox"
+
+[physics]
+
+3d/physics_engine="Jolt Physics"

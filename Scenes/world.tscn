@@ -1,8 +1,7 @@
-[gd_scene load_steps=13 format=3 uid="uid://dx8jada7b251p"]
+[gd_scene load_steps=12 format=3 uid="uid://dx8jada7b251p"]
 
 [ext_resource type="Texture2D" uid="uid://bnj4w0g8yge03" path="res://Assets/DxI0X41X0AUwQSM.jpg" id="1_a02cp"]
 [ext_resource type="PackedScene" uid="uid://cq44bdmmjvxlh" path="res://Scenes/level_design.tscn" id="3_5ukr8"]
-[ext_resource type="PackedScene" uid="uid://bvbohtjna2pxg" path="res://Scenes/boss2.tscn" id="4_8j60k"]
 [ext_resource type="PackedScene" uid="uid://dkgy4vepowl7l" path="res://Scenes/player_bot.tscn" id="4_fo5ed"]
 [ext_resource type="PackedScene" uid="uid://6egc5vfal1kk" path="res://Scenes/fog.tscn" id="5_fo5ed"]
 [ext_resource type="PackedScene" uid="uid://bqiq7silwnsao" path="res://Scenes/im_fuckin_done.tscn" id="6_5ukr8"]
@@ -89,12 +88,6 @@ height = 7.370117
 [node name="Node3D" parent="NavigationRegion3D" instance=ExtResource("3_5ukr8")]
 transform = Transform3D(22, 0, 0, 0, 22, 0, 0, 0, 22, 0, -5.81248, 0)
 
-[node name="bos2" parent="." node_paths=PackedStringArray("player") instance=ExtResource("4_8j60k")]
-process_mode = 4
-transform = Transform3D(1.7, 0, 0, 0, 1.7, 0, 0, 0, 1.7, 2.4816818, 0.024722219, 5.883775)
-visible = false
-player = NodePath("../Player")
-
 [node name="Player" parent="." node_paths=PackedStringArray("ENEMY") instance=ExtResource("4_fo5ed")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.568824, 0.33506986, 0.7053971)
 DASH_MAX_CHARGE_TIME = 1.0
@@ -104,14 +97,18 @@ ENEMY = NodePath("../im_fuckin_done")
 dash_cooldown = 1.05
 ATTACK_SPEED = 2.355
 
+[node name="BoneAttachment3D" parent="Player/visuals/Skeleton3D" index="3"]
+transform = Transform3D(-0.18963283, 0.48566446, 0.8533281, 0.9152766, -0.22714469, 0.33267677, 0.35539824, 0.84411776, -0.40144315, -0.06674017, 0.9480374, 0.36911738)
+
 [node name="Sword_Low_Done" parent="Player/visuals/Skeleton3D/BoneAttachment3D" index="0" node_paths=PackedStringArray("boss")]
-boss = NodePath("../../../../../bos2")
+boss = NodePath("../../../../../im_fuckin_done")
 
 [node name="MeshInstance3D" parent="." instance=ExtResource("5_fo5ed")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -99.93737, 0)
 
 [node name="im_fuckin_done" parent="." node_paths=PackedStringArray("player") instance=ExtResource("6_5ukr8")]
-transform = Transform3D(3.44, 0, 0, 0, 3.44, 0, 0, 0, 3.44, 0, 0, 3.9703426)
+transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, 0, 0, 3.6783655)
 player = NodePath("../Player")
+MIN_SPEED_FACTOR = 1.0
 
 [editable path="Player"]
