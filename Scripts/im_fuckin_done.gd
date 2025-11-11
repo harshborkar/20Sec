@@ -10,32 +10,50 @@ extends CharacterBody3D
 @export var player: Player
 @export var health: float = 10.0
 @export var RUN_RANGE: float = 15.0
-@export var MIN_SPEED_FACTOR: float = 0.3
 @export var MOVE_SPEED: float = 3.0
-@export var ROOT_MOTION_SCALE: float = 50.0  # Make this adjustable in inspector
+@export var ROOT_MOTION_SCALE: float = 50.0  # Adjustable in inspector
 
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 var debug_timer: int = 0
 
+enum STATE { MOVE, ATTACK, DEAD }
+var state: STATE = STATE.MOVE
+
+# Extra boss state variables
+var max_health: float
+var attack_cooldown: float = 0.0
+var used_aoe_phase: bool = false  # For first AoE in phase 3
+
+# AnimationTree parameters
+# "parameters/conditions/idle"
+# "parameters/conditions/aoe"
+# "parameters/conditions/kick"
+# "parameters/conditions/move"
+# "parameters/conditions/slash_1"
+# "parameters/conditions/slash_2"
+
 func _ready() -> void:
+	max_health = health
 	randomize()
 	animation_tree.active = true
 	healthbar.init_health(health)
 	print("=== BOSS INITIALIZED ===")
 
+
 func _physics_process(delta: float) -> void:
+	if not player:
+		return
+
+	if state == STATE.DEAD:
+		return
+
 	debug_timer += 1
 	var print_debug: bool = debug_timer % 60 == 0
-	
-	if not player:
-		if print_debug:
-			print("DEBUG: No player reference!")
-		return
 
 	# --- NAVIGATION SETUP ---
 	nav_agent.target_position = player.global_position
-	
 	var direction = Vector3.ZERO
+
 	if not nav_agent.is_navigation_finished():
 		var next_point = nav_agent.get_next_path_position()
 		direction = next_point - global_position
@@ -48,91 +66,129 @@ func _physics_process(delta: float) -> void:
 		var target_rot_y = atan2(direction.x, direction.z)
 		rotation.y = lerp_angle(rotation.y, target_rot_y, delta * 5.0)
 
-	# --- DISTANCE & MOVEMENT ---
 	var distance_to_player = global_position.distance_to(player.global_position)
-	var should_move = direction.length() > 0.01 and distance_to_player > 2.0
 
-	# Get root motion data for debugging
+	# --- STATE BEHAVIOR ---
+	match state:
+		STATE.MOVE:
+			handle_movement(direction, delta, distance_to_player)
+		STATE.ATTACK:
+			velocity = Vector3.ZERO
+		STATE.DEAD:
+			velocity = Vector3.ZERO
+
+	move_and_slide()
+
+	# --- Target indicator sprite ---
+	sprite_3d.visible = player.is_targeting
+
+
+# ----------------------------
+# MOVEMENT
+# ----------------------------
+func handle_movement(direction: Vector3, delta: float, distance_to_player: float) -> void:
+	var should_move = direction.length() > 0.01 and distance_to_player > 2.0
 	var root_motion = animation_tree.get_root_motion_position()
-	
-	if print_debug:
-		print("=== BOSS DEBUG INFO ===")
-		print("Distance to player: ", distance_to_player)
-		print("Direction vector: ", direction)
-		print("Direction length: ", direction.length())
-		print("Should move: ", should_move)
-		print("Root motion position: ", root_motion)
-		print("Root motion length: ", root_motion.length())
-		print("Current velocity: ", velocity)
-		print("Is on floor: ", is_on_floor())
-		print("Animation conditions - move: ", animation_tree.get("parameters/conditions/move"))
-		print("Animation conditions - idle: ", animation_tree.get("parameters/conditions/idle"))
-		print("=========================")
 
 	if should_move:
 		animation_tree.set("parameters/conditions/move", true)
 		animation_tree.set("parameters/conditions/idle", false)
-		
 		if root_motion.length() > 0:
-			# SCALE UP the root motion to make it usable
 			root_motion *= ROOT_MOTION_SCALE
-			
-			if print_debug:
-				print("Root motion after scaling: ", root_motion)
-				print("Root motion length after scaling: ", root_motion.length())
-			
 			var current_rot = transform.basis.get_rotation_quaternion()
 			velocity = (current_rot.normalized() * root_motion) / delta
 		else:
-			if print_debug:
-				print("NO ROOT MOTION - Using direct movement")
-			# Fallback: Use direct navigation movement
 			velocity = direction * MOVE_SPEED
 	else:
 		animation_tree.set("parameters/conditions/move", false)
 		animation_tree.set("parameters/conditions/idle", true)
 		velocity.x = 0
 		velocity.z = 0
-		
-		if print_debug:
-			print("BOSS IDLE - No movement applied")
 
-	# --- GRAVITY ---
+	# Gravity
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 	else:
 		velocity.y = 0
 
-	var pre_move_position = global_position
-	move_and_slide()
-	var actual_movement = global_position - pre_move_position
-	
-	if print_debug and should_move:
-		print("Actual movement this frame: ", actual_movement)
-		print("Actual movement length: ", actual_movement.length())
+	# --- ATTACK TRIGGER ---
+	if distance_to_player <= 2.5 and attack_cooldown <= 0:
+		select_attack()
+		attack_cooldown = 3.0
 
-	# --- Target indicator sprite ---
-	sprite_3d.visible = player.is_targeting
+	if attack_cooldown > 0:
+		attack_cooldown -= delta
 
+
+# ----------------------------
+# DAMAGE
+# ----------------------------
 func take_damage(damage_received: float) -> void:
 	health -= damage_received
 	print("Boss HP: ", health)
-	if health <= 0:
-		queue_free()
+	if health <= 0 and state != STATE.DEAD:
+		state = STATE.DEAD
+		handle_death()
 
-# Optional: Add input for manual debugging
-func _input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed:
-		if event.keycode == KEY_F1:
-			print_deep_debug_info()
 
-func print_deep_debug_info() -> void:
-	print("=== DEEP BOSS DEBUG ===")
-	print("Animation Tree Active: ", animation_tree.active)
-	print("Animation Player Current Animation: ", animation_player.current_animation)
-	print("Navigation Agent Target: ", nav_agent.target_position)
-	print("Navigation Finished: ", nav_agent.is_navigation_finished())
-	print("Global Position: ", global_position)
-	print("Rotation: ", rotation)
-	print("ROOT_MOTION_SCALE: ", ROOT_MOTION_SCALE)
-	print("=========================")
+func handle_death():
+	print("Boss defeated!")
+	animation_tree.set("parameters/conditions/idle", false)
+	animation_tree.set("parameters/conditions/move", false)
+	animation_tree.set("parameters/conditions/slash_1", false)
+	animation_tree.set("parameters/conditions/slash_2", false)
+	animation_tree.set("parameters/conditions/kick", false)
+	animation_tree.set("parameters/conditions/aoe", false)
+	queue_free()
+
+
+# ----------------------------
+# ATTACK LOGIC
+# ----------------------------
+func get_health_percent() -> float:
+	return (health * 100.0) / max_health
+
+
+func select_attack():
+	var hp = get_health_percent()
+	var attack
+
+	if hp >= 70:
+		attack = ["slash_1"].pick_random()
+	elif hp >= 40:
+		attack = ["slash_2", "kick"].pick_random()
+	else:
+		if not used_aoe_phase:
+			attack = "aoe"
+			used_aoe_phase = true
+		else:
+			attack = ["slash_1", "slash_2", "kick", "aoe"].pick_random()
+
+	trigger_attack(attack)
+
+
+func trigger_attack(attack: String):
+	state = STATE.ATTACK
+
+	# Disable movement and set correct animation condition
+	animation_tree.set("parameters/conditions/idle", false)
+	animation_tree.set("parameters/conditions/move", false)
+	animation_tree.set("parameters/conditions/aoe", attack == "aoe")
+	animation_tree.set("parameters/conditions/kick", attack == "kick")
+	animation_tree.set("parameters/conditions/slash_1", attack == "slash_1")
+	animation_tree.set("parameters/conditions/slash_2", attack == "slash_2")
+
+	print("Boss used attack: ", attack)
+
+	# After attack animation ends, return to move state
+	await get_tree().create_timer(1.8).timeout
+	reset_attack_conditions()
+	state = STATE.MOVE
+
+
+func reset_attack_conditions():
+	animation_tree.set("parameters/conditions/slash_1", false)
+	animation_tree.set("parameters/conditions/slash_2", false)
+	animation_tree.set("parameters/conditions/kick", false)
+	animation_tree.set("parameters/conditions/aoe", false)
+	animation_tree.set("parameters/conditions/move", true)
