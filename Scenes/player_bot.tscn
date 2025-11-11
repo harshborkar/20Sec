@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=4 uid="uid://dkgy4vepowl7l"]
+[gd_scene load_steps=29 format=4 uid="uid://dkgy4vepowl7l"]
 
 [ext_resource type="Script" uid="uid://pittvc6lerro" path="res://Scripts/player_bot.gd" id="1_2yl3m"]
 [ext_resource type="Animation" uid="uid://3qpxopss8uhb" path="res://Assets/player/run.res" id="2_jafn8"]
@@ -9,6 +9,7 @@
 [ext_resource type="Animation" uid="uid://bwsxgew6xvhmh" path="res://Assets/player/Great sword animations/GS_slash.res" id="7_yex41"]
 [ext_resource type="Animation" uid="uid://dy3oawbtnvxvc" path="res://Assets/player/Great sword animations/GS_strae.res" id="8_q1r4w"]
 [ext_resource type="Animation" uid="uid://c8ccmv2mllvyk" path="res://Assets/player/Great sword animations/sword_combo.res" id="9_q1r4w"]
+[ext_resource type="Animation" uid="uid://dp0sw7yyapp46" path="res://Assets/player/hurt.res" id="10_8epdt"]
 [ext_resource type="AudioStream" uid="uid://cogx16slh61hb" path="res://Assets/player/SFX/dash_2.wav" id="10_eqpk1"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_bki42"]
@@ -4589,6 +4590,7 @@ _data = {
 &"dash": ExtResource("4_yrvvx"),
 &"dash_charge": SubResource("Animation_xq46a"),
 &"dash_mid_end": SubResource("Animation_7uojm"),
+&"hurt": ExtResource("10_8epdt"),
 &"mixamo_com": SubResource("Animation_w8151"),
 &"run": ExtResource("2_jafn8"),
 &"sword_combo": ExtResource("9_q1r4w"),
@@ -4597,6 +4599,9 @@ _data = {
 &"sword_combo_p3": SubResource("Animation_xln13"),
 &"walk": ExtResource("3_yrvvx")
 }
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_eqpk1"]
+height = 1.6467285
 
 [node name="Node3D" type="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.13732052)
@@ -5108,5 +5113,15 @@ playback_default_blend_time = 0.2
 [node name="dash_audio" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource("10_eqpk1")
 
+[node name="Area3D" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.817749, 0)
+shape = SubResource("CapsuleShape3D_eqpk1")
+debug_color = Color(0, 0.8181843, 0.4677279, 0.41960785)
+
 [connection signal="animation_finished" from="visuals/AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
 [connection signal="timeout" from="ComboTimer" to="." method="_on_combo_timer_timeout"]
+[connection signal="area_entered" from="Area3D" to="." method="_on_area_3d_area_entered"]

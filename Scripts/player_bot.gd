@@ -594,3 +594,38 @@ func give_damage():
 
 func get_state():
 	return state
+	
+	
+	
+# ----------------------------
+# DAMAGE & KNOCKBACK
+# ----------------------------
+func take_damage(damage: float, knockback_dir: Vector3 = Vector3.ZERO, knockback_force: float = 8.0) -> void:
+	if state == STATE.DEATH:
+		return
+
+	# --- Stop movement and switch to hurt state ---
+	state = STATE.HURT
+	velocity = Vector3.ZERO
+
+	# --- Apply knockback ---
+	if knockback_dir != Vector3.ZERO:
+		velocity = knockback_dir.normalized() * knockback_force
+		velocity.y = 2.0  # slight upward push to feel impactful
+
+	# --- Camera shake for feedback ---
+	start_camera_shake(0.1, 0.25)
+
+	# --- Play hurt animation ---
+	set_anim("hurt")
+
+	# --- Temporary stun before regaining control ---
+	await get_tree().create_timer(0.5).timeout
+
+	# Return to idle after hurt animation
+	if state == STATE.HURT:
+		state = STATE.IDLE
+
+
+func _on_area_3d_area_entered(area: Area3D) -> void:
+	take_damage(1)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=4 uid="uid://djhcs4sfm42uv"]
+[gd_scene load_steps=19 format=4 uid="uid://djhcs4sfm42uv"]
 
 [ext_resource type="Texture2D" uid="uid://dftxernllkvx1" path="res://Assets/axe/axe_default_albedo.jpg" id="1_6o4l1"]
 [ext_resource type="Texture2D" uid="uid://dql5fe6vorq8d" path="res://Assets/axe/axe_default_metallic-default_roughness.png" id="2_2q7ty"]
@@ -76,7 +76,7 @@ resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("5_q6n35")
 shader_parameter/tex = ExtResource("6_gllqp")
-shader_parameter/uv_offset = Vector2(0.095936924, 0)
+shader_parameter/uv_offset = Vector2(0, 0)
 shader_parameter/color_ramp = SubResource("GradientTexture1D_tjqop")
 shader_parameter/curve = SubResource("CurveTexture_1ebib")
 shader_parameter/emmission_transform = Projection(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
@@ -84,6 +84,9 @@ shader_parameter/flags = 42
 
 [sub_resource type="QuadMesh" id="QuadMesh_lqray"]
 material = SubResource("ShaderMaterial_wttj4")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_s7ob3"]
+size = Vector3(4.1192017, 10.304626, 0.69433594)
 
 [node name="axe" type="Node3D"]
 transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
@@ -110,3 +113,11 @@ curve = SubResource("CurveTexture_1ebib")
 use_red_as_alpha = true
 _defaults_have_been_set = true
 metadata/_custom_type_script = "uid://c1lpjwppp5xuk"
+
+[node name="Area3D" type="Area3D" parent="."]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5030213, 0.7479554, 0.15283203)
+shape = SubResource("BoxShape3D_s7ob3")

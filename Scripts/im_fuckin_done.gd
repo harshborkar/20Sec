@@ -6,7 +6,10 @@ extends CharacterBody3D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var healthbar = $HealthBar
 @onready var sprite_3d: Sprite3D = $Armature_049/Skeleton3D/BoneAttachment3D/Sprite3D
+@onready var attack_cooldown_timer: Timer = $attack_cooldown
+@onready var area_3d: Area3D = $Armature_049/Skeleton3D/BoneAttachment3D2/axe/Area3D
 
+@export var attack_cooldown:float = 0.2
 @export var player: Player
 @export var health: float = 10.0
 @export var RUN_RANGE: float = 15.0
@@ -21,7 +24,6 @@ var state: STATE = STATE.MOVE
 
 # Extra boss state variables
 var max_health: float
-var attack_cooldown: float = 0.0
 var used_aoe_phase: bool = false  # For first AoE in phase 3
 
 # AnimationTree parameters
@@ -31,16 +33,20 @@ var used_aoe_phase: bool = false  # For first AoE in phase 3
 # "parameters/conditions/move"
 # "parameters/conditions/slash_1"
 # "parameters/conditions/slash_2"
-
 func _ready() -> void:
 	max_health = health
 	randomize()
 	animation_tree.active = true
 	healthbar.init_health(health)
+	
+	attack_cooldown_timer.wait_time = attack_cooldown  # seconds between attacks (tweak as needed)
+	attack_cooldown_timer.one_shot = true
 	print("=== BOSS INITIALIZED ===")
 
 
 func _physics_process(delta: float) -> void:
+	var state_machine = animation_tree.get("parameters/playback")
+	print(state_machine.get_current_node())
 	if not player:
 		return
 
@@ -112,12 +118,9 @@ func handle_movement(direction: Vector3, delta: float, distance_to_player: float
 		velocity.y = 0
 
 	# --- ATTACK TRIGGER ---
-	if distance_to_player <= 2.5 and attack_cooldown <= 0:
+	if distance_to_player <= 2.5:
 		select_attack()
-		attack_cooldown = 3.0
 
-	if attack_cooldown > 0:
-		attack_cooldown -= delta
 
 
 # ----------------------------
@@ -154,7 +157,7 @@ func select_attack():
 	var attack
 
 	if hp >= 70:
-		attack = ["slash_1"].pick_random()
+		attack = ["slash_1", "slash_2"].pick_random()
 	elif hp >= 40:
 		attack = ["slash_2", "kick"].pick_random()
 	else:
@@ -169,7 +172,7 @@ func select_attack():
 
 func trigger_attack(attack: String):
 	state = STATE.ATTACK
-
+	area_3d.monitoring = true   #axe hitbox area {its only true when attacking, so player is only damaged, when the boss is attacking}
 	# Disable movement and set correct animation condition
 	animation_tree.set("parameters/conditions/idle", false)
 	animation_tree.set("parameters/conditions/move", false)
@@ -184,6 +187,7 @@ func trigger_attack(attack: String):
 	await get_tree().create_timer(1.8).timeout
 	reset_attack_conditions()
 	state = STATE.MOVE
+	area_3d.monitoring = false
 
 
 func reset_attack_conditions():
