@@ -1,10 +1,22 @@
-[gd_resource type="ArrayMesh" load_steps=4 format=4 uid="uid://ch3kgn2mqshpj"]
+[gd_resource type="ArrayMesh" load_steps=8 format=4 uid="uid://ch3kgn2mqshpj"]
 
 [ext_resource type="Shader" uid="uid://borjskfq1giec" path="res://thunder/new_shader.tres" id="1_tlup5"]
+[ext_resource type="Shader" uid="uid://12e2quofyn7i" path="res://thunder/thunder_ground.tres" id="1_vkfld"]
+[ext_resource type="Shader" uid="uid://cyfclseawuxg2" path="res://thunder/thunder2.tres" id="2_wdlj4"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kj5b7"]
+render_priority = 0
+shader = ExtResource("1_vkfld")
+shader_parameter/mark_color = Color(0.29501584, 0, 0, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_wdlj4"]
 render_priority = 0
 shader = ExtResource("1_tlup5")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vkfld"]
+render_priority = 0
+shader = ExtResource("2_wdlj4")
+shader_parameter/Wavecolor = Color(2.5998197, 0, 0.5447122, 1)
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_jhqlc"]
 _surfaces = [{
@@ -47,6 +59,7 @@ _surfaces = [{
 "format": 34896613399,
 "index_count": 6,
 "index_data": PackedByteArray("AAABAAIAAgABAAMA"),
+"material": SubResource("ShaderMaterial_kj5b7"),
 "name": "Material",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
@@ -70,6 +83,7 @@ _surfaces = [{
 "format": 34896613399,
 "index_count": 192,
 "index_data": PackedByteArray("AAABAAIAAgABAAMABAAAAAIABQAAAAQABgAFAAQABwAFAAYACAAHAAYACQAHAAgACgAJAAgACwAJAAoADAALAAoADQALAAwADgANAAwADwANAA4AEAAPAA4AEQAPABAAEgARABAAEwARABIAFAATABIAFQATABQAFgAVABQAFwAVABYAGAAXABYAGQAXABgAGgAZABgAGwAZABoAHAAbABoAHQAbABwAHgAdABwAHwAdAB4AIAAfAB4AIQAfACAAIgAhACAAIwAhACIAJAAjACIAJQAjACQAJgAlACQAJwAlACYAKAAnACYAKQAnACgAKgApACgAKwApACoALAArACoALQArACwALgAtACwALwAtAC4AMAAvAC4AMQAvADAAMgAxADAAMwAxADIANAAzADIANQAzADQANgA1ADQANwA1ADYAOAA3ADYAOQA3ADgAOgA5ADgAOwA5ADoAPAA7ADoAPQA7ADwAPgA9ADwAPwA9AD4AQAA/AD4AQQA/AEAA"),
+"material": SubResource("ShaderMaterial_vkfld"),
 "name": "Material",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),

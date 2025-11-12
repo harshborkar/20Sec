@@ -1,0 +1,88 @@
+[gd_resource type="VisualShader" load_steps=13 format=3 uid="uid://cyfclseawuxg2"]
+
+[ext_resource type="Texture2D" uid="uid://rt23rm8ov3ej" path="res://thunder/image_textures/tex2.png" id="1_myfjl"]
+[ext_resource type="Texture2D" uid="uid://c8ycoepugh0os" path="res://thunder/image_textures/download (1).png" id="2_jfvrd"]
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_jfvrd"]
+expanded_output_ports = [0]
+texture = ExtResource("1_myfjl")
+
+[sub_resource type="VisualShaderNodeUVFunc" id="VisualShaderNodeUVFunc_furd7"]
+default_input_values = [1, Vector2(0, 1), 2, Vector2(0, 0)]
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_en0g3"]
+output_port_for_preview = 0
+expanded_output_ports = [0]
+input_name = "color"
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_j3pvm"]
+default_input_values = [0, Vector2(0, 0), 1, Vector2(0, 3.915)]
+op_type = 0
+operator = 2
+
+[sub_resource type="Gradient" id="Gradient_watbw"]
+offsets = PackedFloat32Array(0, 0.18354431, 0.42405063, 0.5, 0.75949365, 0.9240506)
+colors = PackedColorArray(0.103092775, 0.103092775, 0.103092775, 1, 0.010309279, 0.010309279, 0.010309279, 1, 0.9050982, 0.9050982, 0.9050982, 1, 1, 1, 1, 1, 0.0030321414, 0.0030321414, 0.0030321414, 1, 0.003921569, 0.003921569, 0.003921569, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ody7n"]
+gradient = SubResource("Gradient_watbw")
+fill_to = Vector2(0, 1)
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_lwj75"]
+texture = SubResource("GradientTexture2D_ody7n")
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_xcr3l"]
+default_input_values = [0, Vector2(0, 0), 1, Vector2(0, 0)]
+op_type = 0
+operator = 2
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_ho4xx"]
+parameter_name = "Wavecolor"
+default_value_enabled = true
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_furd7"]
+texture = ExtResource("2_jfvrd")
+
+[resource]
+code = "shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, depth_test_default, cull_back, diffuse_lambert, specular_schlick_ggx, unshaded;
+
+uniform vec4 Wavecolor : source_color = vec4(1.000000, 1.000000, 1.000000, 1.000000);
+uniform sampler2D tex_frg_9;
+
+
+
+void fragment() {
+// ColorParameter:8
+	vec4 n_out8p0 = Wavecolor;
+
+
+// Texture2D:9
+	vec4 n_out9p0 = texture(tex_frg_9, UV);
+
+
+// Output:0
+	ALBEDO = vec3(n_out8p0.xyz);
+	ALPHA = n_out9p0.x;
+
+
+}
+"
+flags/unshaded = true
+nodes/fragment/2/node = SubResource("VisualShaderNodeTexture_jfvrd")
+nodes/fragment/2/position = Vector2(-260, 320)
+nodes/fragment/3/node = SubResource("VisualShaderNodeUVFunc_furd7")
+nodes/fragment/3/position = Vector2(-540, 100)
+nodes/fragment/4/node = SubResource("VisualShaderNodeInput_en0g3")
+nodes/fragment/4/position = Vector2(-1180, -280)
+nodes/fragment/5/node = SubResource("VisualShaderNodeVectorOp_j3pvm")
+nodes/fragment/5/position = Vector2(-780, 340)
+nodes/fragment/6/node = SubResource("VisualShaderNodeTexture_lwj75")
+nodes/fragment/6/position = Vector2(-320, 1000)
+nodes/fragment/7/node = SubResource("VisualShaderNodeVectorOp_xcr3l")
+nodes/fragment/7/position = Vector2(159.67075, 774.87213)
+nodes/fragment/8/node = SubResource("VisualShaderNodeColorParameter_ho4xx")
+nodes/fragment/8/position = Vector2(-40, -120)
+nodes/fragment/9/node = SubResource("VisualShaderNodeTexture_furd7")
+nodes/fragment/9/position = Vector2(44.595684, 272.59003)
+nodes/fragment/connections = PackedInt32Array(5, 0, 3, 2, 3, 0, 2, 0, 4, 1, 5, 0, 2, 1, 7, 0, 6, 0, 7, 1, 8, 0, 0, 0, 9, 0, 0, 1)

@@ -1,0 +1,64 @@
+[gd_resource type="VisualShader" load_steps=6 format=3 uid="uid://12e2quofyn7i"]
+
+[ext_resource type="Texture2D" uid="uid://b1r4ccwxi8xo7" path="res://thunder/image_textures/tex3.png" id="1_01w1x"]
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_hcchb"]
+expanded_output_ports = [0]
+texture = ExtResource("1_01w1x")
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_sulyu"]
+expanded_output_ports = [0]
+input_name = "color"
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_k0tir"]
+default_input_values = [0, Vector2(0, 0), 1, Vector2(0, 0)]
+op_type = 0
+operator = 2
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_58pyu"]
+parameter_name = "mark_color"
+
+[resource]
+code = "shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, depth_test_default, cull_back, diffuse_lambert, specular_schlick_ggx, unshaded;
+
+uniform vec4 mark_color : source_color;
+uniform sampler2D tex_frg_2;
+
+
+
+void fragment() {
+// ColorParameter:5
+	vec4 n_out5p0 = mark_color;
+
+
+// Input:3
+	vec4 n_out3p0 = COLOR;
+
+
+// Texture2D:2
+	vec4 n_out2p0 = texture(tex_frg_2, UV);
+	float n_out2p1 = n_out2p0.r;
+
+
+// VectorOp:4
+	vec2 n_out4p0 = vec2(n_out3p0.xy) * vec2(n_out2p1);
+
+
+// Output:0
+	ALBEDO = vec3(n_out5p0.xyz);
+	ALPHA = n_out4p0.x;
+
+
+}
+"
+flags/unshaded = true
+nodes/fragment/2/node = SubResource("VisualShaderNodeTexture_hcchb")
+nodes/fragment/2/position = Vector2(-580, 560)
+nodes/fragment/3/node = SubResource("VisualShaderNodeInput_sulyu")
+nodes/fragment/3/position = Vector2(-480, -160)
+nodes/fragment/4/node = SubResource("VisualShaderNodeVectorOp_k0tir")
+nodes/fragment/4/position = Vector2(-88.47502, 134.1806)
+nodes/fragment/5/node = SubResource("VisualShaderNodeColorParameter_58pyu")
+nodes/fragment/5/position = Vector2(96.69233, -242.43095)
+nodes/fragment/connections = PackedInt32Array(3, 0, 4, 0, 2, 1, 4, 1, 4, 0, 0, 1, 5, 0, 0, 0)

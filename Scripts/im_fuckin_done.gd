@@ -1,5 +1,6 @@
 class_name Boss
 extends CharacterBody3D
+@onready var thunder_particles: GPUParticles3D = $thunder_particles
 
 @onready var nav_agent: NavigationAgent3D = $NavigationAgent3D
 @onready var animation_tree: AnimationTree = $AnimationTree
@@ -212,3 +213,11 @@ func reset_attack_conditions():
 
 func toggle_give_damage()->void:
 	give_damage = !give_damage
+
+
+func call_thunder():
+	thunder_particles.global_position = player.global_position
+	thunder_particles.emitting = true
+func turn_off_thunder():
+	thunder_particles.emitting = false
+	
