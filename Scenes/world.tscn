@@ -97,9 +97,6 @@ ENEMY = NodePath("../im_fuckin_done")
 dash_cooldown = 1.05
 ATTACK_SPEED = 2.355
 
-[node name="BoneAttachment3D" parent="Player/visuals/Skeleton3D" index="3"]
-transform = Transform3D(-0.18963283, 0.48566446, 0.8533281, 0.9152766, -0.22714469, 0.33267677, 0.35539824, 0.84411776, -0.40144315, -0.06674017, 0.9480374, 0.36911738)
-
 [node name="Sword_Low_Done" parent="Player/visuals/Skeleton3D/BoneAttachment3D" index="0" node_paths=PackedStringArray("boss")]
 boss = NodePath("../../../../../im_fuckin_done")
 
@@ -109,6 +106,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -99.93737, 0)
 [node name="im_fuckin_done" parent="." node_paths=PackedStringArray("player") instance=ExtResource("6_5ukr8")]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, 0, 0, 3.6783655)
 player = NodePath("../Player")
-MIN_SPEED_FACTOR = 1.0
 
 [editable path="Player"]

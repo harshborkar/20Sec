@@ -27,8 +27,8 @@ input_name = "color"
 default_input_values = [1, 0.0, 2, 1.0, 3, 0.0, 4, 0.7]
 
 [sub_resource type="Gradient" id="Gradient_ftkde"]
-offsets = PackedFloat32Array(0, 0.373563)
-colors = PackedColorArray(58.564, 0, 0, 1, 0.375, 0, 0, 1)
+offsets = PackedFloat32Array(0, 0.5176471)
+colors = PackedColorArray(278.42105, 0, 0, 1, 2.5210483, 0, 1.5263258, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_bhjtw"]
 gradient = SubResource("Gradient_ftkde")
@@ -39,7 +39,7 @@ texture = SubResource("GradientTexture2D_bhjtw")
 
 [resource]
 code = "shader_type spatial;
-render_mode blend_mix, depth_draw_opaque, cull_disabled, diffuse_lambert, specular_schlick_ggx, unshaded;
+render_mode blend_mix, depth_draw_opaque, depth_test_default, cull_disabled, diffuse_lambert, specular_schlick_ggx, unshaded;
 
 uniform sampler2D tex_frg_9;
 uniform sampler2D tex_frg_2;
@@ -100,7 +100,6 @@ void fragment() {
 
 }
 "
-graph_offset = Vector2(-42.0045, -393.296)
 modes/cull = 2
 flags/unshaded = true
 nodes/fragment/0/position = Vector2(720, 120)
