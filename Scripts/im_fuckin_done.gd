@@ -21,6 +21,7 @@ var debug_timer: int = 0
 
 enum STATE { MOVE, ATTACK, DEAD }
 var state: STATE = STATE.MOVE
+var give_damage:bool = false
 
 # Extra boss state variables
 var max_health: float
@@ -34,6 +35,7 @@ var used_aoe_phase: bool = false  # For first AoE in phase 3
 # "parameters/conditions/slash_1"
 # "parameters/conditions/slash_2"
 func _ready() -> void:
+	animation_tree.active = true
 	max_health = health
 	randomize()
 	animation_tree.active = true
@@ -46,7 +48,6 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	var state_machine = animation_tree.get("parameters/playback")
-	print(state_machine.get_current_node())
 	if not player:
 		return
 
@@ -172,7 +173,7 @@ func select_attack():
 
 func trigger_attack(attack: String):
 	state = STATE.ATTACK
-	area_3d.monitoring = true   #axe hitbox area {its only true when attacking, so player is only damaged, when the boss is attacking}
+
 	# Disable movement and set correct animation condition
 	animation_tree.set("parameters/conditions/idle", false)
 	animation_tree.set("parameters/conditions/move", false)
@@ -181,10 +182,22 @@ func trigger_attack(attack: String):
 	animation_tree.set("parameters/conditions/slash_1", attack == "slash_1")
 	animation_tree.set("parameters/conditions/slash_2", attack == "slash_2")
 
-	print("Boss used attack: ", attack)
+
+
+	# --- Small rotation adjustment ONLY for slash_1 ---
+	if attack == "slash_1":
+		var original_rot_y = rotation.y
+		var target_rot_y = original_rot_y - deg_to_rad(15)  # rotate 15° left
+
+		var tween := create_tween()
+		tween.tween_property(self, "rotation:y", target_rot_y, 0.15)  # quick tilt before swing
+
+		# Return to original rotation smoothly after a short delay
+		tween.tween_interval(0.8)
+		tween.tween_property(self, "rotation:y", original_rot_y, 0.25)
 
 	# After attack animation ends, return to move state
-	await get_tree().create_timer(1.8).timeout
+	await get_tree().create_timer(.6).timeout
 	reset_attack_conditions()
 	state = STATE.MOVE
 	area_3d.monitoring = false
@@ -196,3 +209,6 @@ func reset_attack_conditions():
 	animation_tree.set("parameters/conditions/kick", false)
 	animation_tree.set("parameters/conditions/aoe", false)
 	animation_tree.set("parameters/conditions/move", true)
+
+func toggle_give_damage()->void:
+	give_damage = !give_damage

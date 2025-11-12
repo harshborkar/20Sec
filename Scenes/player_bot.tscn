@@ -4601,7 +4601,7 @@ _data = {
 }
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_eqpk1"]
-height = 1.6467285
+height = 1.9693604
 
 [node name="Node3D" type="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.13732052)
@@ -5118,7 +5118,7 @@ collision_layer = 0
 collision_mask = 2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.817749, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.97906494, 0)
 shape = SubResource("CapsuleShape3D_eqpk1")
 debug_color = Color(0, 0.8181843, 0.4677279, 0.41960785)
 

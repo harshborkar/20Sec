@@ -14,7 +14,7 @@ uv1_triplanar = true
 material = SubResource("StandardMaterial3D_q88ar")
 top_radius = 0.716
 bottom_radius = 0.715
-height = 0.529
+height = 0.527
 radial_segments = 19
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_k2yo4"]

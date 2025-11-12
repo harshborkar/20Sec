@@ -86,7 +86,7 @@ shader_parameter/flags = 42
 material = SubResource("ShaderMaterial_wttj4")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_s7ob3"]
-size = Vector3(4.1192017, 10.304626, 0.69433594)
+size = Vector3(5.2138824, 15.780624, 4.709961)
 
 [node name="axe" type="Node3D"]
 transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
@@ -119,5 +119,5 @@ collision_layer = 2
 collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5030213, 0.7479554, 0.15283203)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.044319034, -1.5594865, -0.90771496)
 shape = SubResource("BoxShape3D_s7ob3")

@@ -604,9 +604,23 @@ func take_damage(damage: float, knockback_dir: Vector3 = Vector3.ZERO, knockback
 	if state == STATE.DEATH:
 		return
 
+	# --- Cancel any ongoing dash or attack ---
+	if state == STATE.DASH or state == STATE.DASH_CHARGE:
+		is_charging = false
+		dash_timer = 0.0
+		velocity = Vector3.ZERO
+		if dash_audio.playing:
+			dash_audio.stop()
+		hide_trails()
+
+	if state == STATE.ATTACK:
+		is_attack_queued = false
+		can_queue_next_combo = false
+
 	# --- Stop movement and switch to hurt state ---
 	state = STATE.HURT
 	velocity = Vector3.ZERO
+
 
 	# --- Apply knockback ---
 	if knockback_dir != Vector3.ZERO:
@@ -628,4 +642,5 @@ func take_damage(damage: float, knockback_dir: Vector3 = Vector3.ZERO, knockback
 
 
 func _on_area_3d_area_entered(area: Area3D) -> void:
-	take_damage(1)
+	if ENEMY.give_damage:
+		take_damage(1, Vector3(10, 0, 90), 15 )

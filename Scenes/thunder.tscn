@@ -1,0 +1,31 @@
+[gd_scene load_steps=6 format=3 uid="uid://ri8i0dqdaiyb"]
+
+[ext_resource type="ArrayMesh" uid="uid://ch3kgn2mqshpj" path="res://thunder/thunder_edit.tres" id="1_gorm0"]
+
+[sub_resource type="Gradient" id="Gradient_52jvm"]
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_5xp8j"]
+gradient = SubResource("Gradient_52jvm")
+use_hdr = true
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_8feml"]
+gravity = Vector3(0, 0, 0)
+color_ramp = SubResource("GradientTexture1D_5xp8j")
+
+[sub_resource type="Environment" id="Environment_gorm0"]
+glow_enabled = true
+
+[node name="Node3D" type="Node3D"]
+
+[node name="ThunderEdit" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.3086, 0, 0.889059)
+mesh = ExtResource("1_gorm0")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+amount = 1
+lifetime = 0.28
+process_material = SubResource("ParticleProcessMaterial_8feml")
+draw_pass_1 = ExtResource("1_gorm0")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_gorm0")
