@@ -16,6 +16,11 @@ extends CharacterBody3D
 @export var RUN_RANGE: float = 15.0
 @export var MOVE_SPEED: float = 3.0
 @export var ROOT_MOTION_SCALE: float = 50.0  # Adjustable in inspector
+@export var parry_stun_time: float = 1.0
+@export var parry_push_strength: float = 3.0
+
+var is_stunned: bool = false
+
 
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 var debug_timer: int = 0
@@ -27,6 +32,7 @@ var give_damage:bool = false
 # Extra boss state variables
 var max_health: float
 var used_aoe_phase: bool = false  # For first AoE in phase 3
+var can_be_parried:bool = false
 
 # AnimationTree parameters
 # "parameters/conditions/idle"
@@ -48,6 +54,11 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if is_stunned:
+		velocity = Vector3.ZERO
+		move_and_slide()
+		return
+
 	var state_machine = animation_tree.get("parameters/playback")
 	if not player:
 		return
@@ -205,10 +216,14 @@ func trigger_attack(attack: String):
 
 
 func reset_attack_conditions():
+	can_be_parried = false
+
 	animation_tree.set("parameters/conditions/slash_1", false)
 	animation_tree.set("parameters/conditions/slash_2", false)
 	animation_tree.set("parameters/conditions/kick", false)
 	animation_tree.set("parameters/conditions/aoe", false)
+	animation_tree.set("parameters/conditions/hurt", false)
+	
 	animation_tree.set("parameters/conditions/move", true)
 
 func toggle_give_damage()->void:
@@ -221,3 +236,48 @@ func call_thunder():
 func turn_off_thunder():
 	thunder_particles.emitting = false
 	
+func toggle_parry():
+	
+	can_be_parried=!can_be_parried
+	
+func parried():
+	# Guard: ignore repeated calls / dead boss
+	if is_stunned:
+		return
+	if state == STATE.DEAD:
+		return
+
+	print("PARRIED!")
+	toggle_give_damage()
+	# Immediately close parry window (animation also toggles it)
+	can_be_parried = false
+
+	# Stun boss
+	is_stunned = true
+	state = STATE.ATTACK   # freeze other attack logic
+	velocity = Vector3.ZERO
+
+	# Disable hit detection
+	if area_3d:
+		area_3d.monitoring = false
+
+	# Play hurt animation and clear other attack flags
+	animation_tree.set("parameters/conditions/slash_1", false)
+	animation_tree.set("parameters/conditions/slash_2", false)
+	animation_tree.set("parameters/conditions/kick", false)
+	animation_tree.set("parameters/conditions/aoe", false)
+	animation_tree.set("parameters/conditions/move", false)
+	animation_tree.set("parameters/conditions/hurt", true)
+
+	# Optional: small pushback effect (visual nudge)
+	var push = -global_transform.basis.z * parry_push_strength
+	translate(push * 0.15)
+
+	# Wait and recover
+	await get_tree().create_timer(parry_stun_time).timeout
+
+	# End stun — only if not dead (defensive)
+	is_stunned = false
+	if state != STATE.DEAD:
+		state = STATE.MOVE
+	reset_attack_conditions()

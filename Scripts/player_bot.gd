@@ -29,6 +29,8 @@ var current_fov_tween: Tween
 @export var attack_damage:float = 1
 @export var attack_cooldown:float = 0.4
 @export var ATTACK_SPEED:float=1
+@export var parry_cooldown:float = 0.5
+var last_parry_time:float= -1000
 const JUMP_VELOCITY: float = 4.5
 var GRAVITY: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
@@ -81,6 +83,7 @@ var is_attack_connected:bool=false
 var has_hit_once:bool = false
 var has_shaken_once:bool=false
 # --------------------------------------------------
+var can_i_parry:bool= true
 
 func _ready() -> void:
 	base_camera_fov = camera_node.fov
@@ -143,6 +146,7 @@ func toggle_targeting() -> void:
 
 func _physics_process(delta: float) -> void:
 	handle_gravity_and_jump()
+	handle_parrying()
 	handle_dash(delta)
 	handle_targeting_rotation(delta)
 	# --- NEW: Handle camera shake every frame ---
@@ -642,5 +646,20 @@ func take_damage(damage: float, knockback_dir: Vector3 = Vector3.ZERO, knockback
 
 
 func _on_area_3d_area_entered(area: Area3D) -> void:
+	
 	if ENEMY.give_damage:
 		take_damage(1, Vector3(10, 0, 90), 15 )
+
+func handle_parrying():
+	var now:float = Time.get_ticks_msec()
+	if now-last_parry_time < parry_cooldown*1000:
+		return 
+	
+	
+	if Input.is_action_just_pressed("Parry") and can_i_parry:
+		if ENEMY and is_instance_valid(ENEMY):
+			# Require distance within parry range
+			if global_position.distance_to(ENEMY.global_position) <= 3.0:
+				if ENEMY.can_be_parried:
+					ENEMY.parried()
+					last_parry_time = now
