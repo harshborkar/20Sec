@@ -18,6 +18,7 @@ extends CharacterBody3D
 @export var ROOT_MOTION_SCALE: float = 50.0  # Adjustable in inspector
 @export var parry_stun_time: float = 1.0
 @export var parry_push_strength: float = 3.0
+@export var rotation_offset_degrees: float = 0.0   # positive = rotate right, negative = rotate left
 
 var is_stunned: bool = false
 
@@ -83,7 +84,12 @@ func _physics_process(delta: float) -> void:
 	# --- ROTATION ---
 	if direction != Vector3.ZERO:
 		var target_rot_y = atan2(direction.x, direction.z)
+
+	# Apply custom offset (convert offset degrees → radians)
+		target_rot_y += deg_to_rad(rotation_offset_degrees)
+
 		rotation.y = lerp_angle(rotation.y, target_rot_y, delta * 5.0)
+
 
 	var distance_to_player = global_position.distance_to(player.global_position)
 
@@ -195,18 +201,7 @@ func trigger_attack(attack: String):
 	animation_tree.set("parameters/conditions/slash_2", attack == "slash_2")
 
 
-
-	# --- Small rotation adjustment ONLY for slash_1 ---
-	if attack == "slash_1":
-		var original_rot_y = rotation.y
-		var target_rot_y = original_rot_y - deg_to_rad(15)  # rotate 15° left
-
-		var tween := create_tween()
-		tween.tween_property(self, "rotation:y", target_rot_y, 0.15)  # quick tilt before swing
-
-		# Return to original rotation smoothly after a short delay
-		tween.tween_interval(0.8)
-		tween.tween_property(self, "rotation:y", original_rot_y, 0.25)
+	
 
 	# After attack animation ends, return to move state
 	await get_tree().create_timer(.6).timeout

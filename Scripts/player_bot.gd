@@ -48,7 +48,7 @@ var GRAVITY: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var camera_node: Camera3D = $"Camera Mount/Camera3D"
 
 # --- STATES ---
-enum STATE { IDLE, WALK, RUN, DASH_CHARGE, DASH, ATTACK, HURT, DEATH }
+enum STATE { IDLE, WALK, RUN, DASH_CHARGE, DASH, ATTACK, HURT, DEATH, BLOCK }
 var state: STATE = STATE.IDLE
 
 # --- DASH ---
@@ -301,35 +301,44 @@ func handle_movement(delta: float) -> void:
 # --------------------------------------------------
 
 func _on_animation_player_animation_finished(anim_name):
-	if not (anim_name in ["sword_combo_p1", "sword_combo_p2", "sword_combo_p3"]):
-		return 
+	
+	# --- REMOVE THIS CHECK from the top of the function ---
+	# if not (anim_name in ["sword_combo_p1", "sword_combo_p2", "sword_combo_p3"]):
+	# 	return 
 
-	combo_timer.stop()
-	can_queue_next_combo = false
+	# --- Handle Attack animations ---
+	if (anim_name in ["sword_combo_p1", "sword_combo_p2", "sword_combo_p3"]):
+		combo_timer.stop()
+		can_queue_next_combo = false
 
-	if is_attack_queued:
-		is_attack_queued = false 
-		
-		if anim_name == "sword_combo_p1":
-			combo_step = 2
-			set_anim("sword_combo_p2")
-		elif anim_name == "sword_combo_p2":
-			combo_step = 3
-			set_anim("sword_combo_p3")
-		elif anim_name == "sword_combo_p3":
-			combo_step = 1
-			set_anim("sword_combo_p1")
+		if is_attack_queued:
+			is_attack_queued = false 
 			
-	else:
-		combo_step = 0
-		if state != STATE.DEATH and state != STATE.HURT:
-			state = STATE.IDLE
-		
-		last_attack_time = Time.get_ticks_msec()
+			if anim_name == "sword_combo_p1":
+				combo_step = 2
+				set_anim("sword_combo_p2")
+			elif anim_name == "sword_combo_p2":
+				combo_step = 3
+				set_anim("sword_combo_p3")
+			elif anim_name == "sword_combo_p3":
+				combo_step = 1
+				set_anim("sword_combo_p1")
+				
+		else:
+			combo_step = 0
+			if state != STATE.DEATH and state != STATE.HURT:
+				state = STATE.IDLE
+			
+			last_attack_time = Time.get_ticks_msec()
 
+	# --- NEW: Handle Block animation finished ---
+	elif anim_name == "block":
+		if state == STATE.BLOCK:
+			state = STATE.IDLE
 
 func can_move() -> bool:
-	return not (state in [STATE.ATTACK, STATE.HURT, STATE.DEATH, STATE.DASH_CHARGE])
+	return not (state in [STATE.ATTACK, STATE.HURT, STATE.DEATH, STATE.DASH_CHARGE, STATE.BLOCK])
+
 
 func can_dash():
 	return Time.get_ticks_msec() - last_dash_time >= dash_cooldown*1000
@@ -376,6 +385,7 @@ func handle_animations() -> void:
 		STATE.HURT:		set_anim("hurt")
 		STATE.DEATH:		set_anim("death")
 		STATE.DASH_CHARGE: set_anim("dash_charge")
+		STATE.BLOCK:set_anim("block")
 		STATE.DASH:
 			set_anim("dash_mid_end")
 			show_trails()
@@ -388,10 +398,12 @@ func set_anim(anim: String) -> void:
 	if animation_player.current_animation != anim:
 		animation_player.play(anim)
 
+	# Attack speed logic
 	if anim in ["sword_combo_p1", "sword_combo_p2", "sword_combo_p3"]:
 		animation_player.speed_scale = ATTACK_SPEED
 	else:
 		animation_player.speed_scale = 1.0
+
 
 	combo_timer.stop()
 	can_queue_next_combo = false
@@ -651,15 +663,49 @@ func _on_area_3d_area_entered(area: Area3D) -> void:
 		take_damage(1, Vector3(10, 0, 90), 15 )
 
 func handle_parrying():
-	var now:float = Time.get_ticks_msec()
-	if now-last_parry_time < parry_cooldown*1000:
-		return 
-	
-	
+	var now: float = Time.get_ticks_msec()
+	# respect the cooldown since last parry
+	if now - last_parry_time < parry_cooldown * 1000:
+		return
+
+	# on press, play block animation immediately and disable further parries
 	if Input.is_action_just_pressed("Parry") and can_i_parry:
+		# Play block animation right away for feedback
+		play_block_animation()
+
+		# prevent further parry attempts until we re-enable below
+		can_i_parry = false
+
+		# if there's an enemy and it's valid, check for parry success
 		if ENEMY and is_instance_valid(ENEMY):
 			# Require distance within parry range
 			if global_position.distance_to(ENEMY.global_position) <= 3.0:
 				if ENEMY.can_be_parried:
 					ENEMY.parried()
+					ENEMY.give_damage = false
 					last_parry_time = now
+
+		# Re-enable parry after the cooldown (runs asynchronously)
+		# This yields but does not block the engine (Godot's await)
+		# Adjust timing if you want a longer lockout than parry_cooldown
+		# (e.g. use parry_cooldown + 0.1)
+		await get_tree().create_timer(parry_cooldown).timeout
+		can_i_parry = true
+
+
+func play_block_animation():
+	# Only interrupt into a block if we're in an interruptible state
+	if state in [STATE.IDLE, STATE.WALK, STATE.RUN]:
+		state = STATE.BLOCK
+		set_anim("block")
+
+		# keep the block pose for a short hold so it's visible and to prevent input spam
+		# tune this to match your 'block' animation length if needed
+		await get_tree().create_timer(0.25).timeout
+
+		# If still in block (and not killed/stunned), return to idle
+		if state == STATE.BLOCK:
+			state = STATE.IDLE
+
+ 
+#play block animation
