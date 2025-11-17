@@ -46,6 +46,7 @@ var GRAVITY: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 # --- NEW: CAMERA SHAKE NODE ---
 # !!! IMPORTANT: Update this path if your Camera3D is not a direct child of 'Camera Mount'
 @onready var camera_node: Camera3D = $"Camera Mount/Camera3D"
+@onready var parry_audio: AudioStreamPlayer3D = $parry_audio
 
 # --- STATES ---
 enum STATE { IDLE, WALK, RUN, DASH_CHARGE, DASH, ATTACK, HURT, DEATH, BLOCK }
@@ -682,6 +683,7 @@ func handle_parrying():
 			if global_position.distance_to(ENEMY.global_position) <= 3.0:
 				if ENEMY.can_be_parried:
 					ENEMY.parried()
+					parry_audio.play()
 					ENEMY.give_damage = false
 					last_parry_time = now
 

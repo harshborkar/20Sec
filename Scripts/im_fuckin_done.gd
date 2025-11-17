@@ -9,6 +9,8 @@ extends CharacterBody3D
 @onready var sprite_3d: Sprite3D = $Armature_049/Skeleton3D/BoneAttachment3D/Sprite3D
 @onready var attack_cooldown_timer: Timer = $attack_cooldown
 @onready var area_3d: Area3D = $Armature_049/Skeleton3D/BoneAttachment3D2/axe/Area3D
+@onready var audio_stream_player_3d: AudioStreamPlayer3D = $Armature_049/Skeleton3D/BoneAttachment3D2/AudioStreamPlayer3D
+@onready var pary_audio: AudioStreamPlayer3D = $pary_audio
 
 @export var attack_cooldown:float = 0.2
 @export var player: Player
@@ -21,6 +23,8 @@ extends CharacterBody3D
 @export var rotation_offset_degrees: float = 0.0   # positive = rotate right, negative = rotate left
 
 var is_stunned: bool = false
+const AXE_MISS = preload("uid://b8ilc7nn7vyct")
+const AXE_FLESH = preload("uid://d3vhnx2bk7ync")
 
 
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
@@ -276,3 +280,14 @@ func parried():
 	if state != STATE.DEAD:
 		state = STATE.MOVE
 	reset_attack_conditions()
+
+func play_slash_sfx():
+	if player.state == player.STATE.HURT:
+		audio_stream_player_3d.pitch_scale = randf_range(0.85, 1.15)
+		audio_stream_player_3d.stream = AXE_FLESH
+		audio_stream_player_3d.play()
+	else:
+		audio_stream_player_3d.pitch_scale = randf_range(0.85, 1.15)
+		audio_stream_player_3d.stream = AXE_MISS
+		audio_stream_player_3d.play(0.3)
+	
