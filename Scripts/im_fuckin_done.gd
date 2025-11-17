@@ -10,7 +10,6 @@ extends CharacterBody3D
 @onready var attack_cooldown_timer: Timer = $attack_cooldown
 @onready var area_3d: Area3D = $Armature_049/Skeleton3D/BoneAttachment3D2/axe/Area3D
 @onready var audio_stream_player_3d: AudioStreamPlayer3D = $Armature_049/Skeleton3D/BoneAttachment3D2/AudioStreamPlayer3D
-@onready var pary_audio: AudioStreamPlayer3D = $pary_audio
 
 @export var attack_cooldown:float = 0.2
 @export var player: Player
