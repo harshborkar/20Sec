@@ -683,6 +683,8 @@ func handle_parrying():
 			if global_position.distance_to(ENEMY.global_position) <= 3.0:
 				if ENEMY.can_be_parried:
 					ENEMY.parried()
+					Global.frame_freeze(0, 0.05)
+					start_camera_shake()
 					parry_audio.play()
 					ENEMY.give_damage = false
 					last_parry_time = now
