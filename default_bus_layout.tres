@@ -14,4 +14,4 @@ bus/1/bypass_fx = false
 bus/1/volume_db = -0.9237509
 bus/1/send = &"Master"
 bus/1/effect/0/effect = SubResource("AudioEffectReverb_j3pel")
-bus/1/effect/0/enabled = true
+bus/1/effect/0/enabled = false
