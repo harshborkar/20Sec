@@ -1,110 +1,133 @@
 class_name Player
-
 extends CharacterBody3D
-#
-# --- SETTINGS ---
-@export var afterimage_count := 5
-@export var afterimage_spacing := 0.05
-@export var afterimage_fade_time := 0.3
-@export var afterimage_color := Color(1, 1, 1, 0.5)
 
+#region Configuration & Exports
 
-var afterimage_timer := 0.0
-var current_fov_tween: Tween
+# --- MOVEMENT SETTINGS ---
+@export_group("Movement")
+@export var speed_walk: float = 3.5
+@export var speed_run: float = 6.5
+@export var jump_velocity: float = 4.5
+@export var gravity_multiplier: float = 1.0
 
-@export var mouse_sensitivity_x: float = 0.5
-@export var mouse_sensitivity_y: float = 0.5
-@export_range(0, 90, 1) var target_vertical_nudge_limit: float = 20.0
-@export_range(0, 90, 1) var target_horizontal_nudge_limit: float = 45.0
-@export var SPEED: float = 3.5
-@export var RUN_SPEED: float = 6.5
-@export var targeting_speed: float = 5.0
-@export var DASH_MAX_CHARGE_TIME: float = 1.5
-@export var DASH_MIN_SPEED: float = 10.0
-@export var DASH_MAX_SPEED: float = 25.0
-@export var DASH_DURATION: float = 0.3
-@export var ENEMY: Boss
-@export var dash_cooldown:float= 0.5	#seconds
+# --- DASH SETTINGS ---
+@export_group("Dash")
+@export var dash_min_speed: float = 10.0
+@export var dash_max_speed: float = 25.0
+@export var dash_duration: float = 0.3
+@export var dash_cooldown: float = 0.5
+@export var dash_max_charge_time: float = 1.5
+@export var dash_stamina_cost: float = 30.0
 
-@export var attack_damage:float = 1
-@export var attack_cooldown:float = 0.4
-@export var ATTACK_SPEED:float=1
-@export var parry_cooldown:float = 0.5
-var last_parry_time:float= -1000
-const JUMP_VELOCITY: float = 4.5
-var GRAVITY: float = ProjectSettings.get_setting("physics/3d/default_gravity")
+# --- COMBAT SETTINGS ---
+@export_group("Combat")
+@export var enemy_target: Boss # Ensure class_name Boss exists
+@export var attack_damage: float = 1.0
+@export var attack_speed_scale: float = 1.0
 
-@export var dash_charge_camera_fov:float = 120.0
+@export_subgroup("Cooldowns")
+@export var attack_cooldown: float = 0.4
+@export var parry_cooldown: float = 0.5
 
+@export_subgroup("Stamina Costs")
+@export var stamina_cost_p1: float = 15.0
+@export var stamina_cost_combo: float = 10.0 # Cost for P2 and P3
+
+# --- STAMINA SYSTEM ---
+@export_group("Stamina System")
 @export var max_stamina: float = 100.0
-@export var current_stamina: float = 100.0
-@export var stamina_depletion_rate: float = 20.0  # Stamina used per second when running
-@export var stamina_regeneration_rate: float = 15.0  # Stamina regained per second when not running
+@export var stamina_depletion_rate: float = 20.0 
+@export var stamina_regeneration_rate: float = 15.0
 
-# --- NODES ---
-@onready var dash_audio: AudioStreamPlayer3D = $dash_audio
-@onready var gpu_trail_3d: GPUTrail3D = $visuals/Skeleton3D/GPUTrail3D
-@onready var visuals: Node3D = $visuals
-@onready var camera_mount: Node3D = $"Camera Mount"
-@onready var animation_player: AnimationPlayer = $visuals/AnimationPlayer
-@onready var combo_timer: Timer = $ComboTimer
-# --- NEW: CAMERA SHAKE NODE ---
-# !!! IMPORTANT: Update this path if your Camera3D is not a direct child of 'Camera Mount'
-@onready var camera_node: Camera3D = $"Camera Mount/Camera3D"
-@onready var parry_audio: AudioStreamPlayer3D = $parry_audio
+# --- CAMERA & INPUT ---
+@export_group("Camera & Input")
+@export var mouse_sensitivity: Vector2 = Vector2(0.5, 0.5)
+@export var targeting_speed: float = 5.0
+@export var vertical_nudge_limit: float = 20.0
+@export var horizontal_nudge_limit: float = 45.0
+@export var dash_charge_fov: float = 120.0
 
-# --- STATES ---
+# --- VISUAL EFFECTS ---
+@export_group("Visual Effects")
+@export var afterimage_count: int = 5
+@export var afterimage_spacing: float = 0.05
+@export var afterimage_fade_time: float = 0.3
+@export var afterimage_color: Color = Color(1, 1, 1, 0.5)
+
+#endregion
+
+#region State & Variables
+
+# --- ENUMS ---
 enum STATE { IDLE, WALK, RUN, DASH_CHARGE, DASH, ATTACK, HURT, DEATH, BLOCK }
+
+# --- STATE VARIABLES ---
 var state: STATE = STATE.IDLE
+var current_stamina: float = 100.0
+var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
-# --- DASH ---
-var dash_charge_time: float = 0.0
-var dash_timer: float = 0.0
-var dash_direction: Vector3 = Vector3.ZERO
-var is_charging: bool = false
-var last_dash_time:float= 0.0
-var last_attack_time:float=0.0
-var base_camera_fov:float
-
-# --- COMBO SYSTEM VARIABLES ---
+# --- COMBAT STATE ---
 var combo_step: int = 0
 var can_queue_next_combo: bool = false
 var is_attack_queued: bool = false
+var last_attack_time: float = 0.0
+var last_parry_time: float = -1000.0
+var can_i_parry: bool = true
 
-# --- COMBO TIMINGS (in seconds) ---
-const COMBO_P1_WINDOW_START: float = 0.8  # During 1.4s anim
-const COMBO_P2_WINDOW_START: float = 0.4  # During 0.7s anim
-const COMBO_P3_WINDOW_START: float = 0.3  # During 0.5s anim
+# --- DASH STATE ---
+var dash_timer: float = 0.0
+var dash_charge_time: float = 0.0
+var is_charging: bool = false
+var last_dash_time: float = 0.0
+var dash_direction: Vector3 = Vector3.ZERO
+var afterimage_timer: float = 0.0
 
-# --- TARGETING ---
+# --- CAMERA STATE ---
+var base_camera_fov: float
+var current_fov_tween: Tween
 var is_targeting: bool = false
-
-# --- NEW: CAMERA SHAKE VARIABLES ---
-var original_cam_pos: Vector3 = Vector3.ZERO
+var original_cam_pos: Vector3
 var shake_timer: float = 0.0
 var shake_max_strength: float = 0.0
 var shake_max_duration: float = 1.0
 
-var is_attack_connected:bool=false
-var has_hit_once:bool = false
-var has_shaken_once:bool=false
-# --------------------------------------------------
-var can_i_parry:bool= true
+# --- HIT FEEDBACK STATE ---
+var is_attack_connected: bool = false
+var has_hit_once: bool = false
+var has_shaken_once: bool = false
+
+# --- CONSTANTS ---
+const COMBO_P1_WINDOW: float = 0.8 
+const COMBO_P2_WINDOW: float = 0.4 
+const COMBO_P3_WINDOW: float = 0.3 
+
+#endregion
+
+#region Node References
+
+@onready var visuals: Node3D = $visuals
+@onready var animation_player: AnimationPlayer = $visuals/AnimationPlayer
+@onready var camera_mount: Node3D = $"Camera Mount"
+@onready var camera_node: Camera3D = $"Camera Mount/Camera3D"
+@onready var combo_timer: Timer = $ComboTimer
+@onready var gpu_trail_3d: GPUTrail3D = $visuals/Skeleton3D/GPUTrail3D
+@onready var dash_audio: AudioStreamPlayer3D = $dash_audio
+@onready var parry_audio: AudioStreamPlayer3D = $parry_audio
+
+#endregion
+
+#region Built-in Methods
 
 func _ready() -> void:
-	base_camera_fov = camera_node.fov
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	hide_trails()
-	# --- NEW: Store original camera position for shake reset ---
 	if camera_node:
+		base_camera_fov = camera_node.fov
 		original_cam_pos = camera_node.position
 	else:
-		# This warning helps you debug if the path is wrong
-		push_warning("Camera shake node not found. Did you set the 'camera_node' path correctly?")
-
-# --------------------------------------------------
-# -------------------- INPUT -----------------------
-# --------------------------------------------------
+		push_warning("Camera Node not found in Player Script")
+		
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	current_stamina = max_stamina
+	hide_trails()
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
@@ -113,34 +136,52 @@ func _input(event: InputEvent) -> void:
 		toggle_targeting()
 	
 	if event.is_action_pressed("Attack"):
-		handle_attack()
+		handle_attack_input()
 
-# Mouse handling
+func _physics_process(delta: float) -> void:
+	handle_stamina(delta)
+	handle_gravity_and_jump(delta)
+	handle_parrying()
+	handle_dash_logic(delta)
+	handle_targeting_rotation(delta)
+	handle_camera_shake(delta)
+
+	if state != STATE.ATTACK:
+		handle_movement(delta)
+		handle_animations()
+		
+	# Afterimage logic
+	if state == STATE.DASH:
+		afterimage_timer -= delta
+		if afterimage_timer <= 0.0:
+			create_afterimage()
+			afterimage_timer = afterimage_spacing
+
+#endregion
+
+#region Input Handling & Camera
+
 func handle_mouse_motion(event: InputEventMouseMotion) -> void:
 	var dx = deg_to_rad(event.relative.x)
 	var dy = deg_to_rad(event.relative.y)
 
 	if is_targeting:
-		# Rotate only the camera mount ("nudge" mode)
-		camera_mount.rotate_y(-dx * mouse_sensitivity_x)
-		camera_mount.rotate_x(-dy * mouse_sensitivity_y)
+		camera_mount.rotate_y(-dx * mouse_sensitivity.x)
+		camera_mount.rotate_x(-dy * mouse_sensitivity.y)
 
 		var rot = camera_mount.rotation_degrees
-		rot.x = clamp(rot.x, -target_vertical_nudge_limit, target_vertical_nudge_limit)
-		rot.y = clamp(rot.y, -target_horizontal_nudge_limit, target_horizontal_nudge_limit)
+		rot.x = clamp(rot.x, -vertical_nudge_limit, vertical_nudge_limit)
+		rot.y = clamp(rot.y, -horizontal_nudge_limit, horizontal_nudge_limit)
 		camera_mount.rotation_degrees = Vector3(rot.x, rot.y, 0)
 	else:
-		# Free-look mode
-		rotate_y(-dx * mouse_sensitivity_x)
-		camera_mount.rotate_x(-dy * mouse_sensitivity_y)
+		rotate_y(-dx * mouse_sensitivity.x)
+		camera_mount.rotate_x(-dy * mouse_sensitivity.y)
 
-		var x = clamp(camera_mount.rotation_degrees.x, -10, 20)
-		camera_mount.rotation_degrees = Vector3(x, 0, 0)
+		var x_rot = clamp(camera_mount.rotation_degrees.x, -10, 20)
+		camera_mount.rotation_degrees = Vector3(x_rot, 0, 0)
 
-# Toggle lock-on targeting
 func toggle_targeting() -> void:
 	is_targeting = !is_targeting
-	
 	var cam_rot_rad = camera_mount.rotation
 	
 	if is_targeting:
@@ -150,143 +191,28 @@ func toggle_targeting() -> void:
 		camera_mount.rotation = Vector3(cam_rot_rad.x, 0, 0)
 		visuals.transform.basis = Basis()
 
-func _physics_process(delta: float) -> void:
-	handle_stamina(delta)
-	handle_gravity_and_jump()
-	handle_parrying()
-	handle_dash(delta)
-	handle_targeting_rotation(delta)
-	# --- NEW: Handle camera shake every frame ---
-	handle_camera_shake(delta)
-
-	if state != STATE.ATTACK:
-		handle_movement(delta)
-		handle_animations()
-	if state == STATE.DASH:
-		afterimage_timer -= delta
-	if afterimage_timer <= 0.0:
-			create_afterimage()
-			afterimage_timer = afterimage_spacing
-
-
-# --------------------------------------------------
-# ---------------- CORE LOGIC ----------------------
-# --------------------------------------------------
-
-func handle_attack():
-	# Add stamina cost for attacking
-	var attack_stamina_cost = 15.0
-	if current_stamina < attack_stamina_cost:
-		return  # Not enough stamina to attack
-	
-	if state == STATE.ATTACK:
-		if can_queue_next_combo:
-			is_attack_queued = true
-			can_queue_next_combo = false 
-	
-	elif can_start_new_attack():
-		current_stamina -= attack_stamina_cost  # Deduct stamina here
-		state = STATE.ATTACK
-		combo_step = 1
-		is_attack_queued = false
-		can_queue_next_combo = false
-		set_anim("sword_combo_p1") 
-
-func handle_gravity_and_jump() -> void:
-	if not is_on_floor():
-		velocity.y -= GRAVITY * get_physics_process_delta_time()
-	elif Input.is_action_just_pressed("Jump"):
-		velocity.y = JUMP_VELOCITY
-
-func handle_dash(delta: float) -> void:
-	# --- ACTIVE DASH PHASE ---
-	if state == STATE.DASH:
-		dash_timer -= delta
-
-		# Fade out dash audio slightly before dash ends
-		if dash_timer <= 0.3 and dash_audio.playing:
-			var fade_out := create_tween()
-			fade_out.tween_property(dash_audio, "volume_db", -40.0, 0.3)
-			fade_out.finished.connect(func():
-				if dash_audio.playing:
-					dash_audio.stop()
-				dash_audio.volume_db = 0.0
-			)
-
-		# End dash
-		if dash_timer <= 0.0:
-			state = STATE.IDLE
-			velocity = Vector3.ZERO
-		else:
-			move_and_slide()
-		return
-
-func handle_stamina(delta: float) -> void:
-	var running = Input.is_action_pressed("Sprint") and state in [STATE.WALK, STATE.RUN]
-	var moving = velocity.length() > 0.1
-	
-	if running and moving and current_stamina > 0:
-		# Deplete stamina when running
-		current_stamina = max(0, current_stamina - stamina_depletion_rate * delta)
-	elif not running and current_stamina < max_stamina:
-		# Regenerate stamina when not running
-		current_stamina = min(max_stamina, current_stamina + stamina_regeneration_rate * delta)
-	
-	# Optional: Prevent running when out of stamina
-	if current_stamina <= 0 and state == STATE.RUN:
-		state = STATE.WALK
-
-# --- START CHARGING ---
-	if Input.is_action_just_pressed("Dash") and can_move() and can_dash():
-		state = STATE.DASH_CHARGE
-		is_charging = true
-		dash_charge_time = 0.0
-
-		# Cancel any old FOV tween
-		if current_fov_tween and current_fov_tween.is_running():
-			current_fov_tween.kill()
-
-		# --- "Rubber stretch" anticipation ---
-		current_fov_tween = create_tween()
-		current_fov_tween.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
-		current_fov_tween.tween_property(camera_node, "fov", dash_charge_camera_fov, 3)
-
-
-	# --- HOLDING CHARGE ---
-	if is_charging:
-		if Input.is_action_pressed("Dash"):
-			dash_charge_time = clamp(dash_charge_time + delta, 0, DASH_MAX_CHARGE_TIME)
-		elif Input.is_action_just_released("Dash"):
-			is_charging = false
-			start_dash()
-		return
-
-
-	# --- NORMAL STATE ---
-	# only reset FOV when we're truly idle (not charging or dashing)
-	if state == STATE.IDLE and camera_node.fov != base_camera_fov:
-		if current_fov_tween and current_fov_tween.is_running():
-			current_fov_tween.kill()
-		current_fov_tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-		current_fov_tween.tween_property(camera_node, "fov", base_camera_fov, 0.4)
-
-
-# --- TARGETING ROTATION ---
 func handle_targeting_rotation(delta: float) -> void:
 	if not is_targeting:
 		return
-
-	if not is_instance_valid(ENEMY):
+	if not is_instance_valid(enemy_target):
 		is_targeting = false
 		return
-
-	var target_pos = ENEMY.global_position
+		
+	var target_pos = enemy_target.global_position
 	var look_pos = Vector3(target_pos.x, global_position.y, target_pos.z)
 	var target_basis = transform.looking_at(look_pos, Vector3.UP).basis
-
 	transform.basis = transform.basis.slerp(target_basis, delta * targeting_speed).orthonormalized()
-	
-# --- MOVEMENT ---
+
+#endregion
+
+#region Movement & Physics
+
+func handle_gravity_and_jump(delta: float) -> void:
+	if not is_on_floor():
+		velocity.y -= (gravity * gravity_multiplier) * delta
+	elif Input.is_action_just_pressed("Jump"):
+		velocity.y = jump_velocity
+
 func handle_movement(delta: float) -> void:
 	if state == STATE.DASH:
 		if velocity.length_squared() > 0:
@@ -296,8 +222,8 @@ func handle_movement(delta: float) -> void:
 	var input_dir = Input.get_vector("Left", "Right", "Fwd", "Bkwd")
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	var moving = direction != Vector3.ZERO
-	var running = Input.is_action_pressed("Sprint")
-
+	var running = Input.is_action_pressed("Sprint") and current_stamina > 0
+	
 	if can_move():
 		state = (
 			STATE.RUN if moving and running else
@@ -305,126 +231,226 @@ func handle_movement(delta: float) -> void:
 			STATE.IDLE
 		)
 
+	# Rotation
 	if moving:
 		visuals.look_at(position + direction)
-	elif is_targeting:
-		if state == STATE.DASH_CHARGE:
-			pass
-		else:
-			visuals.transform.basis = visuals.transform.basis.slerp(Basis(), delta * targeting_speed)
+	elif is_targeting and state != STATE.DASH_CHARGE:
+		visuals.transform.basis = visuals.transform.basis.slerp(Basis(), delta * targeting_speed)
 
+	# Velocity application
 	if moving and can_move():
-		var speed = RUN_SPEED if running else SPEED
-		velocity.x = direction.x * speed
-		velocity.z = direction.z * speed
+		var current_speed = speed_run if running else speed_walk
+		velocity.x = direction.x * current_speed
+		velocity.z = direction.z * current_speed
 	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
-		velocity.z = move_toward(velocity.z, 0, SPEED)
+		velocity.x = move_toward(velocity.x, 0, speed_walk)
+		velocity.z = move_toward(velocity.z, 0, speed_walk)
 
 	move_and_slide()
-	
-# --------------------------------------------------
-# ----------------- HELPERS ------------------------
-# --------------------------------------------------
-
-func _on_animation_player_animation_finished(anim_name):
-	
-	# --- REMOVE THIS CHECK from the top of the function ---
-	# if not (anim_name in ["sword_combo_p1", "sword_combo_p2", "sword_combo_p3"]):
-	# 	return 
-
-	# --- Handle Attack animations ---
-	if (anim_name in ["sword_combo_p1", "sword_combo_p2", "sword_combo_p3"]):
-		combo_timer.stop()
-		can_queue_next_combo = false
-
-		if is_attack_queued:
-			is_attack_queued = false 
-			
-			if anim_name == "sword_combo_p1":
-				combo_step = 2
-				set_anim("sword_combo_p2")
-			elif anim_name == "sword_combo_p2":
-				combo_step = 3
-				set_anim("sword_combo_p3")
-			elif anim_name == "sword_combo_p3":
-				combo_step = 1
-				set_anim("sword_combo_p1")
-				
-		else:
-			combo_step = 0
-			if state != STATE.DEATH and state != STATE.HURT:
-				state = STATE.IDLE
-			
-			last_attack_time = Time.get_ticks_msec()
-
-	# --- NEW: Handle Block animation finished ---
-	elif anim_name == "block":
-		if state == STATE.BLOCK:
-			state = STATE.IDLE
 
 func can_move() -> bool:
 	return not (state in [STATE.ATTACK, STATE.HURT, STATE.DEATH, STATE.DASH_CHARGE, STATE.BLOCK])
 
+#endregion
 
-func can_dash():
-	return Time.get_ticks_msec() - last_dash_time >= dash_cooldown*1000
+#region Stamina & Dash Logic
+
+func handle_stamina(delta: float) -> void:
+	var running = Input.is_action_pressed("Sprint") and state in [STATE.WALK, STATE.RUN]
+	var moving = velocity.length() > 0.1
 	
-func start_dash() -> void:
-	# Add stamina cost for dashing
-	var dash_stamina_cost = 30.0
-	if current_stamina < dash_stamina_cost:
-		return  # Not enough stamina to dash
+	if running and moving and current_stamina > 0:
+		current_stamina = max(0, current_stamina - stamina_depletion_rate * delta)
+	elif not running and current_stamina < max_stamina:
+		current_stamina = min(max_stamina, current_stamina + stamina_regeneration_rate * delta)
+	
+	if current_stamina <= 0 and state == STATE.RUN:
+		state = STATE.WALK
+
+	# --- CHARGING START ---
+	if Input.is_action_just_pressed("Dash") and can_move() and can_dash() and current_stamina >= dash_stamina_cost:
+		state = STATE.DASH_CHARGE
+		is_charging = true
+		dash_charge_time = 0.0
+		tween_fov(dash_charge_fov, 3.0, Tween.TRANS_EXPO)
+
+	# --- CHARGING HOLD ---
+	if is_charging:
+		if current_stamina < dash_stamina_cost:
+			cancel_charge()
+			return
+
+		if Input.is_action_pressed("Dash"):
+			dash_charge_time = clamp(dash_charge_time + delta, 0, dash_max_charge_time)
+		elif Input.is_action_just_released("Dash"):
+			is_charging = false
+			execute_dash()
+		return
+
+	# --- FOV RESET ---
+	if state == STATE.IDLE and camera_node.fov != base_camera_fov and not is_charging:
+		tween_fov(base_camera_fov, 0.4, Tween.TRANS_SINE)
+
+func cancel_charge():
+	is_charging = false
+	state = STATE.IDLE
+	tween_fov(base_camera_fov, 0.4, Tween.TRANS_SINE)
+
+func can_dash() -> bool:
+	return Time.get_ticks_msec() - last_dash_time >= dash_cooldown * 1000
+
+func handle_dash_logic(delta: float) -> void:
+	if state != STATE.DASH: return
+	
+	dash_timer -= delta
+	
+	# Audio fade out logic
+	if dash_timer <= 0.3 and dash_audio.playing and dash_audio.volume_db == 0.0:
+		var fade_out := create_tween()
+		fade_out.tween_property(dash_audio, "volume_db", -40.0, 0.3)
+		fade_out.finished.connect(func(): if dash_audio.playing: dash_audio.stop(); dash_audio.volume_db = 0.0)
+
+	if dash_timer <= 0.0:
+		state = STATE.IDLE
+		velocity = Vector3.ZERO
+	else:
+		move_and_slide()
+
+func execute_dash() -> void:
+	if current_stamina < dash_stamina_cost: return
 	
 	current_stamina -= dash_stamina_cost
-
 	state = STATE.DASH
+	last_dash_time = Time.get_ticks_msec()
+	
 	dash_audio.pitch_scale = randf_range(0.87, 1.17)
 	dash_audio.play()
-	last_dash_time = Time.get_ticks_msec()
 
-	var charge_ratio = dash_charge_time / DASH_MAX_CHARGE_TIME
-	var dash_speed = lerp(DASH_MIN_SPEED, DASH_MAX_SPEED, charge_ratio)
+	var charge_ratio = dash_charge_time / dash_max_charge_time
+	var final_speed = lerp(dash_min_speed, dash_max_speed, charge_ratio)
 
 	var input_dir = Input.get_vector("Left", "Right", "Fwd", "Bkwd")
 	dash_direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	if dash_direction == Vector3.ZERO:
 		dash_direction = -visuals.global_transform.basis.z.normalized()
 
-	velocity = dash_direction * dash_speed
-	dash_timer = DASH_DURATION
-	start_camera_shake(0.6, DASH_DURATION)
-	#Global.frame_freeze(.0, .03)
+	velocity = dash_direction * final_speed
+	dash_timer = dash_duration
+	start_camera_shake(0.6, dash_duration)
 	handle_animations()
 
-	# Cancel any old FOV tween
-	if current_fov_tween and current_fov_tween.is_running():
-		current_fov_tween.kill()
-
-	# --- Cinematic burst effect ---
+	# FOV Kick
+	if current_fov_tween: current_fov_tween.kill()
 	current_fov_tween = create_tween().set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	current_fov_tween.tween_property(camera_node, "fov", dash_charge_camera_fov + 10.0, 0.08)
+	current_fov_tween.tween_property(camera_node, "fov", dash_charge_fov + 10.0, 0.08)
 	current_fov_tween.tween_property(camera_node, "fov", base_camera_fov, 0.4)
 
+#endregion
 
-# --------------------------------------------------
-# ---------------- ANIMATIONS ----------------------
-# --------------------------------------------------
+#region Combat & Combo System
+
+func handle_attack_input():
+	if current_stamina < stamina_cost_p1: return
+	
+	if state == STATE.ATTACK:
+		if can_queue_next_combo:
+			is_attack_queued = true
+			can_queue_next_combo = false 
+	
+	elif can_start_new_attack():
+		current_stamina -= stamina_cost_p1
+		state = STATE.ATTACK
+		combo_step = 1
+		is_attack_queued = false
+		can_queue_next_combo = false
+		set_anim("sword_combo_p1")
+
+func can_start_new_attack() -> bool:
+	var is_cooldown_ready = Time.get_ticks_msec() - last_attack_time >= attack_cooldown * 1000
+	var is_in_valid_state = state in [STATE.IDLE, STATE.WALK, STATE.RUN]
+	return is_cooldown_ready and is_in_valid_state
+
+func handle_parrying():
+	var now: float = Time.get_ticks_msec()
+	if now - last_parry_time < parry_cooldown * 1000: return
+
+	if Input.is_action_just_pressed("Parry") and can_i_parry:
+		play_block_animation()
+		can_i_parry = false
+		
+		if is_instance_valid(enemy_target) and global_position.distance_to(enemy_target.global_position) <= 3.0:
+			if enemy_target.can_be_parried:
+				enemy_target.parried()
+				Global.frame_freeze(0, 0.05)
+				start_camera_shake()
+				parry_audio.play()
+				enemy_target.give_damage = false
+				last_parry_time = now
+		
+		await get_tree().create_timer(parry_cooldown).timeout
+		can_i_parry = true
+
+func play_block_animation():
+	if state in [STATE.IDLE, STATE.WALK, STATE.RUN]:
+		state = STATE.BLOCK
+		set_anim("block")
+		await get_tree().create_timer(0.25).timeout
+		if state == STATE.BLOCK:
+			state = STATE.IDLE
+
+func take_damage(damage: float, knockback_dir: Vector3 = Vector3.ZERO, knockback_force: float = 8.0) -> void:
+	if state == STATE.DEATH: return
+	
+	# Cancel States
+	if state == STATE.DASH or state == STATE.DASH_CHARGE:
+		cancel_charge()
+		dash_timer = 0.0
+		velocity = Vector3.ZERO
+		dash_audio.stop()
+		hide_trails()
+	if state == STATE.ATTACK:
+		is_attack_queued = false
+		can_queue_next_combo = false
+
+	state = STATE.HURT
+	velocity = Vector3.ZERO
+
+	if knockback_dir != Vector3.ZERO:
+		velocity = knockback_dir.normalized() * knockback_force
+		velocity.y = 2.0 
+
+	start_camera_shake(0.1, 0.25)
+	set_anim("hurt")
+	
+	await get_tree().create_timer(0.5).timeout
+	if state == STATE.HURT:
+		state = STATE.IDLE
+
+func give_damage():
+	if enemy_target:
+		enemy_target.take_damage(attack_damage)
+
+func _on_area_3d_area_entered(area: Area3D) -> void:
+	if enemy_target and enemy_target.has_method("give_damage") and enemy_target.give_damage:
+		take_damage(1, Vector3(10, 0, 90), 15)
+
+#endregion
+
+#region Animation Handling
 
 func handle_animations() -> void:
 	match state:
-		STATE.IDLE:		set_anim("mixamo_com")
-		STATE.WALK:		set_anim("walk")
-		STATE.RUN:		set_anim("run")
-		STATE.HURT:		set_anim("hurt")
-		STATE.DEATH:		set_anim("death")
+		STATE.IDLE:      set_anim("mixamo_com")
+		STATE.WALK:      set_anim("walk")
+		STATE.RUN:       set_anim("run")
+		STATE.HURT:      set_anim("hurt")
+		STATE.DEATH:     set_anim("death")
 		STATE.DASH_CHARGE: set_anim("dash_charge")
-		STATE.BLOCK:set_anim("block")
+		STATE.BLOCK:     set_anim("block")
 		STATE.DASH:
 			set_anim("dash_mid_end")
 			show_trails()
 			return
-	
 	if state != STATE.ATTACK:
 		hide_trails()
 
@@ -432,323 +458,185 @@ func set_anim(anim: String) -> void:
 	if animation_player.current_animation != anim:
 		animation_player.play(anim)
 
-	# Attack speed logic
+	# Handle Speed Scaling
 	if anim in ["sword_combo_p1", "sword_combo_p2", "sword_combo_p3"]:
-		animation_player.speed_scale = ATTACK_SPEED
+		animation_player.speed_scale = attack_speed_scale
 	else:
 		animation_player.speed_scale = 1.0
-
 
 	combo_timer.stop()
 	can_queue_next_combo = false
 
+	# Setup Combo Windows
 	if anim in ["sword_combo_p1", "sword_combo_p2", "sword_combo_p3"]:
 		has_hit_once = false
-		has_shaken_once = false  # ✅ reset small shake flag
-
-		var speed_scale = ATTACK_SPEED
+		has_shaken_once = false 
+		
+		var current_scale = attack_speed_scale
 		if anim == "sword_combo_p1":
-			combo_timer.start(COMBO_P1_WINDOW_START / speed_scale)
+			combo_timer.start(COMBO_P1_WINDOW / current_scale)
 		elif anim == "sword_combo_p2":
-			combo_timer.start(COMBO_P2_WINDOW_START / speed_scale)
+			combo_timer.start(COMBO_P2_WINDOW / current_scale)
 		elif anim == "sword_combo_p3":
-			combo_timer.start(COMBO_P3_WINDOW_START / speed_scale)
+			combo_timer.start(COMBO_P3_WINDOW / current_scale)
 
+func _on_animation_player_animation_finished(anim_name):
+	if (anim_name in ["sword_combo_p1", "sword_combo_p2", "sword_combo_p3"]):
+		combo_timer.stop()
+		can_queue_next_combo = false
 
+		# --- STAMINA & COMBO CHAINING LOGIC ---
+		if is_attack_queued:
+			var has_stamina = current_stamina >= stamina_cost_combo
+			
+			if anim_name == "sword_combo_p1" and has_stamina:
+				current_stamina -= stamina_cost_combo
+				is_attack_queued = false
+				combo_step = 2
+				set_anim("sword_combo_p2")
+				
+			elif anim_name == "sword_combo_p2" and has_stamina:
+				current_stamina -= stamina_cost_combo
+				is_attack_queued = false
+				combo_step = 3
+				set_anim("sword_combo_p3")
+				
+			elif anim_name == "sword_combo_p3" and current_stamina >= stamina_cost_p1:
+				current_stamina -= stamina_cost_p1
+				is_attack_queued = false
+				combo_step = 1
+				set_anim("sword_combo_p1")
+			else:
+				reset_combo()
+		else:
+			reset_combo()
 
-# --------------------------------------------------
-# ---------------- TRAILS --------------------------
-# --------------------------------------------------
+	elif anim_name == "block" and state == STATE.BLOCK:
+		state = STATE.IDLE
+
+func reset_combo():
+	combo_step = 0
+	is_attack_queued = false
+	if state != STATE.DEATH and state != STATE.HURT:
+		state = STATE.IDLE
+	last_attack_time = Time.get_ticks_msec()
+
+func _on_combo_timer_timeout():
+	can_queue_next_combo = true
+
+#endregion
+
+#region Visual Effects & Juice
+
+func tween_fov(target_fov: float, duration: float, transition_type: int):
+	if current_fov_tween and current_fov_tween.is_running():
+		current_fov_tween.kill()
+	current_fov_tween = create_tween().set_trans(transition_type).set_ease(Tween.EASE_OUT)
+	current_fov_tween.tween_property(camera_node, "fov", target_fov, duration)
+
+func start_camera_shake(strength: float = 0.2, duration: float = 0.3):
+	if strength > shake_max_strength:
+		shake_max_strength = strength
+	shake_max_duration = duration
+	shake_timer = duration
+
+func handle_camera_shake(delta: float):
+	if not camera_node: return 
+	
+	if shake_timer > 0:
+		shake_timer -= delta
+		if shake_timer <= 0:
+			shake_timer = 0.0
+			camera_node.position = original_cam_pos
+			shake_max_strength = 0.0 
+		else:
+			var decay_ratio = shake_timer / shake_max_duration
+			var current_strength = shake_max_strength * (decay_ratio * decay_ratio)
+			var offset = Vector3(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0), randf_range(-1.0, 1.0)).normalized() * current_strength
+			camera_node.position = original_cam_pos + offset
+	elif camera_node.position != original_cam_pos:
+		camera_node.position = original_cam_pos
+
+func attack_connected():
+	Global.frame_freeze(0.1, 0.2)
+	start_camera_shake(0.15, 0.2)
+
+func hit_or_miss_camera_shake():
+	if is_attack_connected and not has_hit_once:
+		Global.frame_freeze(0.1, 0.2)
+		start_camera_shake(0.1, 0.1)
+		give_damage()
+		has_hit_once = true 
+	elif not is_attack_connected and not has_shaken_once:
+		start_camera_shake(0.01, 0.4)
 
 func show_trails() -> void:
 	if gpu_trail_3d:
 		gpu_trail_3d.visible = true
 		gpu_trail_3d.emitting = true
 
-func can_start_new_attack():
-	var is_cooldown_ready = Time.get_ticks_msec() - last_attack_time >= attack_cooldown * 1000
-	var is_in_valid_state = state in [STATE.IDLE, STATE.WALK, STATE.RUN]
-	return is_cooldown_ready and is_in_valid_state
-	
-func _on_combo_timer_timeout():
-	can_queue_next_combo = true
-
 func hide_trails() -> void:
 	if gpu_trail_3d:
 		gpu_trail_3d.emitting = false
 		gpu_trail_3d.visible = false
 
-# --------------------------------------------------
-# ----------------- GAME JUICE ---------------------
-# --------------------------------------------------
-
-func attack_connected():
-	Global.frame_freeze(0.1, 0.2)
-	# --- NEW: Example of how to call the shake function! ---
-	start_camera_shake(0.15, 0.2)
-
-
-# --- NEW: Call this function to start the shake ---
-# strength: How far the camera can move (e.g., 0.1 to 0.5 is good)
-# duration: How long the shake lasts in seconds (e.g., 0.2)
-func start_camera_shake(strength: float = 0.2, duration: float = 0.3):
-	# Don't override a stronger shake
-	if strength > shake_max_strength:
-		shake_max_strength = strength
-	
-	shake_max_duration = duration
-	shake_timer = duration
-
-# --- NEW: This function runs every frame to apply the shake ---
-func handle_camera_shake(delta: float):
-	if not camera_node:
-		return # Don't try to shake if node is invalid
-
-	if shake_timer > 0:
-		shake_timer -= delta
-		if shake_timer <= 0:
-			# --- Shake finished ---
-			shake_timer = 0.0
-			camera_node.position = original_cam_pos
-			shake_max_strength = 0.0 # Reset max strength
-		else:
-			# --- Still shaking ---
-			# Calculate current strength with a nice falloff (ease-out)
-			# This is the "damping"
-			var decay_ratio = shake_timer / shake_max_duration
-			var current_strength = shake_max_strength * (decay_ratio * decay_ratio)
-
-			# Generate random offset and apply it
-			var offset = Vector3( \
-				randf_range(-1.0, 1.0), \
-				randf_range(-1.0, 1.0), \
-				randf_range(-1.0, 1.0) \
-				).normalized() * current_strength
-				
-			camera_node.position = original_cam_pos + offset
-	elif camera_node.position != original_cam_pos:
-		# Ensure it's reset if timer is 0
-		camera_node.position = original_cam_pos
-		
-func small_camera_shake():
-	# Feel free to tweak these values!
-	start_camera_shake(0.01, 0.4) # Low strength, short duration
-
-
-# --- MODIFIED: Preset for a successful "hit" ---
-func big_camera_shake():
-	# --- ...to here! ---
-	# This function now handles BOTH the frame freeze and the shake.
-	Global.frame_freeze(0.1, 0.2) 
-	
-	# Feel free to tweak these values!
-	start_camera_shake(0.1, 0.1) # Higher strength, longer duration
-
-func hit_or_miss_camera_shake():
-	# This function is called from the AnimationPlayer at the "hit frame"
-	if is_attack_connected and not has_hit_once:
-		big_camera_shake()
-		give_damage()
-		has_hit_once = true  # ✅ Prevent further damage for this animation
-		print("attack_connected_once")
-	else:
-		if not is_attack_connected and not has_shaken_once:
-			print("attack_not_connected")
-			small_camera_shake()
-
 func create_afterimage() -> void:
-	if not visuals:
-		return
-
-	# --- Duplicate and position ghost ---
+	if not visuals: return
+	
 	var ghost: Node3D = visuals.duplicate()
 	ghost.global_transform = visuals.global_transform
 	get_tree().current_scene.add_child(ghost)
 
-	# --- Fix: Copy current animated pose so ghost matches current frame ---
+	# Clean skeleton/anim for static ghost
 	if visuals.has_node("Skeleton3D") and ghost.has_node("Skeleton3D"):
 		var orig_skel: Skeleton3D = visuals.get_node("Skeleton3D")
 		var ghost_skel: Skeleton3D = ghost.get_node("Skeleton3D")
 		for i in range(orig_skel.get_bone_count()):
-			ghost_skel.set_bone_global_pose_override(
-				i,
-				orig_skel.get_bone_global_pose(i),
-				1.0,
-				true
-			)
+			ghost_skel.set_bone_global_pose_override(i, orig_skel.get_bone_global_pose(i), 1.0, true)
 
-	# Stop animations to freeze the snapshot
 	if ghost.has_node("AnimationPlayer"):
 		ghost.get_node("AnimationPlayer").stop()
 
-	# --- Collect all meshes recursively ---
 	var mesh_list: Array[MeshInstance3D] = []
 	_find_meshes_recursively(ghost, mesh_list)
 
 	if mesh_list.is_empty():
-		if is_instance_valid(ghost):
-			ghost.queue_free()
+		ghost.queue_free()
 		return
 
-	# --- Fade setup ---
 	var ghost_tween: Tween = create_tween()
-
 	for mesh: MeshInstance3D in mesh_list:
 		for surface in range(mesh.get_surface_override_material_count()):
 			var active_material: Material = mesh.get_active_material(surface)
-			if active_material == null:
-				continue
-
-			# Duplicate to make material instance unique
+			if active_material == null: continue
+			
 			var fade_mat: BaseMaterial3D = active_material.duplicate()
 			mesh.set_surface_override_material(surface, fade_mat)
-
-			# Enable alpha blending
 			fade_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			fade_mat.flags_transparent = true
-
-			# --- Compute fade colors ---
+			
 			var start_color: Color = fade_mat.albedo_color.lerp(afterimage_color, 0.7)
 			start_color.a = afterimage_color.a
-
+			fade_mat.albedo_color = start_color
+			
 			var end_color: Color = start_color
 			end_color.a = 0.0
+			ghost_tween.tween_property(fade_mat, "albedo_color", end_color, afterimage_fade_time)
 
-			fade_mat.albedo_color = start_color
+	ghost_tween.finished.connect(func(): if is_instance_valid(ghost): ghost.queue_free())
 
-			# --- Tween fade effect ---
-			ghost_tween.tween_property(
-				fade_mat,
-				"albedo_color",
-				end_color,
-				afterimage_fade_time
-			)
-
-	# --- Cleanup when fade completes ---
-	ghost_tween.finished.connect(func():
-		if is_instance_valid(ghost):
-			ghost.queue_free()
-	)
-
-
-# --- Recursive mesh finder ---
 func _find_meshes_recursively(node: Node, mesh_list: Array[MeshInstance3D]) -> void:
 	for child in node.get_children():
 		if child is MeshInstance3D:
 			mesh_list.append(child)
 		_find_meshes_recursively(child, mesh_list)
-		
 
-func give_damage():
-	ENEMY.take_damage(attack_damage)
+#endregion
 
-func get_state():
-	return state
-	
-	
-	
-# ----------------------------
-# DAMAGE & KNOCKBACK
-# ----------------------------
-func take_damage(damage: float, knockback_dir: Vector3 = Vector3.ZERO, knockback_force: float = 8.0) -> void:
-	if state == STATE.DEATH:
-		return
+#region Getters
 
-	# --- Cancel any ongoing dash or attack ---
-	if state == STATE.DASH or state == STATE.DASH_CHARGE:
-		is_charging = false
-		dash_timer = 0.0
-		velocity = Vector3.ZERO
-		if dash_audio.playing:
-			dash_audio.stop()
-		hide_trails()
+func get_state(): return state
+func get_stamina() -> float: return current_stamina
+func get_max_stamina() -> float: return max_stamina
 
-	if state == STATE.ATTACK:
-		is_attack_queued = false
-		can_queue_next_combo = false
-
-	# --- Stop movement and switch to hurt state ---
-	state = STATE.HURT
-	velocity = Vector3.ZERO
-
-
-	# --- Apply knockback ---
-	if knockback_dir != Vector3.ZERO:
-		velocity = knockback_dir.normalized() * knockback_force
-		velocity.y = 2.0  # slight upward push to feel impactful
-
-	# --- Camera shake for feedback ---
-	start_camera_shake(0.1, 0.25)
-
-	# --- Play hurt animation ---
-	set_anim("hurt")
-
-	# --- Temporary stun before regaining control ---
-	await get_tree().create_timer(0.5).timeout
-
-	# Return to idle after hurt animation
-	if state == STATE.HURT:
-		state = STATE.IDLE
-
-
-func _on_area_3d_area_entered(area: Area3D) -> void:
-	
-	if ENEMY.give_damage:
-		take_damage(1, Vector3(10, 0, 90), 15 )
-
-func handle_parrying():
-	var now: float = Time.get_ticks_msec()
-	# respect the cooldown since last parry
-	if now - last_parry_time < parry_cooldown * 1000:
-		return
-
-	# on press, play block animation immediately and disable further parries
-	if Input.is_action_just_pressed("Parry") and can_i_parry:
-		# Play block animation right away for feedback
-		play_block_animation()
-
-		# prevent further parry attempts until we re-enable below
-		can_i_parry = false
-
-		# if there's an enemy and it's valid, check for parry success
-		if ENEMY and is_instance_valid(ENEMY):
-			# Require distance within parry range
-			if global_position.distance_to(ENEMY.global_position) <= 3.0:
-				if ENEMY.can_be_parried:
-					ENEMY.parried()
-					Global.frame_freeze(0, 0.05)
-					start_camera_shake()
-					parry_audio.play()
-					ENEMY.give_damage = false
-					last_parry_time = now
-
-		# Re-enable parry after the cooldown (runs asynchronously)
-		# This yields but does not block the engine (Godot's await)
-		# Adjust timing if you want a longer lockout than parry_cooldown
-		# (e.g. use parry_cooldown + 0.1)
-		await get_tree().create_timer(parry_cooldown).timeout
-		can_i_parry = true
-
-
-func play_block_animation():
-	# Only interrupt into a block if we're in an interruptible state
-	if state in [STATE.IDLE, STATE.WALK, STATE.RUN]:
-		state = STATE.BLOCK
-		set_anim("block")
-
-		# keep the block pose for a short hold so it's visible and to prevent input spam
-		# tune this to match your 'block' animation length if needed
-		await get_tree().create_timer(0.25).timeout
-
-		# If still in block (and not killed/stunned), return to idle
-		if state == STATE.BLOCK:
-			state = STATE.IDLE
-
-
-func get_stamina() -> float:
-	return current_stamina
-
-func get_max_stamina() -> float:
-	return max_stamina
- 
-#play block animation
+#endregion

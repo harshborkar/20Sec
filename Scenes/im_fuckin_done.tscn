@@ -14100,6 +14100,7 @@ transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, 0, 0, 0)
 script = ExtResource("2_0gwdo")
 thunder_scene = ExtResource("10_pka7u")
 rotation_offset_degrees = -10.0
+metadata/_edit_lock_ = true
 
 [node name="Armature_049" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.20937485, 0, -0.5046054)
