@@ -36,6 +36,11 @@ var GRAVITY: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 @export var dash_charge_camera_fov:float = 120.0
 
+@export var max_stamina: float = 100.0
+@export var current_stamina: float = 100.0
+@export var stamina_depletion_rate: float = 20.0  # Stamina used per second when running
+@export var stamina_regeneration_rate: float = 15.0  # Stamina regained per second when not running
+
 # --- NODES ---
 @onready var dash_audio: AudioStreamPlayer3D = $dash_audio
 @onready var gpu_trail_3d: GPUTrail3D = $visuals/Skeleton3D/GPUTrail3D
@@ -146,6 +151,7 @@ func toggle_targeting() -> void:
 		visuals.transform.basis = Basis()
 
 func _physics_process(delta: float) -> void:
+	handle_stamina(delta)
 	handle_gravity_and_jump()
 	handle_parrying()
 	handle_dash(delta)
@@ -168,12 +174,18 @@ func _physics_process(delta: float) -> void:
 # --------------------------------------------------
 
 func handle_attack():
+	# Add stamina cost for attacking
+	var attack_stamina_cost = 15.0
+	if current_stamina < attack_stamina_cost:
+		return  # Not enough stamina to attack
+	
 	if state == STATE.ATTACK:
 		if can_queue_next_combo:
 			is_attack_queued = true
 			can_queue_next_combo = false 
 	
 	elif can_start_new_attack():
+		current_stamina -= attack_stamina_cost  # Deduct stamina here
 		state = STATE.ATTACK
 		combo_step = 1
 		is_attack_queued = false
@@ -209,6 +221,20 @@ func handle_dash(delta: float) -> void:
 			move_and_slide()
 		return
 
+func handle_stamina(delta: float) -> void:
+	var running = Input.is_action_pressed("Sprint") and state in [STATE.WALK, STATE.RUN]
+	var moving = velocity.length() > 0.1
+	
+	if running and moving and current_stamina > 0:
+		# Deplete stamina when running
+		current_stamina = max(0, current_stamina - stamina_depletion_rate * delta)
+	elif not running and current_stamina < max_stamina:
+		# Regenerate stamina when not running
+		current_stamina = min(max_stamina, current_stamina + stamina_regeneration_rate * delta)
+	
+	# Optional: Prevent running when out of stamina
+	if current_stamina <= 0 and state == STATE.RUN:
+		state = STATE.WALK
 
 # --- START CHARGING ---
 	if Input.is_action_just_pressed("Dash") and can_move() and can_dash():
@@ -345,6 +371,13 @@ func can_dash():
 	return Time.get_ticks_msec() - last_dash_time >= dash_cooldown*1000
 	
 func start_dash() -> void:
+	# Add stamina cost for dashing
+	var dash_stamina_cost = 30.0
+	if current_stamina < dash_stamina_cost:
+		return  # Not enough stamina to dash
+	
+	current_stamina -= dash_stamina_cost
+
 	state = STATE.DASH
 	dash_audio.pitch_scale = randf_range(0.87, 1.17)
 	dash_audio.play()
@@ -711,5 +744,11 @@ func play_block_animation():
 		if state == STATE.BLOCK:
 			state = STATE.IDLE
 
+
+func get_stamina() -> float:
+	return current_stamina
+
+func get_max_stamina() -> float:
+	return max_stamina
  
 #play block animation

@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://dx8jada7b251p"]
+[gd_scene load_steps=12 format=3 uid="uid://dx8jada7b251p"]
 
 [ext_resource type="PackedScene" uid="uid://puwh5sgyogjf" path="res://Scenes/arena.tscn" id="1_fo5ed"]
 [ext_resource type="PackedScene" uid="uid://dkgy4vepowl7l" path="res://Scenes/player_bot.tscn" id="4_fo5ed"]
 [ext_resource type="PackedScene" uid="uid://6egc5vfal1kk" path="res://Scenes/fog.tscn" id="5_fo5ed"]
 [ext_resource type="PackedScene" uid="uid://bqiq7silwnsao" path="res://Scenes/im_fuckin_done.tscn" id="6_5ukr8"]
+[ext_resource type="AudioStream" uid="uid://c13rhjf1enu4v" path="res://Assets/Audio/ambience.mp3" id="6_k7acu"]
 [ext_resource type="Shader" uid="uid://l7h1e0nda07h" path="res://Shaders/pixelate.gdshader" id="6_o06y3"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fo5ed"]
@@ -69,6 +70,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -99.93737, 0)
 [node name="im_fuckin_done" parent="." node_paths=PackedStringArray("player") instance=ExtResource("6_5ukr8")]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, 0, -1.1167889, 3.6783655)
 player = NodePath("../Player")
+ROOT_MOTION_SCALE = 3.0
 parry_push_strength = 0.155
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
@@ -88,5 +90,10 @@ visible = false
 light_energy = 0.2
 shadow_enabled = true
 sky_mode = 1
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_k7acu")
+volume_db = -15.0
+autoplay = true
 
 [editable path="Player"]

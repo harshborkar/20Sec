@@ -1,0 +1,47 @@
+[gd_scene load_steps=6 format=3 uid="uid://bnkjwnipm3ghf"]
+
+[ext_resource type="Script" uid="uid://c2lkfgw88phma" path="res://Assets/StaminaBar/staminabar.gd" id="1_3gfl5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8o31a"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eo12s"]
+bg_color = Color(0.15278336, 0.38861826, 0.33122244, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eq7qr"]
+bg_color = Color(0.14345816, 0.14072731, 0.12980795, 1)
+expand_margin_left = 1.0
+expand_margin_top = 1.0
+expand_margin_right = 1.0
+expand_margin_bottom = 1.0
+shadow_color = Color(0, 0, 0, 0.27450982)
+shadow_offset = Vector2(0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_etnpy"]
+bg_color = Color(1, 1, 1, 1)
+
+[node name="Staminabar" type="ProgressBar"]
+z_index = 1
+offset_right = 240.0
+offset_bottom = 4.0
+theme_override_styles/background = SubResource("StyleBoxEmpty_8o31a")
+theme_override_styles/fill = SubResource("StyleBoxFlat_eo12s")
+value = 60.0
+show_percentage = false
+script = ExtResource("1_3gfl5")
+
+[node name="DepleteBar" type="ProgressBar" parent="."]
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_eq7qr")
+theme_override_styles/fill = SubResource("StyleBoxFlat_etnpy")
+value = 80.0
+show_percentage = false
+
+[node name="Timer" type="Timer" parent="DepleteBar"]
+wait_time = 0.4
+one_shot = true

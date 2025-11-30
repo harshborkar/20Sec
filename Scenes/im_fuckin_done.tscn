@@ -14426,7 +14426,7 @@ shape = SubResource("CapsuleShape3D_pka7u")
 debug_color = Color(0.8352439, 0.38894376, 0, 0.41960785)
 
 [node name="BoneAttachment3D2" type="BoneAttachment3D" parent="Armature_049/Skeleton3D"]
-transform = Transform3D(0.7706833, -0.38103348, 0.510746, -0.19110721, -0.90283763, -0.3851786, 0.6078867, 0.19924329, -0.76861966, -0.28046224, 0.84806275, 1.0100865)
+transform = Transform3D(0.8128466, -0.0800045, -0.5769578, -0.30414966, -0.90305966, -0.30327708, -0.496764, 0.42199892, -0.75838184, 0.21959266, 0.7922506, 0.8228674)
 bone_name = "mixamorig_RightHand"
 bone_idx = 23
 
@@ -14442,7 +14442,7 @@ volume_db = -6.805
 bus = &"sfx"
 
 [node name="BoneAttachment3D3" type="BoneAttachment3D" parent="Armature_049/Skeleton3D"]
-transform = Transform3D(-0.92563665, 0.004207313, 0.37838984, -0.030957878, -0.9974292, -0.06464133, 0.3771448, -0.07154955, 0.92338586, -0.26064974, 0.5787911, 0.80911183)
+transform = Transform3D(0.007970519, -0.20318319, 0.9791079, -0.038488016, -0.9784772, -0.20273772, 0.9992271, -0.036068797, -0.015619278, 0.0040819943, 0.55117786, 0.72943485)
 bone_name = "mixamorig_RightLeg"
 bone_idx = 38
 
@@ -14488,6 +14488,7 @@ offset_right = -46.0
 offset_bottom = -24.0
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(1, 0.63767684)
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 
