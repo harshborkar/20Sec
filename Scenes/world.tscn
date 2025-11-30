@@ -37,8 +37,16 @@ polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1), PackedInt32Arr
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_k7acu"]
 shader = ExtResource("6_o06y3")
-shader_parameter/pixelation = 0.00400000019
-shader_parameter/opacity = 1.0
+shader_parameter/resolution_x = 640
+shader_parameter/resolution_y = 420
+shader_parameter/color_bit_depth = 8
+shader_parameter/dither_strength = 0.025
+shader_parameter/jitter_amount = 0.002
+shader_parameter/jitter_speed = 1.2
+shader_parameter/jitter_frequency = 180.0
+shader_parameter/chromatic_aberration_strength = 0.0010000000475
+shader_parameter/vignette_strength = 0.8
+shader_parameter/vignette_radius = 0.9
 
 [node name="World" type="Node3D"]
 
@@ -70,7 +78,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -99.93737, 0)
 [node name="im_fuckin_done" parent="." node_paths=PackedStringArray("player") instance=ExtResource("6_5ukr8")]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, 0, -1.1167889, 3.6783655)
 player = NodePath("../Player")
-ROOT_MOTION_SCALE = 3.0
 parry_push_strength = 0.155
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]

@@ -14098,6 +14098,7 @@ height = 1.2619019
 [node name="im_fuckin_done" type="CharacterBody3D"]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, 0, 0, 0)
 script = ExtResource("2_0gwdo")
+thunder_scene = ExtResource("10_pka7u")
 rotation_offset_degrees = -10.0
 
 [node name="Armature_049" type="Node3D" parent="."]
@@ -14499,7 +14500,5 @@ shape = SubResource("CapsuleShape3D_skk6r")
 [node name="attack_cooldown" type="Timer" parent="."]
 
 [node name="thunder_particles" parent="." instance=ExtResource("10_pka7u")]
-emitting = false
-lifetime = 1.09
 
 [editable path="Armature_049/Skeleton3D/BoneAttachment3D2/axe"]
