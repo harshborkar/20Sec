@@ -1,6 +1,7 @@
 class_name Boss
 extends CharacterBody3D
-@onready var thunder_particles: GPUParticles3D = $thunder_particles
+
+
 
 @onready var nav_agent: NavigationAgent3D = $NavigationAgent3D
 @onready var animation_tree: AnimationTree = $AnimationTree
@@ -11,6 +12,7 @@ extends CharacterBody3D
 @onready var area_3d: Area3D = $Armature_049/Skeleton3D/BoneAttachment3D2/axe/Area3D
 @onready var audio_stream_player_3d: AudioStreamPlayer3D = $Armature_049/Skeleton3D/BoneAttachment3D2/AudioStreamPlayer3D
 
+@export var thunder_scene: PackedScene
 @export var attack_cooldown:float = 0.2
 @export var player: Player
 @export var health: float = 10.0
@@ -20,6 +22,8 @@ extends CharacterBody3D
 @export var parry_stun_time: float = 1.0
 @export var parry_push_strength: float = 3.0
 @export var rotation_offset_degrees: float = 0.0   # positive = rotate right, negative = rotate left
+@export var thunder_interval: float = 8.0  # Seconds between Thunder attacks
+var next_thunder_time: float = 0.0
 
 var is_stunned: bool = false
 const AXE_MISS = preload("uid://b8ilc7nn7vyct")
@@ -37,6 +41,8 @@ var give_damage:bool = false
 var max_health: float
 var used_aoe_phase: bool = false  # For first AoE in phase 3
 var can_be_parried:bool = false
+
+var stamina:float= 20
 
 # AnimationTree parameters
 # "parameters/conditions/idle"
@@ -56,12 +62,29 @@ func _ready() -> void:
 	attack_cooldown_timer.one_shot = true
 	print("=== BOSS INITIALIZED ===")
 
-
 func _physics_process(delta: float) -> void:
 	if is_stunned:
 		velocity = Vector3.ZERO
 		move_and_slide()
 		return
+
+	# --- 1. NEW LOGIC: CHECK FOR RANGED THUNDER ATTACK ---
+	# Only use Thunder if HP is low (Phase 3)
+	if get_health_percent() <= 40.0 and state != STATE.DEAD:
+		var current_time = Time.get_ticks_msec() / 1000.0
+		
+		# Condition A: It's the very first time entering Phase 3 (guaranteed cast)
+		# Condition B: The cooldown has expired
+		if not used_aoe_phase or current_time >= next_thunder_time:
+			# Mark phase as started
+			used_aoe_phase = true
+			# Reset timer
+			next_thunder_time = current_time + thunder_interval
+			# Trigger the attack immediately, ignoring distance
+			trigger_attack("aoe")
+			return # Stop processing movement for this frame
+
+	# -----------------------------------------------------
 
 	var state_machine = animation_tree.get("parameters/playback")
 	if not player:
@@ -71,8 +94,7 @@ func _physics_process(delta: float) -> void:
 		return
 
 	debug_timer += 1
-	var print_debug: bool = debug_timer % 60 == 0
-
+	
 	# --- NAVIGATION SETUP ---
 	nav_agent.target_position = player.global_position
 	var direction = Vector3.ZERO
@@ -87,18 +109,15 @@ func _physics_process(delta: float) -> void:
 	# --- ROTATION ---
 	if direction != Vector3.ZERO:
 		var target_rot_y = atan2(direction.x, direction.z)
-
-	# Apply custom offset (convert offset degrees → radians)
 		target_rot_y += deg_to_rad(rotation_offset_degrees)
-
 		rotation.y = lerp_angle(rotation.y, target_rot_y, delta * 5.0)
-
 
 	var distance_to_player = global_position.distance_to(player.global_position)
 
 	# --- STATE BEHAVIOR ---
 	match state:
 		STATE.MOVE:
+			give_damage = false
 			handle_movement(direction, delta, distance_to_player)
 		STATE.ATTACK:
 			velocity = Vector3.ZERO
@@ -178,16 +197,13 @@ func select_attack():
 	var hp = get_health_percent()
 	var attack
 
+	# Phase 1
 	if hp >= 70:
 		attack = ["slash_1", "slash_2"].pick_random()
-	elif hp >= 40:
-		attack = ["slash_2", "kick"].pick_random()
+	# Phase 2 & 3 (Melee options)
 	else:
-		if not used_aoe_phase:
-			attack = "aoe"
-			used_aoe_phase = true
-		else:
-			attack = ["slash_1", "slash_2", "kick", "aoe"].pick_random()
+		# We removed "aoe" from here because it is handled in _physics_process now
+		attack = ["slash_1", "slash_2", "kick"].pick_random()
 
 	trigger_attack(attack)
 
@@ -229,10 +245,20 @@ func toggle_give_damage()->void:
 
 
 func call_thunder():
-	thunder_particles.global_position = player.global_position
-	thunder_particles.emitting = true
-func turn_off_thunder():
-	thunder_particles.emitting = false
+	if thunder_scene:
+		# 1. Create a new instance of the thunder
+		var thunder_instance = thunder_scene.instantiate()
+		
+		# 2. Add it to the current scene (The World), NOT the Boss
+		get_tree().current_scene.add_child(thunder_instance)
+		
+		# 3. Set the position to where the player is RIGHT NOW
+		thunder_instance.global_position = player.global_position
+		
+		# 4. Trigger the effect logic (if your thunder script has this function)
+		if thunder_instance.has_method("call_thunder"):
+			thunder_instance.call_thunder()
+
 	
 func toggle_parry():
 	

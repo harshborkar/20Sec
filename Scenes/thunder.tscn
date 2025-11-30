@@ -1,6 +1,93 @@
-[gd_scene load_steps=5 format=3 uid="uid://ri8i0dqdaiyb"]
+[gd_scene load_steps=14 format=3 uid="uid://ri8i0dqdaiyb"]
 
+[ext_resource type="Script" uid="uid://bqpduew8fyywn" path="res://Scenes/thunder.gd" id="1_5xp8j"]
 [ext_resource type="ArrayMesh" uid="uid://ch3kgn2mqshpj" path="res://thunder/thunder_edit.tres" id="1_gorm0"]
+[ext_resource type="Texture2D" uid="uid://g4cqgqopbk5w" path="res://Assets/toppng.com-magical-circle-by-doomed-royalty-free-download-blue-magic-circle-846x846.png" id="2_52jvm"]
+
+[sub_resource type="Animation" id="Animation_5xp8j"]
+resource_name = "Thunder"
+length = 5.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../Sprite3D:scale")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.033333335, 0.8333333, 5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0.6, 0.6, 0.6), Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../Sprite3D:rotation")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(-1.5707964, -1.5707964, -1.5707964), Vector3(-1.5707964, 19.626228, -1.5707964)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:emitting")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.9),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+
+[sub_resource type="Animation" id="Animation_8feml"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../Sprite3D:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../Sprite3D:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-1.5459772, -1.570798, -1.5707946)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:emitting")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_0gs78"]
+_data = {
+&"RESET": SubResource("Animation_8feml"),
+&"Thunder": SubResource("Animation_5xp8j")
+}
 
 [sub_resource type="Gradient" id="Gradient_52jvm"]
 
@@ -18,9 +105,57 @@ gravity = Vector3(0, 0, 0)
 scale_max = 1.1999999
 color_ramp = SubResource("GradientTexture1D_5xp8j")
 
-[node name="thunder_particles" type="GPUParticles3D"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7ds7l"]
+transparency = 1
+albedo_texture = ExtResource("2_52jvm")
+emission_enabled = true
+emission = Color(2.5333345, 0, 0.5897905, 1)
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_e7teg"]
+sky_top_color = Color(0.083880566, 0.10969902, 0.14408863, 1)
+sky_horizon_color = Color(0.18302968, 0.18743867, 0.19626617, 1)
+sky_curve = 0.03379691
+sky_energy_multiplier = 0.7
+sky_cover_modulate = Color(0.78775924, 0.78775924, 0.78775924, 1)
+ground_bottom_color = Color(0.15435806, 0.12848675, 0.09937578, 1)
+ground_horizon_color = Color(0.20421791, 0.20899466, 0.21855909, 1)
+ground_curve = 1.420251
+
+[sub_resource type="Sky" id="Sky_fo5ed"]
+sky_material = SubResource("ProceduralSkyMaterial_e7teg")
+
+[sub_resource type="Environment" id="Environment_vk5vg"]
+background_mode = 2
+sky = SubResource("Sky_fo5ed")
+tonemap_mode = 2
+glow_enabled = true
+volumetric_fog_density = 0.0585
+volumetric_fog_albedo = Color(0.8816295, 0.8799544, 0.8497324, 1)
+volumetric_fog_ambient_inject = 0.1
+volumetric_fog_sky_affect = 0.828
+
+[node name="Thunder Particles" type="Node3D"]
+script = ExtResource("1_5xp8j")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+root_node = NodePath("../thunder_particles")
+libraries = {
+&"": SubResource("AnimationLibrary_0gs78")
+}
+
+[node name="thunder_particles" type="GPUParticles3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.18121338, 0.34049797)
+emitting = false
 amount = 2
 lifetime = 1.53
+one_shot = true
 process_material = SubResource("ParticleProcessMaterial_8feml")
 draw_pass_1 = ExtResource("1_gorm0")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, 0.056, 0.145, 0)
+material_override = SubResource("StandardMaterial3D_7ds7l")
+texture = ExtResource("2_52jvm")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_vk5vg")
