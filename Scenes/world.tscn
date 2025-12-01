@@ -1,7 +1,8 @@
-[gd_scene load_steps=15 format=3 uid="uid://dx8jada7b251p"]
+[gd_scene load_steps=19 format=3 uid="uid://dx8jada7b251p"]
 
 [ext_resource type="PackedScene" uid="uid://puwh5sgyogjf" path="res://Scenes/arena.tscn" id="1_fo5ed"]
 [ext_resource type="Script" uid="uid://bbwj2aq717nyv" path="res://Scripts/world.gd" id="1_k7acu"]
+[ext_resource type="Shader" uid="uid://klmyt3t2gccy" path="res://Shaders/sky7.gdshader" id="2_5v1tr"]
 [ext_resource type="PackedScene" uid="uid://dkgy4vepowl7l" path="res://Scenes/player_bot.tscn" id="4_fo5ed"]
 [ext_resource type="PackedScene" uid="uid://6egc5vfal1kk" path="res://Scenes/fog.tscn" id="5_fo5ed"]
 [ext_resource type="PackedScene" uid="uid://bqiq7silwnsao" path="res://Scenes/im_fuckin_done.tscn" id="6_5ukr8"]
@@ -9,26 +10,47 @@
 [ext_resource type="Shader" uid="uid://l7h1e0nda07h" path="res://Shaders/pixelate.gdshader" id="6_o06y3"]
 [ext_resource type="PackedScene" uid="uid://d3w7b7h0hf4tc" path="res://Scenes/control.tscn" id="7_o06y3"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fo5ed"]
-sky_top_color = Color(0.083880566, 0.10969902, 0.14408863, 1)
-sky_horizon_color = Color(0.18302968, 0.18743867, 0.19626617, 1)
-sky_curve = 0.03379691
-sky_energy_multiplier = 0.7
-sky_cover_modulate = Color(0.78775924, 0.78775924, 0.78775924, 1)
-ground_bottom_color = Color(0.15435806, 0.12848675, 0.09937578, 1)
-ground_horizon_color = Color(0.20421791, 0.20899466, 0.21855909, 1)
-ground_curve = 1.420251
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_5v1tr"]
+noise_type = 0
+frequency = 0.0134
 
-[sub_resource type="Sky" id="Sky_fo5ed"]
-sky_material = SubResource("ProceduralSkyMaterial_fo5ed")
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_0fj1v"]
+noise = SubResource("FastNoiseLite_5v1tr")
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_5v1tr"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0fj1v"]
+shader = ExtResource("2_5v1tr")
+shader_parameter/cloud_shape_sampler = SubResource("NoiseTexture2D_0fj1v")
+shader_parameter/clouds_samples = 16
+shader_parameter/shadow_sample = 4
+shader_parameter/clouds_density = 0.40000000596048
+shader_parameter/clouds_scale = 0.5
+shader_parameter/clouds_smoothness = 0.00999999977648
+shader_parameter/clouds_light_color = Color(0, 0.19377883, 0.49108455, 1)
+shader_parameter/clouds_shadow_intensity = 1.0
+shader_parameter/high_clouds_sampler = SubResource("NoiseTexture2D_5v1tr")
+shader_parameter/high_clouds_density = 1.0
+shader_parameter/top_color = Color(0, 0, 0, 1)
+shader_parameter/bottom_color = Color(0, 0, 0, 1)
+shader_parameter/sun_scatter = Color(0, 0, 0, 1)
+shader_parameter/astro_tint = Color(0, 0, 0, 1)
+shader_parameter/astro_scale = 1.0
+shader_parameter/astro_intensity = 1.0
+shader_parameter/stars_intensity = 3.30000004917396
+shader_parameter/shooting_stars_intensity = 0.0
+shader_parameter/shooting_star_tint = Color(0, 0, 0, 1)
+
+[sub_resource type="Sky" id="Sky_ikia7"]
+sky_material = SubResource("ShaderMaterial_0fj1v")
 
 [sub_resource type="Environment" id="Environment_8j60k"]
 background_mode = 2
-sky = SubResource("Sky_fo5ed")
+sky = SubResource("Sky_ikia7")
 tonemap_mode = 2
 glow_enabled = true
 volumetric_fog_enabled = true
-volumetric_fog_density = 0.0585
+volumetric_fog_density = 0.0105
 volumetric_fog_albedo = Color(0.8816295, 0.8799544, 0.8497324, 1)
 volumetric_fog_ambient_inject = 0.1
 volumetric_fog_sky_affect = 0.828

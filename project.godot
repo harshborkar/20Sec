@@ -27,6 +27,7 @@ enabled=PackedStringArray("res://addons/GPUTrail-main/plugin.cfg")
 
 folder_colors={
 "res://Scenes/": "pink",
+"res://Scripts/": "purple",
 "res://Shaders/": "red",
 "res://sfx/": "green"
 }

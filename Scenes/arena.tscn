@@ -1402,10 +1402,11 @@ draw_pass_1 = SubResource("RibbonTrailMesh_vg2rk")
 [node name="Light" type="OmniLight3D" parent="FIRES/TearModel/Sparks"]
 transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0.062517405, 0)
 light_color = Color(1.8916494, 1.291066, 0.8134939, 1)
-light_energy = 0.24
-light_volumetric_fog_energy = 2.155
+light_energy = 0.06
+light_indirect_energy = 0.34
+light_volumetric_fog_energy = 0.7
 shadow_enabled = true
-omni_range = 27.257
+omni_range = 8.47
 
 [node name="TearModel2" type="MeshInstance3D" parent="FIRES"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.6177773, 0, 0)
@@ -1426,10 +1427,11 @@ draw_pass_1 = SubResource("RibbonTrailMesh_vg2rk")
 [node name="Light" type="OmniLight3D" parent="FIRES/TearModel2/Sparks"]
 transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0.062517405, 0)
 light_color = Color(1.8916494, 1.291066, 0.8134939, 1)
-light_energy = 0.24
-light_volumetric_fog_energy = 2.155
+light_energy = 0.06
+light_indirect_energy = 0.34
+light_volumetric_fog_energy = 0.7
 shadow_enabled = true
-omni_range = 27.257
+omni_range = 8.47
 
 [node name="TearModel3" type="MeshInstance3D" parent="FIRES"]
 material_override = ExtResource("50_tic0b")
@@ -1449,10 +1451,11 @@ draw_pass_1 = SubResource("RibbonTrailMesh_vg2rk")
 [node name="Light" type="OmniLight3D" parent="FIRES/TearModel3/Sparks"]
 transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0.062517405, 0)
 light_color = Color(1.8916494, 1.291066, 0.8134939, 1)
-light_energy = 0.24
-light_volumetric_fog_energy = 2.155
+light_energy = 0.06
+light_indirect_energy = 0.34
+light_volumetric_fog_energy = 0.7
 shadow_enabled = true
-omni_range = 27.257
+omni_range = 8.47
 
 [node name="TearModel4" type="MeshInstance3D" parent="FIRES"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.6177773, 0, 0)
@@ -1473,10 +1476,11 @@ draw_pass_1 = SubResource("RibbonTrailMesh_vg2rk")
 [node name="Light" type="OmniLight3D" parent="FIRES/TearModel4/Sparks"]
 transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0.062517405, 0)
 light_color = Color(1.8916494, 1.291066, 0.8134939, 1)
-light_energy = 0.24
-light_volumetric_fog_energy = 2.155
+light_energy = 0.06
+light_indirect_energy = 0.34
+light_volumetric_fog_energy = 0.7
 shadow_enabled = true
-omni_range = 27.257
+omni_range = 8.47
 
 [node name="TearModel5" type="MeshInstance3D" parent="FIRES"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 11.935743)
@@ -1521,10 +1525,11 @@ draw_pass_1 = SubResource("RibbonTrailMesh_vg2rk")
 [node name="Light" type="OmniLight3D" parent="FIRES/TearModel6/Sparks"]
 transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0.062517405, 0)
 light_color = Color(1.8916494, 1.291066, 0.8134939, 1)
-light_energy = 0.24
-light_volumetric_fog_energy = 2.155
+light_energy = 0.06
+light_indirect_energy = 0.34
+light_volumetric_fog_energy = 0.7
 shadow_enabled = true
-omni_range = 27.257
+omni_range = 8.47
 
 [node name="TearModel7" type="MeshInstance3D" parent="FIRES"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 26.125528)
@@ -1545,10 +1550,11 @@ draw_pass_1 = SubResource("RibbonTrailMesh_vg2rk")
 [node name="Light" type="OmniLight3D" parent="FIRES/TearModel7/Sparks"]
 transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0.062517405, 0)
 light_color = Color(1.8916494, 1.291066, 0.8134939, 1)
-light_energy = 0.24
-light_volumetric_fog_energy = 2.155
+light_energy = 0.06
+light_indirect_energy = 0.34
+light_volumetric_fog_energy = 0.7
 shadow_enabled = true
-omni_range = 27.257
+omni_range = 8.47
 
 [node name="TearModel8" type="MeshInstance3D" parent="FIRES"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.6177773, 0, 26.125528)
@@ -1569,10 +1575,11 @@ draw_pass_1 = SubResource("RibbonTrailMesh_vg2rk")
 [node name="Light" type="OmniLight3D" parent="FIRES/TearModel8/Sparks"]
 transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0.062517405, 0)
 light_color = Color(1.8916494, 1.291066, 0.8134939, 1)
-light_energy = 0.24
-light_volumetric_fog_energy = 2.155
+light_energy = 0.06
+light_indirect_energy = 0.34
+light_volumetric_fog_energy = 0.7
 shadow_enabled = true
-omni_range = 27.257
+omni_range = 8.47
 
 [node name="TearModel9" type="MeshInstance3D" parent="FIRES"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 40.45304)
@@ -1593,10 +1600,11 @@ draw_pass_1 = SubResource("RibbonTrailMesh_vg2rk")
 [node name="Light" type="OmniLight3D" parent="FIRES/TearModel9/Sparks"]
 transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0.062517405, 0)
 light_color = Color(1.8916494, 1.291066, 0.8134939, 1)
-light_energy = 0.24
-light_volumetric_fog_energy = 2.155
+light_energy = 0.06
+light_indirect_energy = 0.34
+light_volumetric_fog_energy = 0.7
 shadow_enabled = true
-omni_range = 27.257
+omni_range = 8.47
 
 [node name="TearModel10" type="MeshInstance3D" parent="FIRES"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.6177773, 0, 40.45304)
@@ -1617,10 +1625,11 @@ draw_pass_1 = SubResource("RibbonTrailMesh_vg2rk")
 [node name="Light" type="OmniLight3D" parent="FIRES/TearModel10/Sparks"]
 transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0.062517405, 0)
 light_color = Color(1.8916494, 1.291066, 0.8134939, 1)
-light_energy = 0.24
-light_volumetric_fog_energy = 2.155
+light_energy = 0.06
+light_indirect_energy = 0.34
+light_volumetric_fog_energy = 0.7
 shadow_enabled = true
-omni_range = 27.257
+omni_range = 8.47
 
 [node name="TearModel11" type="MeshInstance3D" parent="FIRES"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 53.110947)
@@ -1641,10 +1650,11 @@ draw_pass_1 = SubResource("RibbonTrailMesh_vg2rk")
 [node name="Light" type="OmniLight3D" parent="FIRES/TearModel11/Sparks"]
 transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0.062517405, 0)
 light_color = Color(1.8916494, 1.291066, 0.8134939, 1)
-light_energy = 0.24
-light_volumetric_fog_energy = 2.155
+light_energy = 0.06
+light_indirect_energy = 0.34
+light_volumetric_fog_energy = 0.7
 shadow_enabled = true
-omni_range = 27.257
+omni_range = 8.47
 
 [node name="TearModel12" type="MeshInstance3D" parent="FIRES"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.6177773, 0, 53.110947)
@@ -1665,10 +1675,11 @@ draw_pass_1 = SubResource("RibbonTrailMesh_vg2rk")
 [node name="Light" type="OmniLight3D" parent="FIRES/TearModel12/Sparks"]
 transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0.062517405, 0)
 light_color = Color(1.8916494, 1.291066, 0.8134939, 1)
-light_energy = 0.24
-light_volumetric_fog_energy = 2.155
+light_energy = 0.06
+light_indirect_energy = 0.34
+light_volumetric_fog_energy = 0.7
 shadow_enabled = true
-omni_range = 27.257
+omni_range = 8.47
 
 [node name="TearModel13" type="MeshInstance3D" parent="FIRES"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 53.110947)
@@ -1689,10 +1700,11 @@ draw_pass_1 = SubResource("RibbonTrailMesh_vg2rk")
 [node name="Light" type="OmniLight3D" parent="FIRES/TearModel13/Sparks"]
 transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0.062517405, 0)
 light_color = Color(1.8916494, 1.291066, 0.8134939, 1)
-light_energy = 0.24
-light_volumetric_fog_energy = 2.155
+light_energy = 0.06
+light_indirect_energy = 0.34
+light_volumetric_fog_energy = 0.7
 shadow_enabled = true
-omni_range = 27.257
+omni_range = 8.47
 
 [node name="TearModel14" type="MeshInstance3D" parent="FIRES"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.6177773, 0, 53.110947)
@@ -1713,9 +1725,11 @@ draw_pass_1 = SubResource("RibbonTrailMesh_vg2rk")
 [node name="Light" type="OmniLight3D" parent="FIRES/TearModel14/Sparks"]
 transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0.062517405, 0)
 light_color = Color(1, 0.54509807, 0, 1)
-light_energy = 1.965
+light_energy = 0.06
+light_indirect_energy = 0.34
+light_volumetric_fog_energy = 0.7
 shadow_enabled = true
-omni_range = 34.171
+omni_range = 8.47
 omni_attenuation = 1.06
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="FIRES"]
