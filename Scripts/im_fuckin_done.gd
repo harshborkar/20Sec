@@ -249,32 +249,29 @@ func reset_attack_conditions():
 func toggle_give_damage()->void:
 	give_damage = !give_damage
 
-
 func call_thunder():
 	if thunder_scene:
-		# 1. Create a new instance of the thunder
 		var thunder_instance = thunder_scene.instantiate()
-		
-		# 2. Add it to the current scene
 		get_tree().current_scene.add_child(thunder_instance)
 		
-		# 3. Calculate position IN FRONT of the player
-		# Get the direction the player is facing (Forward is usually negative Z)
-		var player_forward_dir = -player.global_transform.basis.z.normalized()
+		# Start with the player's exact position
+		var target_pos = player.global_position
 		
-		# Calculate new position: Player Position + (Direction * Distance)
-		var target_pos = player.global_position + (player_forward_dir * thunder_forward_offset)
+		# Check if moving
+		var flat_velocity = player.velocity
+		flat_velocity.y = 0
 		
-		# OPTIONAL: Keep the Y (height) strictly at player's feet level 
-		# (Use this if the forward offset puts the thunder into the floor/sky on slopes)
-		target_pos.y = player.global_position.y 
+		# If moving, add the offset in the direction of movement
+		if flat_velocity.length() > 0.1:
+			target_pos += flat_velocity.normalized() * thunder_forward_offset
+			
+		# Force Y to be at feet level (handles slopes/jumping)
+		target_pos.y = player.global_position.y
 		
 		thunder_instance.global_position = target_pos
 		
-		# 4. Trigger the effect logic
 		if thunder_instance.has_method("call_thunder"):
 			thunder_instance.call_thunder()
-
 func open_give_damage():
 	give_damage = true
 

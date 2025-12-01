@@ -50,8 +50,8 @@ sky = SubResource("Sky_ikia7")
 tonemap_mode = 2
 glow_enabled = true
 volumetric_fog_enabled = true
-volumetric_fog_density = 0.0105
-volumetric_fog_albedo = Color(0.8816295, 0.8799544, 0.8497324, 1)
+volumetric_fog_density = 0.034
+volumetric_fog_albedo = Color(0.50799656, 0.62228227, 0.7117102, 1)
 volumetric_fog_ambient_inject = 0.1
 volumetric_fog_sky_affect = 0.828
 
@@ -99,7 +99,7 @@ attack_speed_scale = 2.0
 [node name="Sword_Low_Done" parent="Player/visuals/Skeleton3D/BoneAttachment3D" index="0" node_paths=PackedStringArray("boss")]
 boss = NodePath("../../../../../im_fuckin_done")
 
-[node name="MeshInstance3D" parent="." instance=ExtResource("5_fo5ed")]
+[node name="lowerfog" parent="." instance=ExtResource("5_fo5ed")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -99.93737, 0)
 
 [node name="im_fuckin_done" parent="." node_paths=PackedStringArray("player") instance=ExtResource("6_5ukr8")]
