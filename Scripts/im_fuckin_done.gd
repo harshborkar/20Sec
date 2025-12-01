@@ -12,6 +12,7 @@ extends CharacterBody3D
 @onready var area_3d: Area3D = $Armature_049/Skeleton3D/BoneAttachment3D2/axe/Area3D
 @onready var audio_stream_player_3d: AudioStreamPlayer3D = $Armature_049/Skeleton3D/BoneAttachment3D2/AudioStreamPlayer3D
 
+@export var thunder_forward_offset: float = 4.0  # Distance in front of the player
 @export var thunder_scene: PackedScene
 @export var attack_cooldown:float = 0.2
 @export var player: Player
@@ -64,6 +65,7 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	
+	print(give_damage)
 	if !Global.start_boss:
 		return
 		
@@ -74,7 +76,7 @@ func _physics_process(delta: float) -> void:
 
 	# --- 1. NEW LOGIC: CHECK FOR RANGED THUNDER ATTACK ---
 	# Only use Thunder if HP is low (Phase 3)
-	if get_health_percent() <= 40.0 and state != STATE.DEAD:
+	if get_health_percent() <= 50.0 and state != STATE.DEAD:
 		var current_time = Time.get_ticks_msec() / 1000.0
 		
 		# Condition A: It's the very first time entering Phase 3 (guaranteed cast)
@@ -253,16 +255,31 @@ func call_thunder():
 		# 1. Create a new instance of the thunder
 		var thunder_instance = thunder_scene.instantiate()
 		
-		# 2. Add it to the current scene (The World), NOT the Boss
+		# 2. Add it to the current scene
 		get_tree().current_scene.add_child(thunder_instance)
 		
-		# 3. Set the position to where the player is RIGHT NOW
-		thunder_instance.global_position = player.global_position
+		# 3. Calculate position IN FRONT of the player
+		# Get the direction the player is facing (Forward is usually negative Z)
+		var player_forward_dir = -player.global_transform.basis.z.normalized()
 		
-		# 4. Trigger the effect logic (if your thunder script has this function)
+		# Calculate new position: Player Position + (Direction * Distance)
+		var target_pos = player.global_position + (player_forward_dir * thunder_forward_offset)
+		
+		# OPTIONAL: Keep the Y (height) strictly at player's feet level 
+		# (Use this if the forward offset puts the thunder into the floor/sky on slopes)
+		target_pos.y = player.global_position.y 
+		
+		thunder_instance.global_position = target_pos
+		
+		# 4. Trigger the effect logic
 		if thunder_instance.has_method("call_thunder"):
 			thunder_instance.call_thunder()
 
+func open_give_damage():
+	give_damage = true
+
+func close_damage():
+	give_damage=false
 	
 func toggle_parry():
 	

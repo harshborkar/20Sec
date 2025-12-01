@@ -104,7 +104,7 @@ sky_mode = 1
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_k7acu")
-volume_db = -15.0
+volume_db = -25.035
 autoplay = true
 
 [node name="Control" parent="." instance=ExtResource("7_o06y3")]

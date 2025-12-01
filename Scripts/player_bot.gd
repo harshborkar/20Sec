@@ -432,11 +432,7 @@ func give_damage():
 		enemy_target.take_damage(attack_damage)
 
 func _on_area_3d_area_entered(area: Area3D) -> void:
-	print("give damage")
-	print(enemy_target)
-	print(enemy_target.has_method("give_damage"))
-	print( enemy_target.give_damage)
-	if enemy_target and enemy_target.give_damage:
+	if enemy_target and (enemy_target.give_damage or Global.thunder_damage):
 		take_damage(1, Vector3(10, 0, 90), 15)
 
 #endregion
