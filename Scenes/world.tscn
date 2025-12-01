@@ -68,7 +68,7 @@ navigation_mesh = SubResource("NavigationMesh_fo5ed")
 transform = Transform3D(0.425, 0, 0, 0, 0.425, 0, 0, 0, 0.425, 0, 0, 0)
 
 [node name="Player" parent="." node_paths=PackedStringArray("enemy_target") instance=ExtResource("4_fo5ed")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8596983, 1.4795642, 50.331474)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8596983, 1.4795642, 8.008293)
 collision_layer = 65
 dash_cooldown = 1.05
 enemy_target = NodePath("../im_fuckin_done")
@@ -109,14 +109,15 @@ autoplay = true
 
 [node name="Control" parent="." instance=ExtResource("7_o06y3")]
 
-[node name="Area3D" type="Area3D" parent="."]
+[node name="area3d" type="Area3D" parent="."]
+collision_layer = 2
 collision_mask = 64
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="area3d"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7973633, 0)
 shape = SubResource("CylinderShape3D_o06y3")
 
-[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
+[connection signal="body_entered" from="area3d" to="." method="_on_area_3d_body_entered"]
 
 [editable path="Player"]
 [editable path="Control"]

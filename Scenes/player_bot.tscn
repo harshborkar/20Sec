@@ -4635,6 +4635,7 @@ height = 2.006256
 
 [node name="Node3D" type="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.13732052)
+collision_layer = 9
 script = ExtResource("1_2yl3m")
 afterimage_fade_time = 0.165
 afterimage_color = Color(0, 0, 0, 0.435)
@@ -5142,11 +5143,12 @@ playback_default_blend_time = 0.06
 [node name="dash_audio" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource("10_eqpk1")
 
-[node name="Area3D" type="Area3D" parent="."]
+[node name="hurtbox" type="Area3D" parent="."]
 collision_layer = 0
 collision_mask = 2
+monitorable = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="hurtbox"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9975128, 0)
 shape = SubResource("CapsuleShape3D_eqpk1")
 debug_color = Color(0, 0.8181843, 0.4677279, 0.41960785)
@@ -5176,4 +5178,4 @@ bus = &"sfx"
 
 [connection signal="animation_finished" from="visuals/AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
 [connection signal="timeout" from="ComboTimer" to="." method="_on_combo_timer_timeout"]
-[connection signal="area_entered" from="Area3D" to="." method="_on_area_3d_area_entered"]
+[connection signal="area_entered" from="hurtbox" to="." method="_on_area_3d_area_entered"]
