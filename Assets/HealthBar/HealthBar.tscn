@@ -1,11 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://cypuy5wvhvpbh"]
+[gd_scene load_steps=7 format=3 uid="uid://cypuy5wvhvpbh"]
 
 [ext_resource type="Script" uid="uid://c7atleuwaud4l" path="res://Assets/HealthBar/health_bar.gd" id="1_a7ia5"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kt5am"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l3q2j"]
-bg_color = Color(0.5324354, 0.07529933, 0.08439583, 1)
+[ext_resource type="Texture2D" uid="uid://biuhlafo7e0ul" path="res://Assets/HealthBar/healthbar trans.png" id="1_wqtou"]
+[ext_resource type="Texture2D" uid="uid://ganuoabwin35" path="res://Assets/HealthBar/health bar outer.png" id="2_t3xl0"]
+[ext_resource type="Texture2D" uid="uid://dvsbjhodkjolu" path="res://Assets/HealthBar/health bar inner.png" id="3_y2yx8"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wqtou"]
 bg_color = Color(0.18000486, 0.1800049, 0.18000478, 1)
@@ -19,14 +17,18 @@ shadow_offset = Vector2(0, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t3xl0"]
 bg_color = Color(1, 1, 1, 1)
 
-[node name="HealthBar" type="ProgressBar"]
+[node name="HealthBar" type="TextureProgressBar"]
 z_index = 1
-offset_right = 240.0
-offset_bottom = 4.0
-theme_override_styles/background = SubResource("StyleBoxEmpty_kt5am")
-theme_override_styles/fill = SubResource("StyleBoxFlat_l3q2j")
-value = 60.0
-show_percentage = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+value = 100.0
+stretch_margin_left = 970
+texture_under = ExtResource("1_wqtou")
+texture_over = ExtResource("2_t3xl0")
+texture_progress = ExtResource("3_y2yx8")
 script = ExtResource("1_a7ia5")
 
 [node name="DamageBar" type="ProgressBar" parent="."]
@@ -35,12 +37,16 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 31.0
+offset_top = 21.0
+offset_right = -419.0
+offset_bottom = -16.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_wqtou")
 theme_override_styles/fill = SubResource("StyleBoxFlat_t3xl0")
-value = 80.0
 show_percentage = false
+metadata/_edit_lock_ = true
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.4

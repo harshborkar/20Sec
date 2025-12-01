@@ -4,7 +4,7 @@
 # 2. A ProgressBar node named "DamageBar" (the red bar)
 # 3. It is a direct child of the Boss node.
 
-extends ProgressBar
+extends TextureProgressBar
 
 @onready var timer = $Timer
 @onready var damagebar = $DamageBar
