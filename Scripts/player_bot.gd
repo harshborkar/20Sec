@@ -104,6 +104,7 @@ const COMBO_P3_WINDOW: float = 0.3
 #endregion
 
 #region Node References
+@onready var footstep: AudioStreamPlayer3D = $footstep
 
 @onready var visuals: Node3D = $visuals
 @onready var animation_player: AnimationPlayer = $visuals/AnimationPlayer
@@ -640,3 +641,7 @@ func get_stamina() -> float: return current_stamina
 func get_max_stamina() -> float: return max_stamina
 
 #endregion
+
+func play_footstep():
+	footstep.pitch_scale = randf_range(0.8, 1.2)
+	footstep.play()

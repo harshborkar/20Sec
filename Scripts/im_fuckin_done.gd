@@ -63,6 +63,8 @@ func _ready() -> void:
 	print("=== BOSS INITIALIZED ===")
 
 func _physics_process(delta: float) -> void:
+	if !Global.start_boss:
+		return
 	if is_stunned:
 		velocity = Vector3.ZERO
 		move_and_slide()

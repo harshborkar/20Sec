@@ -81,7 +81,7 @@ boss = NodePath("../../../../../im_fuckin_done")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -99.93737, 0)
 
 [node name="im_fuckin_done" parent="." node_paths=PackedStringArray("player") instance=ExtResource("6_5ukr8")]
-transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, 0, -1.1167889, 3.6783655)
+transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, 0, -1.117, -1.267)
 player = NodePath("../Player")
 parry_push_strength = 0.155
 

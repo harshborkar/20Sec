@@ -1,20 +1,21 @@
-[gd_scene load_steps=33 format=4 uid="uid://dkgy4vepowl7l"]
+[gd_scene load_steps=34 format=4 uid="uid://dkgy4vepowl7l"]
 
 [ext_resource type="Script" uid="uid://pittvc6lerro" path="res://Scripts/player_bot.gd" id="1_2yl3m"]
 [ext_resource type="Animation" uid="uid://3qpxopss8uhb" path="res://Assets/player/run.res" id="2_jafn8"]
 [ext_resource type="PackedScene" uid="uid://c4k8kqjqcaap" path="res://Scenes/dashtrail.tscn" id="2_rpfsx"]
 [ext_resource type="PackedScene" uid="uid://cje62awmajpbc" path="res://Scenes/sword.tscn" id="3_xq46a"]
 [ext_resource type="Animation" uid="uid://ch5375sm8unhr" path="res://Assets/player/walk.res" id="3_yrvvx"]
-[ext_resource type="Animation" uid="uid://da0d2jrn6h4d" path="res://Assets/player/dash.res" id="4_yrvvx"]
+[ext_resource type="Animation" uid="uid://dtcowic46fqvh" path="res://Assets/player/dash.res" id="4_yrvvx"]
 [ext_resource type="Animation" uid="uid://bwsxgew6xvhmh" path="res://Assets/player/Great sword animations/GS_slash.res" id="7_yex41"]
 [ext_resource type="Animation" uid="uid://dy3oawbtnvxvc" path="res://Assets/player/Great sword animations/GS_strae.res" id="8_q1r4w"]
 [ext_resource type="Animation" uid="uid://c8ccmv2mllvyk" path="res://Assets/player/Great sword animations/sword_combo.res" id="9_q1r4w"]
 [ext_resource type="Animation" uid="uid://dp0sw7yyapp46" path="res://Assets/player/hurt.res" id="10_8epdt"]
 [ext_resource type="AudioStream" uid="uid://cogx16slh61hb" path="res://Assets/player/SFX/dash_2.wav" id="10_eqpk1"]
-[ext_resource type="Animation" uid="uid://pbtssue3nx56" path="res://Assets/player/Great sword animations/block.res" id="11_3v0ss"]
+[ext_resource type="Animation" uid="uid://cd50rgjvwug80" path="res://Assets/player/Great sword animations/block.res" id="11_3v0ss"]
 [ext_resource type="AudioStream" uid="uid://kpfl5uiv4v8" path="res://sfx/swing-whoosh-weapon-1-189819.mp3" id="12_xln13"]
 [ext_resource type="AudioStream" uid="uid://lin1ckubgd0u" path="res://sfx/mixkit-heavy-echowav.wav" id="14_ltkol"]
 [ext_resource type="PackedScene" uid="uid://bnkjwnipm3ghf" path="res://Assets/StaminaBar/Staminabar.tscn" id="15_dd7wx"]
+[ext_resource type="AudioStream" uid="uid://dr68lv44oxyx6" path="res://sfx/concrete-footsteps-6752.wav" id="16_feuva"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_bki42"]
 
@@ -5165,6 +5166,13 @@ offset_right = 253.0
 offset_bottom = 43.0
 scale = Vector2(2.0182142, -2.2874243)
 player = NodePath("..")
+
+[node name="footstep" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3468112, -1.018062, -0.70927143)
+stream = ExtResource("16_feuva")
+volume_db = -19.811
+unit_size = 8.7
+bus = &"sfx"
 
 [connection signal="animation_finished" from="visuals/AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
 [connection signal="timeout" from="ComboTimer" to="." method="_on_combo_timer_timeout"]
