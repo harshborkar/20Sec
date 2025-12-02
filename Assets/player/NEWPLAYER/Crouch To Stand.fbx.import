@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://ci6qmul8p4ghr"
-path="res://.godot/imported/20secsBase.fbx-4b6bda94633afa9b6e68e916ed821c0a.scn"
+uid="uid://cylls8dmmxrch"
+path="res://.godot/imported/Crouch To Stand.fbx-1c346b720d6f2728efd3c24ed7146374.scn"
 
 [deps]
 
-source_file="res://Assets/20secsBase.fbx"
-dest_files=["res://.godot/imported/20secsBase.fbx-4b6bda94633afa9b6e68e916ed821c0a.scn"]
+source_file="res://Assets/player/NEWPLAYER/Crouch To Stand.fbx"
+dest_files=["res://.godot/imported/Crouch To Stand.fbx-1c346b720d6f2728efd3c24ed7146374.scn"]
 
 [params]
 
