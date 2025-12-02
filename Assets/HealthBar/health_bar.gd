@@ -1,70 +1,60 @@
-# This script controls the main (green) health bar.
-# It assumes it has three children:
-# 1. A Timer node named "Timer"
-# 2. A ProgressBar node named "DamageBar" (the red bar)
-# 3. It is a direct child of the Boss node.
+# This script controls the main (green) health bar (TextureProgressBar).
+# It is now managed by a parent node that supplies the health values.
 
 extends TextureProgressBar
 
 @onready var timer = $Timer
 @onready var damagebar = $DamageBar
-@onready var boss = get_parent()
 
 # Store the tween so we can reuse it
 var damage_tween: Tween
 
+# ----------------------------------------------------------------------
+# NEW INTERFACE FOR PARENT NODE (HealthBarManager)
+# ----------------------------------------------------------------------
 
-func _ready() -> void:
-	# Make sure the health bar is set up when the boss spawns
-	init_health(boss.health)
+# Initialize the health bar's maximum and current values.
+# This should be called once by the parent when the boss spawns.
+func init_health(health: float) -> void:
+	max_value = health
+	value = health
+	damagebar.max_value = health
+	damagebar.value = health
+	visible = true
 
-
-func _process(_delta: float) -> void:
-	# Constantly update the bar's value to match the boss's health
-	_set_health(boss.health)
-
-
-# Sets the health of the green bar and decides what to do
-# with the red (damage) bar.
-func _set_health(new_health: float) -> void:
+# Update the bar's value whenever the boss takes damage or heals.
+# This should be called by the parent node on health change events.
+func update_health(new_health: float) -> void:
 	var prev_health = value
+	
+	# Clamp new health to ensure it stays within 0 and max_value.
+	# We rely on max_value being set by init_health.
 	value = clamp(new_health, 0, max_value)
 
 	if value <= 0:
-		queue_free()  # Optional: Hides the bar when the boss is dead
+		# Hides the bar when the boss is dead (can be handled by parent too)
+		hide()
 	
 	if value < prev_health:
-		# --- FIX (Part 1) ---
-		# Damage was taken. Start the timer for the damage bar to catch up.
-		# We NO LONGER update the damage bar here.
+		# Damage was taken. Start the timer for the damage bar (red) to catch up.
 		timer.start()
 		
 	elif value > prev_health:
-		# --- FIX (Part 2) ---
-		# We are healing.
-		# Snap the damage bar UP immediately to match the new health.
+		# Healing occurred. Snap the damage bar UP immediately.
 		damagebar.value = value
 
-
-# Initialize all values at the start.
-func init_health(_health: float) -> void:
-	max_value = _health
-	value = _health
-	damagebar.max_value = _health
-	damagebar.value = _health
-
+# ----------------------------------------------------------------------
+# DAMAGE ANIMATION LOGIC (Remains the same)
+# ----------------------------------------------------------------------
 
 # This function runs when the Timer finishes.
 func _on_timer_timeout() -> void:
-	# --- ENHANCEMENT ---
-	# Instead of snapping, create a smooth animation.
-	
 	# If a tween is already running, kill it.
-	if damage_tween:
+	if damage_tween and damage_tween.is_valid():
 		damage_tween.kill()
 
 	# Create a new tween to animate the damage bar
-	damage_tween = get_tree().create_tween()
+	damage_tween = create_tween()
 	
 	# Animate the 'damagebar's 'value' property TO the current 'value' (green bar)
 	# over 0.4 seconds, using a smooth curve (ease-out).

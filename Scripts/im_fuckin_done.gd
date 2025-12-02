@@ -1,29 +1,33 @@
 class_name Boss
 extends CharacterBody3D
 
+# --- SIGNAL ADDED HERE ---
+# Emit this signal whenever health changes (takes damage or heals).
+signal health_changed(new_health: float)
+# ------------------------- 
 
 
 @onready var nav_agent: NavigationAgent3D = $NavigationAgent3D
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
-@onready var healthbar = $HealthBar
+# REMOVED: @onready var healthbar = $HealthBar 
 @onready var sprite_3d: Sprite3D = $Armature_049/Skeleton3D/BoneAttachment3D/Sprite3D
 @onready var attack_cooldown_timer: Timer = $attack_cooldown
 @onready var area_3d: Area3D = $Armature_049/Skeleton3D/BoneAttachment3D2/axe/Area3D
 @onready var audio_stream_player_3d: AudioStreamPlayer3D = $Armature_049/Skeleton3D/BoneAttachment3D2/AudioStreamPlayer3D
 
-@export var thunder_forward_offset: float = 4.0  # Distance in front of the player
+@export var thunder_forward_offset: float = 4.0 #Distance in front of the player
 @export var thunder_scene: PackedScene
 @export var attack_cooldown:float = 0.2
 @export var player: Player
-@export var health: float = 10.0
+@export var health: float = 10.0 # Initial health value
 @export var RUN_RANGE: float = 15.0
 @export var MOVE_SPEED: float = 3.0
-@export var ROOT_MOTION_SCALE: float = 50.0  # Adjustable in inspector
+@export var ROOT_MOTION_SCALE: float = 50.0 # Adjustable in inspector
 @export var parry_stun_time: float = 1.0
 @export var parry_push_strength: float = 3.0
-@export var rotation_offset_degrees: float = 0.0   # positive = rotate right, negative = rotate left
-@export var thunder_interval: float = 8.0  # Seconds between Thunder attacks
+@export var rotation_offset_degrees: float = 0.0 # positive = rotate right, negative = rotate left
+@export var thunder_interval: float = 8.0 # Seconds between Thunder attacks
 var next_thunder_time: float = 0.0
 
 var is_stunned: bool = false
@@ -40,7 +44,7 @@ var give_damage:bool = false
 
 # Extra boss state variables
 var max_health: float
-var used_aoe_phase: bool = false  # For first AoE in phase 3
+var used_aoe_phase: bool = false # For first AoE in phase 3
 var can_be_parried:bool = false
 
 var stamina:float= 20
@@ -57,9 +61,11 @@ func _ready() -> void:
 	max_health = health
 	randomize()
 	animation_tree.active = true
-	healthbar.init_health(health)
 	
-	attack_cooldown_timer.wait_time = attack_cooldown  # seconds between attacks (tweak as needed)
+	# Emit initial health signal so the health bar initializes itself
+	emit_signal("health_changed", health)
+	
+	attack_cooldown_timer.wait_time = attack_cooldown #seconds between attacks (tweak as needed)
 	attack_cooldown_timer.one_shot = true
 	print("=== BOSS INITIALIZED ===")
 
@@ -176,6 +182,11 @@ func handle_movement(direction: Vector3, delta: float, distance_to_player: float
 func take_damage(damage_received: float) -> void:
 	health -= damage_received
 	print("Boss HP: ", health)
+	
+	# --- SIGNAL EMISSION ADDED HERE ---
+	emit_signal("health_changed", health)
+	# ----------------------------------
+	
 	if health <= 0 and state != STATE.DEAD:
 		state = STATE.DEAD
 		handle_death()
@@ -296,7 +307,7 @@ func parried():
 
 	# Stun boss
 	is_stunned = true
-	state = STATE.ATTACK   # freeze other attack logic
+	state = STATE.ATTACK # freeze other attack logic
 	velocity = Vector3.ZERO
 
 	# Disable hit detection
@@ -333,4 +344,3 @@ func play_slash_sfx():
 		audio_stream_player_3d.pitch_scale = randf_range(0.85, 1.15)
 		audio_stream_player_3d.stream = AXE_MISS
 		audio_stream_player_3d.play(0.3)
-	

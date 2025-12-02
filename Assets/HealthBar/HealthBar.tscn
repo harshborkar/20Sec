@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://cypuy5wvhvpbh"]
+[gd_scene load_steps=8 format=3 uid="uid://cypuy5wvhvpbh"]
 
 [ext_resource type="Script" uid="uid://c7atleuwaud4l" path="res://Assets/HealthBar/health_bar.gd" id="1_a7ia5"]
+[ext_resource type="Script" uid="uid://bqk1o8tg8wdjg" path="res://Scripts/health_bar.gd" id="1_t3xl0"]
 [ext_resource type="Texture2D" uid="uid://biuhlafo7e0ul" path="res://Assets/HealthBar/healthbar trans.png" id="1_wqtou"]
 [ext_resource type="Texture2D" uid="uid://ganuoabwin35" path="res://Assets/HealthBar/health bar outer.png" id="2_t3xl0"]
 [ext_resource type="Texture2D" uid="uid://dvsbjhodkjolu" path="res://Assets/HealthBar/health bar inner.png" id="3_y2yx8"]
@@ -17,25 +18,36 @@ shadow_offset = Vector2(0, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t3xl0"]
 bg_color = Color(1, 1, 1, 1)
 
-[node name="HealthBar" type="TextureProgressBar"]
+[node name="HealthManager" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_t3xl0")
+
+[node name="HealthBar" type="TextureProgressBar" parent="."]
 z_index = 1
+layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.48100004
-anchor_top = 0.72200006
-anchor_right = 0.54
-anchor_bottom = 0.72200006
-offset_left = -923.5201
-offset_top = -779.7601
-offset_right = 397.19995
-offset_bottom = -715.7601
-value = 100.0
+anchor_left = 0.162
+anchor_top = 0.81900007
+anchor_right = 0.90900004
+anchor_bottom = 0.878
+offset_left = -0.040008545
+offset_top = -0.52008057
+offset_right = -0.2800293
+offset_bottom = -0.24005127
+max_value = 10.0
+value = 10.0
 stretch_margin_left = 970
 texture_under = ExtResource("1_wqtou")
 texture_over = ExtResource("2_t3xl0")
 texture_progress = ExtResource("3_y2yx8")
 script = ExtResource("1_a7ia5")
 
-[node name="DamageBar" type="ProgressBar" parent="."]
+[node name="DamageBar" type="ProgressBar" parent="HealthBar"]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -43,16 +55,18 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 31.0
 offset_top = 21.0
-offset_right = -419.0
-offset_bottom = -16.0
+offset_right = -24.0
+offset_bottom = -18.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_wqtou")
 theme_override_styles/fill = SubResource("StyleBoxFlat_t3xl0")
+max_value = 10.0
+value = 10.0
 show_percentage = false
 
-[node name="Timer" type="Timer" parent="."]
+[node name="Timer" type="Timer" parent="HealthBar"]
 wait_time = 0.4
 one_shot = true
 
-[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="HealthBar/Timer" to="HealthBar" method="_on_timer_timeout"]
