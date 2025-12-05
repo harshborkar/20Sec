@@ -131,6 +131,8 @@ func _ready() -> void:
 	hide_trails()
 
 func _input(event: InputEvent) -> void:
+	if !Global.start_game:
+		return
 	if event is InputEventMouseMotion:
 		handle_mouse_motion(event)
 	elif event.is_action_pressed("Target"):
@@ -140,6 +142,8 @@ func _input(event: InputEvent) -> void:
 		handle_attack_input()
 
 func _physics_process(delta: float) -> void:
+	if !Global.start_game:
+		return
 	handle_stamina(delta)
 	handle_gravity_and_jump(delta)
 	handle_parrying()

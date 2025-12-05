@@ -1747,3 +1747,11 @@ max_distance = 11.65
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_jmh68")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.04834416, 0.99883074, 0, -0.99883074, -0.04834416, 0, 15.789348, 196.5259)
+light_color = Color(1.269618, 1.269618, 1.1514474, 1)
+shadow_enabled = true
+spot_range = 154.384
+spot_angle = 48.85
+spot_angle_attenuation = 0.6155732

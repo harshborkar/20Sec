@@ -9,6 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("1_sjmnu")
 
 [node name="Label" type="Label" parent="."]
@@ -20,7 +21,7 @@ offset_left = -199.0
 offset_right = 197.0
 offset_bottom = 138.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 101
+theme_override_font_sizes/font_size = 76
 text = "swami"
 horizontal_alignment = 1
 
