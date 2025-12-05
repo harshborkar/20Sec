@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://bf5ahjnq5uspu" path="res://Assets/player/NEWPLAYER/New player Textures/T_DKM_Pants_Normal.tga" id="3_5hkmf"]
 
 [resource]
+albedo_color = Color(1.3171228, 1.3171228, 1.3171228, 1)
 albedo_texture = ExtResource("1_r5p6y")
 metallic = 1.0
 roughness_texture = ExtResource("2_agjcb")

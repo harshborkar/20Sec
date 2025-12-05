@@ -14,31 +14,31 @@ func _ready() -> void:
 
 
 func _on_start_pressed() -> void:
-	# 1. Do NOT set mouse to visible here if you are starting the game.
-	# You likely want it captured so the player can look around immediately after the tween.
-	
 	var tween = get_tree().create_tween()
 	tween.set_parallel(true)
 	
-	# --- FIX: Only fade the UI elements (Buttons/Title), NOT the whole menu ---
-	# Replace $VBoxContainer with whatever holds your text/buttons
-	if has_node("VBoxContainer"):
-		tween.tween_property($VBoxContainer, "modulate:a", 0, 1)
-	
-	# 2. Move the camera (The camera stays fully visible now!)
-	tween.tween_property(menu_camera_3d, "global_transform", player_camera_3d.global_transform, 1)
-	tween.tween_property(menu_camera_3d, "fov", player_camera_3d.fov, 1)
 
-	# 3. Wait for animation to finish, THEN switch
+	tween.set_ease(Tween.EASE_OUT)
+	tween.set_trans(Tween.TRANS_QUINT)
+	
+	# I increased the time from 1 to 2.5 for a slower, drift-like effect
+	var duration = 2.5 
+	
+	# 1. Fade out UI
+	if has_node("VBoxContainer"):
+		tween.tween_property($VBoxContainer, "modulate:a", 0, duration)
+	
+	# 2. Move Camera Smoothly
+	tween.tween_property(menu_camera_3d, "global_transform", player_camera_3d.global_transform, duration)
+	tween.tween_property(menu_camera_3d, "fov", player_camera_3d.fov, duration)
+
+	# 3. Finish
 	tween.chain().tween_callback(func():
-		# Switch cameras now that they are in the exact same spot
 		menu_camera_3d.current = false
 		player_camera_3d.current = true
 		
-		# Now we enable game controls
 		Global.start_game = true
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED # Lock mouse for gameplay
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED 
 		
-		queue_free() # Delete the menu
+		queue_free()
 	)
-	

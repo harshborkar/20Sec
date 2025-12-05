@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://b4q614eiu8ssk" path="res://Assets/player/NEWPLAYER/New player Textures/T_DKM_Armor_Normal.tga" id="3_nwnu7"]
 
 [resource]
+albedo_color = Color(1.317, 1.317, 1.317, 1)
 albedo_texture = ExtResource("1_8iqcg")
 metallic = 1.0
 roughness_texture = ExtResource("2_gutff")

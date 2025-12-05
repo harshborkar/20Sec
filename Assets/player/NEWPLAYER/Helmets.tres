@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://bm7l3miwfrjsr" path="res://Assets/player/NEWPLAYER/New player Textures/T_DKM_Helmet_MetallicSmoothness.tga" id="3_mgue4"]
 
 [resource]
+albedo_color = Color(1.317, 1.317, 1.317, 1)
 albedo_texture = ExtResource("1_hq3of")
 metallic = 1.0
 roughness_texture = ExtResource("3_mgue4")

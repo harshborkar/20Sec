@@ -5,8 +5,10 @@
 [ext_resource type="Texture2D" uid="uid://yj11w14ogx6n" path="res://Assets/player/NEWPLAYER/New player Textures/T_DKM_Boots_Normal.tga" id="3_3o8xw"]
 
 [resource]
+albedo_color = Color(1.2253165, 1.3171228, 1.3171228, 1)
 albedo_texture = ExtResource("1_3ip3i")
 metallic = 1.0
 roughness_texture = ExtResource("2_whwdx")
+emission_enabled = true
 normal_enabled = true
 normal_texture = ExtResource("3_3o8xw")
