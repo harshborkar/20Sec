@@ -128,7 +128,7 @@ navigation_mesh = SubResource("NavigationMesh_fo5ed")
 transform = Transform3D(0.425, 0, 0, 0, 0.425, 0, 0, 0, 0.425, 0, 0, 0)
 
 [node name="Player" parent="." node_paths=PackedStringArray("enemy_target") instance=ExtResource("4_fo5ed")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8596983, 1.1215658, 80.04676)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0312171, 1.0638953, 79.7597)
 collision_layer = 65
 speed_walk = 3.5
 speed_run = 6.5

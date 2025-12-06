@@ -55,6 +55,13 @@ extends CharacterBody3D
 @export var afterimage_color: Color = Color(1, 1, 1, 0.5)
 
 #endregion
+const STONE_CHAIN_WALK_1 = preload("uid://bcst01eofdm1r")
+const STONE_CHAIN_WALK_2 = preload("uid://m2urvvkcdg3d")
+const STONE_CHAIN_WALK_3 = preload("uid://cwfkfaw6hqeya")
+const STONE_CHAIN_WALK_4 = preload("uid://dowlksmvvdyvf")
+const STONE_CHAIN_WALK_5 = preload("uid://ctvk7wnj3kc12")
+const CHAIN_CLANK_1 = preload("uid://bghefjpmnhhe8")
+const CHAIN_CLANK_2 = preload("uid://bqpvg0f6cg0o7")
 
 #region State & Variables
 
@@ -649,5 +656,11 @@ func get_max_stamina() -> float: return max_stamina
 #endregion
 
 func play_footstep():
+	var sfx_array:=[STONE_CHAIN_WALK_1,STONE_CHAIN_WALK_3,STONE_CHAIN_WALK_4,STONE_CHAIN_WALK_5, STONE_CHAIN_WALK_2]
+	footstep.stream = sfx_array.pick_random()
 	footstep.pitch_scale = randf_range(0.8, 1.2)
 	footstep.play()
+	var chain_clanks:=[CHAIN_CLANK_1, CHAIN_CLANK_2]
+	$footstep2.stream = chain_clanks.pick_random()
+	$footstep2.pitch_scale = randf_range(0.8, 1.2)
+	$footstep2.play()

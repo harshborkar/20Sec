@@ -34,7 +34,7 @@ var is_stunned: bool = false
 const AXE_MISS = preload("uid://b8ilc7nn7vyct")
 const AXE_FLESH = preload("uid://d3vhnx2bk7ync")
 
-
+var has_fight_started:bool=false
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 var debug_timer: int = 0
 
@@ -71,10 +71,16 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	
-	print(give_damage)
+# 1. If the boss has NOT started yet
 	if !Global.start_boss:
-		return
+		# Keep the boss idle
+		animation_tree.set("parameters/conditions/idle", true)
+		return # Stop here, do not run anything else
 		
+	# 2. If the boss JUST started (Runs only once)
+	if not has_fight_started:
+		$HealthBar.show_health_bar() # Show the bar once
+		has_fight_started = true
 	if is_stunned:
 		velocity = Vector3.ZERO
 		move_and_slide()
@@ -146,7 +152,7 @@ func _physics_process(delta: float) -> void:
 # MOVEMENT
 # ----------------------------
 func handle_movement(direction: Vector3, delta: float, distance_to_player: float) -> void:
-	var should_move = direction.length() > 0.01 and distance_to_player > 2.0
+	var should_move = direction.length() > 0.01 and distance_to_player > 2.0 and state !=STATE.DEAD
 	var root_motion = animation_tree.get_root_motion_position()
 
 	if should_move:
@@ -191,17 +197,25 @@ func take_damage(damage_received: float) -> void:
 		state = STATE.DEAD
 		handle_death()
 
-
 func handle_death():
 	print("Boss defeated!")
+	state = STATE.DEAD # Set state immediately
+	velocity = Vector3.ZERO # Stop momentum
+	
+	# Stop Navigation
+	nav_agent.target_position = global_position 
+	
+	# Animation triggers
 	animation_tree.set("parameters/conditions/idle", false)
 	animation_tree.set("parameters/conditions/move", false)
 	animation_tree.set("parameters/conditions/slash_1", false)
 	animation_tree.set("parameters/conditions/slash_2", false)
 	animation_tree.set("parameters/conditions/kick", false)
 	animation_tree.set("parameters/conditions/aoe", false)
-	queue_free()
-
+	animation_tree.set("parameters/conditions/dead", true)
+	
+	# Optional: Disable collision so the player doesn't get stuck on the corpse
+	# $CollisionShape3D.set_deferred("disabled", true)
 
 # ----------------------------
 # ATTACK LOGIC
@@ -236,15 +250,18 @@ func trigger_attack(attack: String):
 	animation_tree.set("parameters/conditions/slash_1", attack == "slash_1")
 	animation_tree.set("parameters/conditions/slash_2", attack == "slash_2")
 
-
-	
-
 	# After attack animation ends, return to move state
 	await get_tree().create_timer(.6).timeout
+	
+	# --- FIX ADDED HERE ---
+	# If the boss died while waiting for the timer, stop here!
+	if state == STATE.DEAD:
+		return
+	# ----------------------
+
 	reset_attack_conditions()
 	state = STATE.MOVE
 	area_3d.monitoring = false
-
 
 func reset_attack_conditions():
 	can_be_parried = false
@@ -327,12 +344,17 @@ func parried():
 	translate(push * 0.15)
 
 	# Wait and recover
+	# Wait and recover
 	await get_tree().create_timer(parry_stun_time).timeout
+	
+	# --- FIX ADDED HERE ---
+	if state == STATE.DEAD:
+		return
+	# ----------------------
 
-	# End stun — only if not dead (defensive)
+	# End stun
 	is_stunned = false
-	if state != STATE.DEAD:
-		state = STATE.MOVE
+	state = STATE.MOVE
 	reset_attack_conditions()
 
 func play_slash_sfx():

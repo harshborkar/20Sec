@@ -31,6 +31,10 @@ func _ready() -> void:
 	# This ensures the health bar initializes immediately with the correct max health.
 	
 
+func show_health_bar():
+	var tween:Tween=get_tree().create_tween()
+	tween.tween_property(self, "modulate:a", 1, 1).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
+
 # This function is called every time the Boss emits the 'health_changed' signal.
 func _on_boss_health_changed(new_health: float) -> void:
 	# 2. Pass the updated health value directly to the bar component.

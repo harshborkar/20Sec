@@ -730,32 +730,6 @@ height = 1.8410187
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.13732052)
 collision_layer = 9
 script = ExtResource("1_2yl3m")
-speed_walk = null
-speed_run = null
-jump_velocity = null
-gravity_multiplier = null
-dash_min_speed = null
-dash_max_speed = null
-dash_duration = null
-dash_cooldown = null
-dash_max_charge_time = null
-dash_stamina_cost = null
-attack_damage = null
-attack_speed_scale = null
-attack_cooldown = null
-parry_cooldown = null
-stamina_cost_p1 = null
-stamina_cost_combo = null
-max_stamina = null
-stamina_depletion_rate = null
-stamina_regeneration_rate = null
-mouse_sensitivity = null
-targeting_speed = null
-vertical_nudge_limit = null
-horizontal_nudge_limit = null
-dash_charge_fov = null
-afterimage_count = null
-afterimage_spacing = null
 afterimage_fade_time = 0.165
 afterimage_color = Color(0, 0, 0, 0.435)
 
@@ -1295,6 +1269,17 @@ skin = SubResource("Skin_rb2ub")
 mesh = SubResource("ArrayMesh_etpip")
 skin = SubResource("Skin_nculd")
 
+[node name="BoneAttachment3D2" type="BoneAttachment3D" parent="visuals/Skeleton3D"]
+transform = Transform3D(0.99140024, 0.11241178, 0.06700013, -0.0076198764, 0.56070065, -0.82798356, -0.13064212, 0.82035255, 0.55673534, 0.005180658, 0.8870972, 0.080251455)
+bone_name = "mixamorig_Spine"
+bone_idx = 1
+
+[node name="SpotLight3D" type="SpotLight3D" parent="visuals/Skeleton3D/BoneAttachment3D2"]
+transform = Transform3D(0.9680437, 0.24145961, 0.06774297, 0.17445943, -0.84244573, 0.5097543, 0.18015486, -0.48164603, -0.85764897, 0.010566592, 1.4722059, -2.6263976)
+light_energy = 3.5
+spot_range = 3.5778563
+spot_angle = 15.62245
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="visuals"]
 libraries = {
 &"": ExtResource("4_q1r4w")
@@ -1337,8 +1322,16 @@ player = NodePath("..")
 [node name="footstep" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3468112, -1.018062, -0.70927143)
 stream = ExtResource("16_feuva")
-volume_db = -16.466
+volume_db = -18.791
 unit_size = 8.7
+max_polyphony = 5
+bus = &"sfx"
+
+[node name="footstep2" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3468112, -1.018062, -0.70927143)
+volume_db = -14.84
+unit_size = 8.7
+max_polyphony = 955
 bus = &"sfx"
 
 [connection signal="animation_finished" from="visuals/AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
