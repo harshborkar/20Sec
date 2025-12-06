@@ -3,7 +3,7 @@ extends Control
 const MAIN_MENU = preload("uid://ckvo4tho45fhx")
 @onready var menu_camera_3d: Camera3D = $SubViewportContainer/SubViewport/Camera3D
 @export var player_camera_3d: Camera3D 
-
+@export var plyer_animation_player:AnimationPlayer
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -29,6 +29,7 @@ func _on_start_pressed() -> void:
 		tween.tween_property($VBoxContainer, "modulate:a", 0, duration)
 	
 	# 2. Move Camera Smoothly
+	plyer_animation_player.playback_default_blend_time = 1
 	tween.tween_property(menu_camera_3d, "global_transform", player_camera_3d.global_transform, duration)
 	tween.tween_property(menu_camera_3d, "fov", player_camera_3d.fov, duration)
 
@@ -38,7 +39,9 @@ func _on_start_pressed() -> void:
 		player_camera_3d.current = true
 		
 		Global.start_game = true
+		Global.animblend()
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED 
+		
 		
 		queue_free()
 	)

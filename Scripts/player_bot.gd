@@ -120,6 +120,7 @@ const COMBO_P3_WINDOW: float = 0.3
 #region Built-in Methods
 
 func _ready() -> void:
+	Global.game_started.connect(animblend)
 	if camera_node:
 		base_camera_fov = camera_node.fov
 		original_cam_pos = camera_node.position
@@ -129,7 +130,8 @@ func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	current_stamina = max_stamina
 	hide_trails()
-
+func animblend():
+		animation_player.playback_default_blend_time = .06
 func _input(event: InputEvent) -> void:
 	if !Global.start_game:
 		return

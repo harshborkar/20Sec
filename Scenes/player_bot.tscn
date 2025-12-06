@@ -16,7 +16,7 @@
 [ext_resource type="AudioStream" uid="uid://dr68lv44oxyx6" path="res://sfx/concrete-footsteps-6752.wav" id="16_feuva"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_bki42"]
-height = 1.9609375
+height = 1.7677002
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_c12k0"]
 resource_name = "Mesh_012"
@@ -724,17 +724,43 @@ bind/4/bone = -1
 bind/4/pose = Transform3D(-0.031010173, 0.9337846, -0.051848862, 0.87079424, 0.009907589, -0.3423783, -0.34111497, -0.05959677, -0.86930573, 0.062511176, 0.46373966, 1.324809)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_eqpk1"]
-height = 2.006256
+height = 1.8410187
 
 [node name="Node3D" type="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.13732052)
 collision_layer = 9
 script = ExtResource("1_2yl3m")
+speed_walk = null
+speed_run = null
+jump_velocity = null
+gravity_multiplier = null
+dash_min_speed = null
+dash_max_speed = null
+dash_duration = null
+dash_cooldown = null
+dash_max_charge_time = null
+dash_stamina_cost = null
+attack_damage = null
+attack_speed_scale = null
+attack_cooldown = null
+parry_cooldown = null
+stamina_cost_p1 = null
+stamina_cost_combo = null
+max_stamina = null
+stamina_depletion_rate = null
+stamina_regeneration_rate = null
+mouse_sensitivity = null
+targeting_speed = null
+vertical_nudge_limit = null
+horizontal_nudge_limit = null
+dash_charge_fov = null
+afterimage_count = null
+afterimage_spacing = null
 afterimage_fade_time = 0.165
 afterimage_color = Color(0, 0, 0, 0.435)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0195313, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0427856, 0)
 shape = SubResource("CapsuleShape3D_bki42")
 
 [node name="Camera Mount" type="Node3D" parent="."]
@@ -1205,12 +1231,12 @@ bones/64/rotation = Quaternion(-8.054715e-20, 0.011608068, -8.858102e-27, 0.9999
 bones/64/scale = Vector3(1, 1, 1)
 
 [node name="BoneAttachment3D" type="BoneAttachment3D" parent="visuals/Skeleton3D"]
-transform = Transform3D(0.38710627, -0.29495567, -0.87358445, 0.89487666, -0.10807261, 0.43303072, -0.22213541, -0.94937956, 0.22211353, 0.3323554, 0.96885633, -0.1803542)
+transform = Transform3D(0.4693133, -0.006796956, 0.8830057, -0.8827229, -0.030057818, 0.46893182, 0.023354022, -0.999525, -0.020106524, -0.32589892, 0.9472581, -0.0973496)
 bone_name = "mixamorig_RightHand"
-bone_idx = 10
+bone_idx = 34
 
 [node name="Sword_Low_Done" parent="visuals/Skeleton3D/BoneAttachment3D" node_paths=PackedStringArray("player") instance=ExtResource("3_xq46a")]
-transform = Transform3D(-0.02296295, 0.2486173, 0.051838122, 0.24382529, 0.007022135, 0.07433021, 0.07104212, 0.056259975, -0.23835456, -0.65905106, 0.10043179, -0.10486519)
+transform = Transform3D(0.02296319, -0.24861729, -0.051838066, -0.2438252, -0.0070223073, -0.074330516, 0.0710424, 0.056259993, -0.23835452, 0.50212383, 0.082208455, -0.0695492)
 player = NodePath("../../../..")
 
 [node name="SKM_DKM_Armor" type="MeshInstance3D" parent="visuals/Skeleton3D"]
@@ -1287,7 +1313,7 @@ collision_mask = 2
 monitorable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="hurtbox"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9975128, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0801315, 0)
 shape = SubResource("CapsuleShape3D_eqpk1")
 debug_color = Color(0, 0.8181843, 0.4677279, 0.41960785)
 

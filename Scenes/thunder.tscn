@@ -175,6 +175,7 @@ transparency = 1
 albedo_texture = ExtResource("2_52jvm")
 emission_enabled = true
 emission = Color(2.5333345, 0, 0.5897905, 1)
+emission_energy_multiplier = 2.45
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_e7teg"]
 sky_top_color = Color(0.083880566, 0.10969902, 0.14408863, 1)
@@ -222,7 +223,7 @@ process_material = SubResource("ParticleProcessMaterial_8feml")
 draw_pass_1 = ExtResource("1_gorm0")
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
-transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, 0.056, 0.145, 0)
+transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, 0.056, 0.23835564, 0)
 material_override = SubResource("StandardMaterial3D_7ds7l")
 texture = ExtResource("2_52jvm")
 

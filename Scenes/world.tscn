@@ -130,9 +130,33 @@ transform = Transform3D(0.425, 0, 0, 0, 0.425, 0, 0, 0, 0.425, 0, 0, 0)
 [node name="Player" parent="." node_paths=PackedStringArray("enemy_target") instance=ExtResource("4_fo5ed")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8596983, 1.1215658, 80.04676)
 collision_layer = 65
+speed_walk = 3.5
+speed_run = 6.5
+jump_velocity = 4.5
+gravity_multiplier = 1.0
+dash_min_speed = 10.0
+dash_max_speed = 25.0
+dash_duration = 0.3
 dash_cooldown = 1.05
+dash_max_charge_time = 1.5
+dash_stamina_cost = 30.0
 enemy_target = NodePath("../im_fuckin_done")
+attack_damage = 1.0
 attack_speed_scale = 2.0
+attack_cooldown = 0.4
+parry_cooldown = 0.5
+stamina_cost_p1 = 15.0
+stamina_cost_combo = 10.0
+max_stamina = 100.0
+stamina_depletion_rate = 20.0
+stamina_regeneration_rate = 15.0
+mouse_sensitivity = Vector2(0.5, 0.5)
+targeting_speed = 5.0
+vertical_nudge_limit = 20.0
+horizontal_nudge_limit = 45.0
+dash_charge_fov = 120.0
+afterimage_count = 5
+afterimage_spacing = 0.05
 
 [node name="Camera3D" parent="Player/Camera Mount" index="0"]
 current = false
@@ -174,7 +198,7 @@ autoplay = true
 [node name="Control" parent="." instance=ExtResource("7_o06y3")]
 visible = false
 
-[node name="Main Menu" type="Control" parent="." node_paths=PackedStringArray("player_camera_3d")]
+[node name="Main Menu" type="Control" parent="." node_paths=PackedStringArray("player_camera_3d", "plyer_animation_player")]
 z_index = -4096
 layout_mode = 3
 anchors_preset = 15
@@ -185,6 +209,7 @@ grow_vertical = 2
 mouse_filter = 1
 script = ExtResource("11_ikia7")
 player_camera_3d = NodePath("../Player/Camera Mount/Camera3D")
+plyer_animation_player = NodePath("../Player/visuals/AnimationPlayer")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="Main Menu"]
 layout_mode = 0
