@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://dx8jada7b251p"]
+[gd_scene load_steps=28 format=3 uid="uid://dx8jada7b251p"]
 
 [ext_resource type="PackedScene" uid="uid://puwh5sgyogjf" path="res://Scenes/arena.tscn" id="1_fo5ed"]
 [ext_resource type="Script" uid="uid://bbwj2aq717nyv" path="res://Scripts/world.gd" id="1_k7acu"]
@@ -9,7 +9,12 @@
 [ext_resource type="AudioStream" uid="uid://c13rhjf1enu4v" path="res://Assets/Audio/ambience.mp3" id="6_k7acu"]
 [ext_resource type="Shader" uid="uid://l7h1e0nda07h" path="res://Shaders/pixelate.gdshader" id="6_o06y3"]
 [ext_resource type="PackedScene" uid="uid://d3w7b7h0hf4tc" path="res://Scenes/control.tscn" id="7_o06y3"]
+[ext_resource type="FontFile" uid="uid://dejmgeei24fwe" path="res://Assets/fonts/BLKCHCRY.TTF" id="11_7yui6"]
 [ext_resource type="Script" uid="uid://bbov76i6frouo" path="res://Scripts/main_menu.gd" id="11_ikia7"]
+[ext_resource type="StyleBox" uid="uid://bc41fjmegvnwf" path="res://BUTONS/BUTTON_NORMAL.tres" id="12_c5t2i"]
+[ext_resource type="Texture2D" uid="uid://hb3badphkivm" path="res://Assets/fonts/panel-transparent-center-030.png" id="13_e0ngr"]
+[ext_resource type="AudioStream" uid="uid://xyfp0pdsdms2" path="res://sfx/cursor_style_5.wav" id="14_e0ngr"]
+[ext_resource type="AudioStream" uid="uid://ncns0tgphj7h" path="res://sfx/back_style_5_echo_001.wav" id="15_kn0ld"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_5v1tr"]
 noise_type = 0
@@ -73,42 +78,19 @@ shader_parameter/chromatic_aberration_strength = 0.0010000000475
 shader_parameter/vignette_strength = 0.8
 shader_parameter/vignette_radius = 0.9
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0fj1v"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.00013033328, 0.00013033328, 0.00013033328, 0)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-corner_detail = 5
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c5t2i"]
+bg_color = Color(0.004019165, 0.004019165, 0.004019165, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ikia7"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0, 0, 0, 0)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-corner_detail = 5
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kn0ld"]
+texture = ExtResource("13_e0ngr")
+texture_margin_left = 14.0
+texture_margin_top = 16.0
+texture_margin_right = 14.0
+texture_margin_bottom = 16.0
+region_rect = Rect2(0, 0, 96, 96)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7yui6"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e0ngr"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
-skew = Vector2(8.02, 0)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-corner_detail = 5
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_o06y3"]
 height = 5.5947266
@@ -130,33 +112,9 @@ transform = Transform3D(0.425, 0, 0, 0, 0.425, 0, 0, 0, 0.425, 0, 0, 0)
 [node name="Player" parent="." node_paths=PackedStringArray("enemy_target") instance=ExtResource("4_fo5ed")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0312171, 1.0638953, 79.7597)
 collision_layer = 65
-speed_walk = 3.5
-speed_run = 6.5
-jump_velocity = 4.5
-gravity_multiplier = 1.0
-dash_min_speed = 10.0
-dash_max_speed = 25.0
-dash_duration = 0.3
 dash_cooldown = 1.05
-dash_max_charge_time = 1.5
-dash_stamina_cost = 30.0
 enemy_target = NodePath("../im_fuckin_done")
-attack_damage = 1.0
 attack_speed_scale = 2.0
-attack_cooldown = 0.4
-parry_cooldown = 0.5
-stamina_cost_p1 = 15.0
-stamina_cost_combo = 10.0
-max_stamina = 100.0
-stamina_depletion_rate = 20.0
-stamina_regeneration_rate = 15.0
-mouse_sensitivity = Vector2(0.5, 0.5)
-targeting_speed = 5.0
-vertical_nudge_limit = 20.0
-horizontal_nudge_limit = 45.0
-dash_charge_fov = 120.0
-afterimage_count = 5
-afterimage_spacing = 0.05
 
 [node name="Camera3D" parent="Player/Camera Mount" index="0"]
 current = false
@@ -191,6 +149,7 @@ shadow_enabled = true
 sky_mode = 1
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
 stream = ExtResource("6_k7acu")
 volume_db = -25.035
 autoplay = true
@@ -243,22 +202,34 @@ grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="Start" type="Button" parent="Main Menu/VBoxContainer"]
+texture_filter = 1
 layout_mode = 2
-theme_override_font_sizes/font_size = 50
-theme_override_styles/normal = SubResource("StyleBoxFlat_0fj1v")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_ikia7")
-theme_override_styles/hover = SubResource("StyleBoxFlat_7yui6")
-text = "START"
+theme_override_fonts/font = ExtResource("11_7yui6")
+theme_override_font_sizes/font_size = 65
+theme_override_styles/normal = SubResource("StyleBoxFlat_c5t2i")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_kn0ld")
+theme_override_styles/hover = ExtResource("12_c5t2i")
+text = "Start"
 
 [node name="Exit" type="Button" parent="Main Menu/VBoxContainer"]
+texture_filter = 1
 layout_mode = 2
-theme_override_font_sizes/font_size = 50
-text = "EXIT"
+theme_override_fonts/font = ExtResource("11_7yui6")
+theme_override_font_sizes/font_size = 65
+theme_override_styles/normal = SubResource("StyleBoxFlat_e0ngr")
+theme_override_styles/hover = ExtResource("12_c5t2i")
+text = "Exit	"
 
 [node name="Idk" type="Button" parent="Main Menu/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 50
 text = "idk"
+
+[node name="hover" type="AudioStreamPlayer2D" parent="Main Menu/VBoxContainer"]
+stream = ExtResource("14_e0ngr")
+
+[node name="confirm" type="AudioStreamPlayer2D" parent="Main Menu/VBoxContainer"]
+stream = ExtResource("15_kn0ld")
 
 [node name="area3d" type="Area3D" parent="."]
 collision_layer = 2
@@ -268,7 +239,10 @@ collision_mask = 64
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7973633, 0)
 shape = SubResource("CylinderShape3D_o06y3")
 
+[connection signal="mouse_entered" from="Main Menu/VBoxContainer/Start" to="Main Menu" method="_on_start_mouse_entered"]
 [connection signal="pressed" from="Main Menu/VBoxContainer/Start" to="Main Menu" method="_on_start_pressed"]
+[connection signal="mouse_entered" from="Main Menu/VBoxContainer/Exit" to="Main Menu" method="_on_exit_mouse_entered"]
+[connection signal="pressed" from="Main Menu/VBoxContainer/Exit" to="Main Menu" method="_on_exit_pressed"]
 [connection signal="body_entered" from="area3d" to="." method="_on_area_3d_body_entered"]
 
 [editable path="Player"]

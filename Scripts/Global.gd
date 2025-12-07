@@ -4,6 +4,9 @@ var start_boss:bool=false
 var thunder_damage:bool= false
 var start_game:bool=false
 
+@onready var audio_stream_player: AudioStreamPlayer = %AudioStreamPlayer
+
+
 signal game_started
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -20,3 +23,6 @@ func frame_freeze(timescale:float, duration:float):
 func animblend():
 	await get_tree().create_timer(1).timeout
 	game_started.emit()
+
+
+	

@@ -1,4 +1,7 @@
 extends Control
+@onready var v_box_container: VBoxContainer = $VBoxContainer
+@onready var exit: Button = $VBoxContainer/Exit
+@onready var start: Button = $VBoxContainer/Start
 
 const MAIN_MENU = preload("uid://ckvo4tho45fhx")
 @onready var menu_camera_3d: Camera3D = $SubViewportContainer/SubViewport/Camera3D
@@ -14,6 +17,7 @@ func _ready() -> void:
 
 
 func _on_start_pressed() -> void:
+	$VBoxContainer/confirm.play()
 	var tween = get_tree().create_tween()
 	tween.set_parallel(true)
 	
@@ -45,3 +49,16 @@ func _on_start_pressed() -> void:
 		
 		queue_free()
 	)
+
+
+func _on_exit_pressed() -> void:
+	$VBoxContainer/confirm.play()
+	get_tree().quit()
+
+
+func _on_start_mouse_entered() -> void:
+	$VBoxContainer/hover.play()
+
+
+func _on_exit_mouse_entered() -> void:
+	$VBoxContainer/hover.play()
