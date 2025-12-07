@@ -4,6 +4,9 @@ extends Node3D
 @onready var audio_stream_player: AudioStreamPlayer = %AudioStreamPlayer
 @onready var _20_sec_timer: Timer = $Control/Timer
 @onready var timer_text: Control = $Control
+@onready var timer: Timer = $Control/Timer
+
+@onready var end_screen: Control = $"Main Menu/EndScreen"
 
 var first_time: bool = true
 
@@ -36,3 +39,12 @@ func switch_to_boss_theme():
 	
 	# 3. CRITICAL MISSING STEP: Fade IN to normal volume
 	tween.tween_property(audio_stream_player, "volume_db", 0.0, 1.0).set_trans(Tween.TRANS_SINE)
+
+
+func _on_timer_timeout() -> void:
+	get_tree().paused= true
+	end_screen.animate_text()
+
+
+func end_game():
+	end_screen.animate_text()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://dx8jada7b251p"]
+[gd_scene load_steps=29 format=3 uid="uid://dx8jada7b251p"]
 
 [ext_resource type="PackedScene" uid="uid://puwh5sgyogjf" path="res://Scenes/arena.tscn" id="1_fo5ed"]
 [ext_resource type="Script" uid="uid://bbwj2aq717nyv" path="res://Scripts/world.gd" id="1_k7acu"]
@@ -15,6 +15,7 @@
 [ext_resource type="Texture2D" uid="uid://hb3badphkivm" path="res://Assets/fonts/panel-transparent-center-030.png" id="13_e0ngr"]
 [ext_resource type="AudioStream" uid="uid://xyfp0pdsdms2" path="res://sfx/cursor_style_5.wav" id="14_e0ngr"]
 [ext_resource type="AudioStream" uid="uid://ncns0tgphj7h" path="res://sfx/back_style_5_echo_001.wav" id="15_kn0ld"]
+[ext_resource type="Script" uid="uid://doiqcqam5ah6b" path="res://Scripts/end_screen.gd" id="16_hgpy0"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_5v1tr"]
 noise_type = 0
@@ -231,6 +232,62 @@ stream = ExtResource("14_e0ngr")
 [node name="confirm" type="AudioStreamPlayer2D" parent="Main Menu/VBoxContainer"]
 stream = ExtResource("15_kn0ld")
 
+[node name="EndScreen" type="Control" parent="Main Menu"]
+process_mode = 3
+z_index = 1555
+texture_filter = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("16_hgpy0")
+
+[node name="Label" type="Label" parent="Main Menu/EndScreen"]
+z_index = 270
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("11_7yui6")
+theme_override_font_sizes/font_size = 63
+text = "Womp Womp"
+
+[node name="Button" type="Button" parent="Main Menu/EndScreen"]
+z_index = 270
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.655
+offset_top = 27.540009
+offset_right = 32.345703
+offset_bottom = 58.54001
+grow_horizontal = 2
+grow_vertical = 2
+text = "Restart"
+
+[node name="Panel" type="Panel" parent="Main Menu/EndScreen"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
 [node name="area3d" type="Area3D" parent="."]
 collision_layer = 2
 collision_mask = 64
@@ -239,10 +296,12 @@ collision_mask = 64
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7973633, 0)
 shape = SubResource("CylinderShape3D_o06y3")
 
+[connection signal="timeout" from="Control/Timer" to="." method="_on_timer_timeout"]
 [connection signal="mouse_entered" from="Main Menu/VBoxContainer/Start" to="Main Menu" method="_on_start_mouse_entered"]
 [connection signal="pressed" from="Main Menu/VBoxContainer/Start" to="Main Menu" method="_on_start_pressed"]
 [connection signal="mouse_entered" from="Main Menu/VBoxContainer/Exit" to="Main Menu" method="_on_exit_mouse_entered"]
 [connection signal="pressed" from="Main Menu/VBoxContainer/Exit" to="Main Menu" method="_on_exit_pressed"]
+[connection signal="pressed" from="Main Menu/EndScreen/Button" to="Main Menu/EndScreen" method="_on_button_pressed"]
 [connection signal="body_entered" from="area3d" to="." method="_on_area_3d_body_entered"]
 
 [editable path="Player"]

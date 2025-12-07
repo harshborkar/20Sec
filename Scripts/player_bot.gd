@@ -395,7 +395,7 @@ func handle_parrying():
 		if is_instance_valid(enemy_target) and global_position.distance_to(enemy_target.global_position) <= 3.0:
 			if enemy_target.can_be_parried:
 				enemy_target.parried()
-				Global.frame_freeze(0, 0.05)
+				Global.frame_freeze(0, 0.2)
 				start_camera_shake()
 				parry_audio.play()
 				enemy_target.give_damage = false
@@ -435,6 +435,7 @@ func take_damage(damage: float, knockback_dir: Vector3 = Vector3.ZERO, knockback
 
 	start_camera_shake(0.1, 0.25)
 	set_anim("hurt")
+	get_parent_node_3d().end_game()
 	
 	await get_tree().create_timer(0.5).timeout
 	if state == STATE.HURT:
