@@ -1,4 +1,4 @@
-[gd_scene load_steps=116 format=4 uid="uid://bqiq7silwnsao"]
+[gd_scene load_steps=120 format=4 uid="uid://bqiq7silwnsao"]
 
 [ext_resource type="Script" uid="uid://cyjayap5lwp7i" path="res://Scripts/im_fuckin_done.gd" id="2_0gwdo"]
 [ext_resource type="Texture2D" uid="uid://bb7flle4yhydh" path="res://Assets/boss2/textures/texture_pbr_20250901.png" id="2_dg6q3"]
@@ -9,7 +9,11 @@
 [ext_resource type="PackedScene" uid="uid://cypuy5wvhvpbh" path="res://Assets/HealthBar/HealthBar.tscn" id="7_0gwdo"]
 [ext_resource type="Texture2D" uid="uid://bj7cyuxuxfxrp" path="res://Assets/Sprite-0001.png" id="7_skk6r"]
 [ext_resource type="PackedScene" uid="uid://djhcs4sfm42uv" path="res://Scenes/axe.tscn" id="8_upuhp"]
+[ext_resource type="AudioStream" uid="uid://cs3mh2h20kyus" path="res://sfx/BOSS_SPELL_SFX.wav" id="10_e0n7u"]
 [ext_resource type="PackedScene" uid="uid://ri8i0dqdaiyb" path="res://Scenes/thunder.tscn" id="10_pka7u"]
+[ext_resource type="AudioStream" uid="uid://croyn6c22hi7w" path="res://sfx/BOSS_ATTACK_2.wav" id="10_prwfl"]
+[ext_resource type="AudioStream" uid="uid://c3ympj0evcyex" path="res://sfx/BOSS_ATTACK_1.wav" id="11_jw752"]
+[ext_resource type="AudioStream" uid="uid://btqufrk7s3p36" path="res://sfx/BOSS_DEATH_2.wav" id="13_we8ih"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e0n7u"]
 albedo_texture = ExtResource("2_dg6q3")
@@ -1238,6 +1242,21 @@ tracks/36/keys = {
 "method": &"toggle_give_damage"
 }]
 }
+tracks/37/type = "audio"
+tracks/37/imported = false
+tracks/37/enabled = true
+tracks/37/path = NodePath("attack1_audio")
+tracks/37/interp = 1
+tracks/37/loop_wrap = true
+tracks/37/keys = {
+"clips": [{
+"end_offset": 0.13,
+"start_offset": 0.2,
+"stream": ExtResource("10_prwfl")
+}],
+"times": PackedFloat32Array(0.2)
+}
+tracks/37/use_blend = true
 
 [sub_resource type="Animation" id="Animation_up12y"]
 resource_name = "SLASH_ATTACK_2"
@@ -1517,6 +1536,21 @@ tracks/36/keys = {
 "method": &"toggle_give_damage"
 }]
 }
+tracks/37/type = "audio"
+tracks/37/imported = false
+tracks/37/enabled = true
+tracks/37/path = NodePath("attack2_audio")
+tracks/37/interp = 1
+tracks/37/loop_wrap = true
+tracks/37/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("11_jw752")
+}],
+"times": PackedFloat32Array(0.033333335)
+}
+tracks/37/use_blend = true
 
 [sub_resource type="Animation" id="Animation_qol27"]
 resource_name = "SLASH_ATTACK_COMBO"
@@ -12796,7 +12830,7 @@ tracks/35/keys = PackedFloat32Array(0, 1, 0.2908826, 0.029801125, 0.0198721, 0.9
 
 [sub_resource type="Animation" id="Animation_bbla8"]
 resource_name = "spell cast"
-length = 1.1666666
+length = 1.7347
 tracks/0/type = "position_3d"
 tracks/0/imported = true
 tracks/0/enabled = true
@@ -13056,13 +13090,28 @@ tracks/36/path = NodePath(".")
 tracks/36/interp = 1
 tracks/36/loop_wrap = true
 tracks/36/keys = {
-"times": PackedFloat32Array(0.46666667),
+"times": PackedFloat32Array(1.4666667),
 "transitions": PackedFloat32Array(1),
 "values": [{
 "args": [],
 "method": &"call_thunder"
 }]
 }
+tracks/37/type = "audio"
+tracks/37/imported = false
+tracks/37/enabled = true
+tracks/37/path = NodePath("aoe_audio")
+tracks/37/interp = 1
+tracks/37/loop_wrap = true
+tracks/37/keys = {
+"clips": [{
+"end_offset": 0.1705,
+"start_offset": 0.167,
+"stream": ExtResource("10_e0n7u")
+}],
+"times": PackedFloat32Array(0.03333333)
+}
+tracks/37/use_blend = true
 
 [sub_resource type="Animation" id="Animation_ipmea"]
 resource_name = "swamibigboi"
@@ -13322,7 +13371,7 @@ tracks/35/keys = PackedFloat32Array(0, 1, 0.24863572, 0.004765143, -0.0012230024
 
 [sub_resource type="Animation" id="Animation_n2g0u"]
 resource_name = "two handed sword death"
-length = 2.4333334
+length = 3.4803
 tracks/0/type = "position_3d"
 tracks/0/imported = true
 tracks/0/enabled = true
@@ -13575,6 +13624,21 @@ tracks/35/path = NodePath("Armature_049/Skeleton3D:mixamorig_RightToeBase")
 tracks/35/interp = 1
 tracks/35/loop_wrap = true
 tracks/35/keys = PackedFloat32Array(0, 1, 0.25824067, 0.0058696796, 0.010078711, 0.9660103, 0.033333335, 1, 0.25824067, 0.0058696796, 0.010078711, 0.9660103, 0.06666667, 1, 0.25899893, 0.007874558, 0.008664099, 0.96580666, 0.1, 1, 0.26066557, 0.010659205, 0.0074911457, 0.96534127, 0.13333334, 1, 0.28495854, 0.030824015, 0.010153987, 0.95799035, 0.16666667, 1, 0.260406, 0.02664054, 0.00679624, 0.96510774, 0.2, 1, 0.2688202, 0.047657378, 0.008428613, 0.9619737, 0.23333333, 1, 0.26708767, 0.044863056, 0.0060792416, 0.96260816, 0.26666668, 1, 0.26077196, 0.03135435, 0.0020510096, 0.96488893, 0.3, 1, 0.25341544, 0.015377098, -0.0018038645, 0.96723366, 0.33333334, 1, 0.24871974, 0.005308528, -0.0041368734, 0.9685521, 0.36666667, 1, 0.25055534, 0.009405494, -0.003191743, 0.9680513, 0.4, 1, 0.25840974, 0.008884199, -0.0025982177, 0.96599114, 0.43333334, 1, 0.25356075, 0.0069477097, -0.0025717472, 0.9672911, 0.5, 1, 0.25286674, 0.0064983913, -0.0016157625, 0.967478, 0.56666666, 1, 0.2599187, 0.009004766, -4.5355977e-05, 0.96558857, 0.7, 1, 0.27828872, 0.035101227, 0.004783798, 0.95984393, 0.76666665, 1, 0.29152668, 0.048024323, 0.0070162853, 0.95533067, 0.8, 1, 0.2575706, 0.024926085, 0.0025493035, 0.9659346, 0.8666667, 1, 0.25822178, 0.026408168, 0.0027845686, 0.96572065, 0.93333334, 1, 0.2588722, 0.027890185, 0.003019813, 0.9655041, 0.96666664, 1, 0.25886205, 0.027874695, 0.0030302035, 0.9655073, 1.0333333, 1, 0.37028146, 0.08888214, 0.014853953, 0.92453825, 1.0666667, 1, 0.3729067, 0.07816108, 0.0151042715, 0.92444754, 1.2, 1, 0.25459874, 0.0019792544, -0.0015435969, 0.9670435, 1.2333333, 1, 0.24863575, 0.0047689443, -0.001247644, 0.96858454, 1.3666667, 1, 0.24863537, 0.004764428, -0.0012210293, 0.9685847, 1.4666667, 1, 0.25605634, -0.017138746, -0.060089514, 0.9646402, 1.5333333, 1, 0.2614734, -0.012467288, -0.052211333, 0.96371686, 1.5666667, 1, 0.26001245, -0.0081853205, -0.04053275, 0.9647195, 1.6, 1, 0.25691012, -0.0036023797, -0.027073136, 0.9660493, 1.7333333, 1, 0.24863519, 0.004764621, -0.0012217475, 0.9685848, 2.3333333, 1, 0.24863692, 0.0047776913, -0.0012959574, 0.9685841, 2.4, 1, 0.2500624, 0.009319665, -0.00031814634, 0.9681848, 2.4333334, 1, 0.25160465, 0.011404618, 0.00016063334, 0.967763)
+tracks/36/type = "audio"
+tracks/36/imported = false
+tracks/36/enabled = true
+tracks/36/path = NodePath("boss_death")
+tracks/36/interp = 1
+tracks/36/loop_wrap = true
+tracks/36/keys = {
+"clips": [{
+"end_offset": 0.36,
+"start_offset": 0.0,
+"stream": ExtResource("13_we8ih")
+}],
+"times": PackedFloat32Array(0.03333333)
+}
+tracks/36/use_blend = true
 
 [sub_resource type="Animation" id="Animation_7048x"]
 resource_name = "two handed sword death (2)"
@@ -14149,7 +14213,7 @@ bones/1/name = "mixamorig_Hips"
 bones/1/parent = 0
 bones/1/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.001030941, 0.7501729, 0.06827915)
 bones/1/enabled = true
-bones/1/position = Vector3(0.001030941, 0.6622492, 0.06827914)
+bones/1/position = Vector3(0.001030941, 0.110963166, 0.068279155)
 bones/1/rotation = Quaternion(0.06488873, 0.44324172, -0.09248074, 0.88925457)
 bones/1/scale = Vector3(1, 1, 1)
 bones/2/name = "mixamorig_Spine"
@@ -14460,7 +14524,7 @@ shape = SubResource("CapsuleShape3D_pka7u")
 debug_color = Color(0.8352439, 0.38894376, 0, 0.41960785)
 
 [node name="BoneAttachment3D2" type="BoneAttachment3D" parent="Armature_049/Skeleton3D"]
-transform = Transform3D(0.46608996, -0.46620145, 0.75194174, -0.21131162, -0.8839661, -0.41707525, 0.8591323, 0.03550046, -0.51052135, -0.4406306, 0.8099638, 0.9343702)
+transform = Transform3D(0.9480909, 0.31647715, -0.031092167, -0.19682246, 0.5072005, -0.83905244, -0.24977098, 0.8016174, 0.5431617, -0.0019464344, 0.46020058, 0.2785883)
 bone_name = "mixamorig_RightHand"
 bone_idx = 23
 
@@ -14476,7 +14540,7 @@ volume_db = -6.805
 bus = &"sfx"
 
 [node name="BoneAttachment3D3" type="BoneAttachment3D" parent="Armature_049/Skeleton3D"]
-transform = Transform3D(-0.9998717, -0.010489851, -0.012095597, 0.0112507045, -0.9978493, -0.06459199, -0.01139221, -0.0647206, 0.99783784, -0.35586774, 0.536944, 0.75670207)
+transform = Transform3D(-0.2857826, 0.4088109, 0.86671877, 0.95519197, 0.048803434, 0.29193467, 0.07704657, 0.91131437, -0.40444016, -0.0009753555, 0.34515256, 0.5949007)
 bone_name = "mixamorig_RightLeg"
 bone_idx = 38
 
@@ -14490,7 +14554,7 @@ shape = SubResource("CapsuleShape3D_e0n7u")
 debug_color = Color(0.9506852, 2.9841065e-06, 0.56979465, 0.41960785)
 
 [node name="BoneAttachment3D4" type="BoneAttachment3D" parent="Armature_049/Skeleton3D"]
-transform = Transform3D(0.7832289, 0.012594571, -0.6216059, -0.062035277, 0.9963886, -0.057976823, 0.6186309, 0.08397062, 0.78118163, -0.17582567, 0.66224927, 0.5605345)
+transform = Transform3D(0.7618793, -0.3913566, 0.5161201, -0.5761569, -0.04540178, 0.8160771, -0.2959444, -0.9191184, -0.2600735, -0.17582567, 0.11096323, 0.56053454)
 bone_name = "mixamorig_Hips"
 bone_idx = 1
 
@@ -14541,6 +14605,16 @@ transform = Transform3D(0.99997485, 0, -0.007120883, 0, 1, 0, 0.007120883, 0, 0.
 shape = SubResource("CapsuleShape3D_skk6r")
 
 [node name="attack_cooldown" type="Timer" parent="."]
+
+[node name="attack1_audio" type="AudioStreamPlayer3D" parent="."]
+
+[node name="attack2_audio" type="AudioStreamPlayer3D" parent="."]
+
+[node name="aoe_audio" type="AudioStreamPlayer3D" parent="."]
+
+[node name="boss_laugh" type="AudioStreamPlayer3D" parent="."]
+
+[node name="boss_death" type="AudioStreamPlayer3D" parent="."]
 
 [connection signal="area_entered" from="Armature_049/Skeleton3D/BoneAttachment3D2/axe/Area3D" to="." method="_on_area_3d_area_entered"]
 [connection signal="body_entered" from="Armature_049/Skeleton3D/BoneAttachment3D2/axe/Area3D" to="." method="_on_area_3d_body_entered"]
