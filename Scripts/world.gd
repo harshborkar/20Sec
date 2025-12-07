@@ -22,6 +22,8 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 		_20_sec_timer.start()
 		Global.start_boss = true
 
+func _ready() -> void:
+	Engine.max_fps = 60
 func switch_to_boss_theme():
 	const BOSS_BATTLE_MUSIC = preload("uid://cj54uiski7a45")
 	
