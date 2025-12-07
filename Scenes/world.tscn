@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://dx8jada7b251p"]
+[gd_scene load_steps=30 format=3 uid="uid://dx8jada7b251p"]
 
 [ext_resource type="PackedScene" uid="uid://puwh5sgyogjf" path="res://Scenes/arena.tscn" id="1_fo5ed"]
 [ext_resource type="Script" uid="uid://bbwj2aq717nyv" path="res://Scripts/world.gd" id="1_k7acu"]
@@ -89,6 +89,8 @@ texture_margin_top = 16.0
 texture_margin_right = 14.0
 texture_margin_bottom = 16.0
 region_rect = Rect2(0, 0, 96, 96)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hgpy0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e0ngr"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -212,6 +214,15 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_c5t2i")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_kn0ld")
 theme_override_styles/hover = ExtResource("12_c5t2i")
 text = "Start"
+alignment = 2
+
+[node name="Idk" type="Button" parent="Main Menu/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("11_7yui6")
+theme_override_font_sizes/font_size = 65
+theme_override_styles/normal = SubResource("StyleBoxTexture_hgpy0")
+text = "Difficulty"
+alignment = 2
 
 [node name="Exit" type="Button" parent="Main Menu/VBoxContainer"]
 texture_filter = 1
@@ -221,11 +232,7 @@ theme_override_font_sizes/font_size = 65
 theme_override_styles/normal = SubResource("StyleBoxFlat_e0ngr")
 theme_override_styles/hover = ExtResource("12_c5t2i")
 text = "Exit	"
-
-[node name="Idk" type="Button" parent="Main Menu/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 50
-text = "idk"
+alignment = 2
 
 [node name="hover" type="AudioStreamPlayer2D" parent="Main Menu/VBoxContainer"]
 stream = ExtResource("14_e0ngr")
