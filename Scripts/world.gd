@@ -47,4 +47,6 @@ func _on_timer_timeout() -> void:
 
 
 func end_game():
+	get_tree().paused= true
+	
 	end_screen.animate_text()
