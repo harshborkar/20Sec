@@ -4,7 +4,6 @@ var start_boss:bool=false
 var thunder_damage:bool= false
 var start_game:bool=false
 
-@onready var audio_stream_player: AudioStreamPlayer = %AudioStreamPlayer
 
 
 signal game_started
