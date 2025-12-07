@@ -159,6 +159,7 @@ autoplay = true
 visible = false
 
 [node name="Main Menu" type="Control" parent="." node_paths=PackedStringArray("player_camera_3d", "plyer_animation_player")]
+process_mode = 3
 z_index = -4096
 layout_mode = 3
 anchors_preset = 15
@@ -232,12 +233,20 @@ stream = ExtResource("14_e0ngr")
 [node name="confirm" type="AudioStreamPlayer2D" parent="Main Menu/VBoxContainer"]
 stream = ExtResource("15_kn0ld")
 
-[node name="EndScreen" type="Control" parent="Main Menu"]
+[node name="area3d" type="Area3D" parent="."]
+collision_layer = 2
+collision_mask = 64
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="area3d"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7973633, 0)
+shape = SubResource("CylinderShape3D_o06y3")
+
+[node name="EndScreen" type="Control" parent="."]
 process_mode = 3
 visible = false
 z_index = 1555
 texture_filter = 2
-layout_mode = 1
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -246,7 +255,7 @@ grow_vertical = 2
 mouse_filter = 1
 script = ExtResource("16_hgpy0")
 
-[node name="Label" type="Label" parent="Main Menu/EndScreen"]
+[node name="Label" type="Label" parent="EndScreen"]
 z_index = 270
 layout_mode = 1
 anchors_preset = 8
@@ -264,7 +273,7 @@ theme_override_fonts/font = ExtResource("11_7yui6")
 theme_override_font_sizes/font_size = 63
 text = "Womp Womp"
 
-[node name="Button" type="Button" parent="Main Menu/EndScreen"]
+[node name="Button" type="Button" parent="EndScreen"]
 z_index = 270
 layout_mode = 1
 anchors_preset = 8
@@ -280,7 +289,7 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "Restart"
 
-[node name="Panel" type="Panel" parent="Main Menu/EndScreen"]
+[node name="Panel" type="Panel" parent="EndScreen"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -289,21 +298,13 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="area3d" type="Area3D" parent="."]
-collision_layer = 2
-collision_mask = 64
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="area3d"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7973633, 0)
-shape = SubResource("CylinderShape3D_o06y3")
-
 [connection signal="timeout" from="Control/Timer" to="." method="_on_timer_timeout"]
 [connection signal="mouse_entered" from="Main Menu/VBoxContainer/Start" to="Main Menu" method="_on_start_mouse_entered"]
 [connection signal="pressed" from="Main Menu/VBoxContainer/Start" to="Main Menu" method="_on_start_pressed"]
 [connection signal="mouse_entered" from="Main Menu/VBoxContainer/Exit" to="Main Menu" method="_on_exit_mouse_entered"]
 [connection signal="pressed" from="Main Menu/VBoxContainer/Exit" to="Main Menu" method="_on_exit_pressed"]
-[connection signal="pressed" from="Main Menu/EndScreen/Button" to="Main Menu/EndScreen" method="_on_button_pressed"]
 [connection signal="body_entered" from="area3d" to="." method="_on_area_3d_body_entered"]
+[connection signal="pressed" from="EndScreen/Button" to="EndScreen" method="_on_button_pressed"]
 
 [editable path="Player"]
 [editable path="Control"]

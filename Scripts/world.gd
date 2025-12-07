@@ -6,7 +6,7 @@ extends Node3D
 @onready var timer_text: Control = $Control
 @onready var timer: Timer = $Control/Timer
 
-@onready var end_screen: Control = $"Main Menu/EndScreen"
+@onready var end_screen: Control = $"EndScreen"
 
 var first_time: bool = true
 
