@@ -2,11 +2,14 @@ extends Control
 @onready var v_box_container: VBoxContainer = $VBoxContainer
 @onready var exit: Button = $VBoxContainer/Exit
 @onready var start: Button = $VBoxContainer/Start
+@onready var option: OptionButton = $VBoxContainer/Option
 
 const MAIN_MENU = preload("uid://ckvo4tho45fhx")
 @onready var menu_camera_3d: Camera3D = $SubViewportContainer/SubViewport/Camera3D
 @export var player_camera_3d: Camera3D 
 @export var plyer_animation_player:AnimationPlayer
+
+@export var boss:Boss
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -17,6 +20,7 @@ func _ready() -> void:
 
 
 func _on_start_pressed() -> void:
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	$VBoxContainer/confirm.play()
 	var tween = get_tree().create_tween()
 	tween.set_parallel(true)
@@ -62,3 +66,13 @@ func _on_start_mouse_entered() -> void:
 
 func _on_exit_mouse_entered() -> void:
 	$VBoxContainer/hover.play()
+
+
+func _on_option_item_selected(index: int) -> void:
+	match index:
+		0:
+			boss.health = 5
+		1:
+			boss.health = 7
+		2:
+			boss.health = 10

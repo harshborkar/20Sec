@@ -1878,6 +1878,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -99.93737, 0)
 [node name="im_fuckin_done" parent="." node_paths=PackedStringArray("player") instance=ExtResource("6_5ukr8")]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, 0, -1.117, -1.267)
 player = NodePath("../Player")
+health = 7.0
 ROOT_MOTION_SCALE = 5.0
 parry_push_strength = 0.155
 
@@ -1908,7 +1909,7 @@ autoplay = true
 [node name="Control" parent="." instance=ExtResource("7_o06y3")]
 visible = false
 
-[node name="Main Menu" type="Control" parent="." node_paths=PackedStringArray("player_camera_3d", "plyer_animation_player")]
+[node name="Main Menu" type="Control" parent="." node_paths=PackedStringArray("player_camera_3d", "plyer_animation_player", "boss")]
 process_mode = 3
 z_index = -4096
 layout_mode = 3
@@ -1921,6 +1922,7 @@ mouse_filter = 1
 script = ExtResource("11_ikia7")
 player_camera_3d = NodePath("../Player/Camera Mount/Camera3D")
 plyer_animation_player = NodePath("../Player/visuals/AnimationPlayer")
+boss = NodePath("../im_fuckin_done")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="Main Menu"]
 layout_mode = 0
@@ -1963,7 +1965,7 @@ theme_override_styles/hover = ExtResource("12_c5t2i")
 text = "Start"
 alignment = 2
 
-[node name="Idk" type="OptionButton" parent="Main Menu/VBoxContainer"]
+[node name="Option" type="OptionButton" parent="Main Menu/VBoxContainer"]
 texture_filter = 1
 layout_mode = 2
 theme_override_fonts/font = ExtResource("11_7yui6")
@@ -2065,6 +2067,7 @@ mouse_filter = 2
 [connection signal="timeout" from="Control/Timer" to="." method="_on_timer_timeout"]
 [connection signal="mouse_entered" from="Main Menu/VBoxContainer/Start" to="Main Menu" method="_on_start_mouse_entered"]
 [connection signal="pressed" from="Main Menu/VBoxContainer/Start" to="Main Menu" method="_on_start_pressed"]
+[connection signal="item_selected" from="Main Menu/VBoxContainer/Option" to="Main Menu" method="_on_option_item_selected"]
 [connection signal="mouse_entered" from="Main Menu/VBoxContainer/Exit" to="Main Menu" method="_on_exit_mouse_entered"]
 [connection signal="pressed" from="Main Menu/VBoxContainer/Exit" to="Main Menu" method="_on_exit_pressed"]
 [connection signal="body_entered" from="area3d" to="." method="_on_area_3d_body_entered"]

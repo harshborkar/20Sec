@@ -16,9 +16,9 @@ var damage_tween: Tween
 # Initialize the health bar's maximum and current values.
 # This should be called once by the parent when the boss spawns.
 func init_health(health: float) -> void:
-	max_value = health
+
 	value = health
-	damagebar.max_value = health
+	
 	damagebar.value = health
 	visible = true
 

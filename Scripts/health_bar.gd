@@ -13,8 +13,12 @@ const BOSS_PATH = "../im_fuckin_done"  #name of te root characer body of boss
 @export var boss:Boss
 
 @onready var health_bar: TextureProgressBar = $HealthBar
+@onready var damage_bar: ProgressBar = $HealthBar/DamageBar
 
 func _ready() -> void:
+	health_bar.max_value = boss.health
+	damage_bar.max_value = boss.health
+	
 	# Ensure the boss and health bar are valid
 	if not is_instance_valid(boss):
 		push_error("HealthBarManager failed to find Boss node at path: ", BOSS_PATH)
