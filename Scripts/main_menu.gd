@@ -4,7 +4,7 @@ extends Control
 @onready var start: Button = $VBoxContainer/Start
 @onready var option: OptionButton = $VBoxContainer/Option
 
-const MAIN_MENU = preload("uid://ckvo4tho45fhx")
+
 @onready var menu_camera_3d: Camera3D = $SubViewportContainer/SubViewport/Camera3D
 @export var player_camera_3d: Camera3D 
 @export var plyer_animation_player:AnimationPlayer

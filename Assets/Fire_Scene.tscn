@@ -1,11 +1,13 @@
-[gd_scene load_steps=95 format=3 uid="uid://bm21gvuh6vevo"]
+[gd_scene load_steps=95 format=3 uid="uid://dg8fxmlo0xg16"]
 
-[ext_resource type="Shader" uid="uid://cxrj0y5ei5ox8" path="res://Assets/Fire_Drop_Shader.gdshader" id="2_ear7p"]
+[ext_resource type="Shader" uid="uid://cgpfc6eba27ip" path="res://Assets/Fire_Drop_Shader.gdshader" id="2_ear7p"]
 [ext_resource type="ArrayMesh" uid="uid://bcn15xk1ooi4i" path="res://Assets/Tear_Model.tres" id="3_3oo2k"]
-[ext_resource type="Texture2D" uid="uid://b0ap2iqf1aybb" path="res://Assets/Map models/20secsBase_Stone_Base_Color.png" id="3_hvyvb"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_3gfui"]
+load_path = "res://.godot/imported/20secsBase_Stone_Base_Color.png-da3909d4701f257f1ec6379874f4a7df.s3tc.ctex"
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u6740"]
-albedo_texture = ExtResource("3_hvyvb")
+albedo_texture = SubResource("CompressedTexture2D_3gfui")
 metallic = 0.8
 uv1_triplanar = true
 

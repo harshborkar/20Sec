@@ -3,7 +3,7 @@ extends Control
 # Called when the node enters the scene tree for the first time.
 @onready var label: Label = $Label
 @onready var button: Button = $Button
-
+@export var boss:Boss
 func _ready() -> void:
 	# Keep them invisible initially
 	label.modulate.a = 0
@@ -14,6 +14,11 @@ func _ready() -> void:
 
 
 func animate_text():
+	if boss.health<=0:
+		label.text = "You Win"
+	else:
+		label.text = "Womp Womp"
+	
 	self.visible = true
 	var tween: Tween = get_tree().create_tween()
 	tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)

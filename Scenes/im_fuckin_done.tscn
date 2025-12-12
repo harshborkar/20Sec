@@ -1226,20 +1226,23 @@ tracks/36/path = NodePath(".")
 tracks/36/interp = 1
 tracks/36/loop_wrap = true
 tracks/36/keys = {
-"times": PackedFloat32Array(0.6333333, 0.9, 1, 1.0333333),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
+"times": PackedFloat32Array(0.6333333, 0.6666667, 0.9, 0.925, 0.93333334),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "values": [{
 "args": [],
 "method": &"toggle_parry"
 }, {
 "args": [],
+"method": &"toggle_give_damage"
+}, {
+"args": [],
 "method": &"toggle_parry"
 }, {
 "args": [],
-"method": &"play_slash_sfx"
+"method": &"toggle_give_damage"
 }, {
 "args": [],
-"method": &"toggle_give_damage"
+"method": &"play_slash_sfx"
 }]
 }
 tracks/37/type = "audio"
@@ -14192,7 +14195,7 @@ radius = 0.23583984
 height = 1.2619019
 
 [node name="im_fuckin_done" type="CharacterBody3D"]
-transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, 0, 0, 0)
+transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, -0.11705208, 0, 0)
 collision_layer = 5
 script = ExtResource("2_0gwdo")
 thunder_scene = ExtResource("10_pka7u")
@@ -14213,7 +14216,7 @@ bones/1/name = "mixamorig_Hips"
 bones/1/parent = 0
 bones/1/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.001030941, 0.7501729, 0.06827915)
 bones/1/enabled = true
-bones/1/position = Vector3(0.001030941, 0.110963166, 0.068279155)
+bones/1/position = Vector3(0.001030941, 0.69074404, 0.06827914)
 bones/1/rotation = Quaternion(0.06488873, 0.44324172, -0.09248074, 0.88925457)
 bones/1/scale = Vector3(1, 1, 1)
 bones/2/name = "mixamorig_Spine"
@@ -14524,7 +14527,7 @@ shape = SubResource("CapsuleShape3D_pka7u")
 debug_color = Color(0.8352439, 0.38894376, 0, 0.41960785)
 
 [node name="BoneAttachment3D2" type="BoneAttachment3D" parent="Armature_049/Skeleton3D"]
-transform = Transform3D(0.9480909, 0.31647715, -0.031092167, -0.19682246, 0.5072005, -0.83905244, -0.24977098, 0.8016174, 0.5431617, -0.0019464344, 0.46020058, 0.2785883)
+transform = Transform3D(0.8128466, -0.0800045, -0.5769578, -0.30414966, -0.90305966, -0.30327708, -0.496764, 0.42199892, -0.75838184, 0.21959266, 0.7714915, 0.8228674)
 bone_name = "mixamorig_RightHand"
 bone_idx = 23
 
@@ -14540,7 +14543,7 @@ volume_db = -6.805
 bus = &"sfx"
 
 [node name="BoneAttachment3D3" type="BoneAttachment3D" parent="Armature_049/Skeleton3D"]
-transform = Transform3D(-0.2857826, 0.4088109, 0.86671877, 0.95519197, 0.048803434, 0.29193467, 0.07704657, 0.91131437, -0.40444016, -0.0009753555, 0.34515256, 0.5949007)
+transform = Transform3D(0.007970519, -0.20318319, 0.9791079, -0.038488016, -0.9784772, -0.20273772, 0.9992271, -0.036068797, -0.015619278, 0.0040819943, 0.5304189, 0.72943485)
 bone_name = "mixamorig_RightLeg"
 bone_idx = 38
 
@@ -14554,7 +14557,7 @@ shape = SubResource("CapsuleShape3D_e0n7u")
 debug_color = Color(0.9506852, 2.9841065e-06, 0.56979465, 0.41960785)
 
 [node name="BoneAttachment3D4" type="BoneAttachment3D" parent="Armature_049/Skeleton3D"]
-transform = Transform3D(0.7618793, -0.3913566, 0.5161201, -0.5761569, -0.04540178, 0.8160771, -0.2959444, -0.9191184, -0.2600735, -0.17582567, 0.11096323, 0.56053454)
+transform = Transform3D(0.5899682, 0.2220006, 0.7763074, -0.106955126, 0.97447354, -0.19738775, -0.80031127, 0.03342246, 0.5986525, -0.17582567, 0.6907441, 0.5605345)
 bone_name = "mixamorig_Hips"
 bone_idx = 1
 

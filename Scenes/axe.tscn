@@ -3,10 +3,10 @@
 [ext_resource type="Texture2D" uid="uid://dftxernllkvx1" path="res://Assets/axe/axe_default_albedo.jpg" id="1_6o4l1"]
 [ext_resource type="Texture2D" uid="uid://dql5fe6vorq8d" path="res://Assets/axe/axe_default_metallic-default_roughness.png" id="2_2q7ty"]
 [ext_resource type="Texture2D" uid="uid://dsd4wfyxhv35k" path="res://Assets/axe/axe_default_normal.png" id="3_dd7ca"]
-[ext_resource type="Shader" uid="uid://767bp1vovxnm" path="res://addons/GPUTrail-main/shaders/trail.gdshader" id="4_s7ob3"]
-[ext_resource type="Shader" uid="uid://bjjwip4xx7jbi" path="res://addons/GPUTrail-main/shaders/trail_draw_pass.gdshader" id="5_q6n35"]
-[ext_resource type="Texture2D" uid="uid://dexac5g3tntfj" path="res://Assets/T_VFX_Trail223 (1).png" id="6_gllqp"]
-[ext_resource type="Script" uid="uid://c1lpjwppp5xuk" path="res://addons/GPUTrail-main/GPUTrail3D.gd" id="7_0ked7"]
+[ext_resource type="Shader" uid="uid://767bp1vovxnm" path="res://GPUTrail-main/shaders/trail.gdshader" id="4_s7ob3"]
+[ext_resource type="Shader" uid="uid://mqj0uo46g7cx" path="res://GPUTrail-main/shaders/trail_draw_pass.gdshader" id="5_q6n35"]
+[ext_resource type="Texture2D" uid="uid://b3sidt7q2dk6i" path="res://Assets/d637xrm-d8a0b633-59fb-4e52-b911-db6b2fdc2a86.png" id="6_gllqp"]
+[ext_resource type="Script" uid="uid://xwf32dro2iva" path="res://GPUTrail-main/GPUTrail3D.gd" id="7_0ked7"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_csq8f"]
 resource_name = "Material"

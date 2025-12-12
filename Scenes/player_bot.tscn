@@ -1,7 +1,6 @@
-[gd_scene load_steps=44 format=4 uid="uid://dkgy4vepowl7l"]
+[gd_scene load_steps=43 format=4 uid="uid://dkgy4vepowl7l"]
 
 [ext_resource type="Script" uid="uid://pittvc6lerro" path="res://Scripts/player_bot.gd" id="1_2yl3m"]
-[ext_resource type="PackedScene" uid="uid://c4k8kqjqcaap" path="res://Scenes/dashtrail.tscn" id="2_rpfsx"]
 [ext_resource type="Material" uid="uid://cspe7bq5pvmt1" path="res://Assets/player/NEWPLAYER/Armour.tres" id="3_ltkol"]
 [ext_resource type="PackedScene" uid="uid://cje62awmajpbc" path="res://Scenes/sword.tscn" id="3_xq46a"]
 [ext_resource type="Material" uid="uid://dfkhaer4en28h" path="res://Assets/player/NEWPLAYER/Boots.tres" id="4_dd7wx"]
@@ -1257,9 +1256,6 @@ skin = SubResource("Skin_njnsh")
 [node name="SKM_DKM_Pants" type="MeshInstance3D" parent="visuals/Skeleton3D"]
 mesh = SubResource("ArrayMesh_d652o")
 skin = SubResource("Skin_wh46d")
-
-[node name="GPUTrail3D" parent="visuals/Skeleton3D" instance=ExtResource("2_rpfsx")]
-transform = Transform3D(0.9275039, 0.32888034, -0.17769144, -0.3738135, 0.816016, -0.440887, -6.337814e-09, 0.47534788, 0.87979794, 0.5862305, 0.44447792, 1.2849753)
 
 [node name="SKM_DKM_Pauldron" type="MeshInstance3D" parent="visuals/Skeleton3D"]
 mesh = SubResource("ArrayMesh_q37k0")

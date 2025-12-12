@@ -54,12 +54,16 @@ extends CharacterBody3D
 @export var afterimage_fade_time: float = 0.3
 @export var afterimage_color: Color = Color(1, 1, 1, 0.5)
 
-#endregion
+
+@export var base_ghost_material: StandardMaterial3D 
+
+
+	# If not assigned in Inspector, create a generic one once at startup
+
 const STONE_CHAIN_WALK_1 = preload("uid://bcst01eofdm1r")
-const STONE_CHAIN_WALK_2 = preload("uid://m2urvvkcdg3d")
+
 const STONE_CHAIN_WALK_3 = preload("uid://cwfkfaw6hqeya")
-const STONE_CHAIN_WALK_4 = preload("uid://dowlksmvvdyvf")
-const STONE_CHAIN_WALK_5 = preload("uid://ctvk7wnj3kc12")
+
 const CHAIN_CLANK_1 = preload("uid://bghefjpmnhhe8")
 const CHAIN_CLANK_2 = preload("uid://bqpvg0f6cg0o7")
 
@@ -118,7 +122,7 @@ const COMBO_P3_WINDOW: float = 0.3
 @onready var camera_mount: Node3D = $"Camera Mount"
 @onready var camera_node: Camera3D = $"Camera Mount/Camera3D"
 @onready var combo_timer: Timer = $ComboTimer
-@onready var gpu_trail_3d: GPUTrail3D = $visuals/Skeleton3D/GPUTrail3D
+
 @onready var dash_audio: AudioStreamPlayer3D = $dash_audio
 @onready var parry_audio: AudioStreamPlayer3D = $parry_audio
 
@@ -128,6 +132,13 @@ const COMBO_P3_WINDOW: float = 0.3
 
 func _ready() -> void:
 	Global.game_started.connect(animblend)
+	if not base_ghost_material:
+		base_ghost_material = StandardMaterial3D.new()
+		base_ghost_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		base_ghost_material.cull_mode = BaseMaterial3D.CULL_BACK
+		base_ghost_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED # Optional: makes it look more "energy-like"
+		base_ghost_material.albedo_color = afterimage_color
+#endregion
 	if camera_node:
 		base_camera_fov = camera_node.fov
 		original_cam_pos = camera_node.position
@@ -136,7 +147,6 @@ func _ready() -> void:
 		
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	current_stamina = max_stamina
-	hide_trails()
 func animblend():
 		animation_player.playback_default_blend_time = .06
 func _input(event: InputEvent) -> void:
@@ -421,7 +431,6 @@ func take_damage(damage: float, knockback_dir: Vector3 = Vector3.ZERO, knockback
 		dash_timer = 0.0
 		velocity = Vector3.ZERO
 		dash_audio.stop()
-		hide_trails()
 	if state == STATE.ATTACK:
 		is_attack_queued = false
 		can_queue_next_combo = false
@@ -435,6 +444,7 @@ func take_damage(damage: float, knockback_dir: Vector3 = Vector3.ZERO, knockback
 
 	start_camera_shake(0.1, 0.25)
 	set_anim("hurt")
+	await animation_player.animation_finished
 	get_parent_node_3d().end_game()
 	
 	await get_tree().create_timer(0.5).timeout
@@ -464,11 +474,9 @@ func handle_animations() -> void:
 		STATE.BLOCK:     set_anim("block")
 		STATE.DASH:
 			set_anim("dash_mid_end")
-			show_trails()
 			return
 	if state != STATE.ATTACK:
-		hide_trails()
-
+		pass
 func set_anim(anim: String) -> void:
 	if animation_player.current_animation != anim:
 		animation_player.play(anim)
@@ -585,33 +593,39 @@ func hit_or_miss_camera_shake():
 	elif not is_attack_connected and not has_shaken_once:
 		start_camera_shake(0.01, 0.4)
 
-func show_trails() -> void:
-	if gpu_trail_3d:
-		gpu_trail_3d.visible = true
-		gpu_trail_3d.emitting = true
 
-func hide_trails() -> void:
-	if gpu_trail_3d:
-		gpu_trail_3d.emitting = false
-		gpu_trail_3d.visible = false
+
 
 func create_afterimage() -> void:
 	if not visuals: return
 	
-	var ghost: Node3D = visuals.duplicate()
+	# 1. Duplicate only what's necessary
+	var ghost: Node3D = visuals.duplicate(Node.DUPLICATE_USE_INSTANTIATION)
 	ghost.global_transform = visuals.global_transform
 	get_tree().current_scene.add_child(ghost)
 
-	# Clean skeleton/anim for static ghost
+	# 2. Optimization: Remove scripts/physics/logic from the ghost
+	# We only want the visuals. This prevents the ghost from running code.
+	_clean_ghost_logic(ghost)
+
+	# 3. Handle Skeleton (Snapshot the pose)
 	if visuals.has_node("Skeleton3D") and ghost.has_node("Skeleton3D"):
 		var orig_skel: Skeleton3D = visuals.get_node("Skeleton3D")
 		var ghost_skel: Skeleton3D = ghost.get_node("Skeleton3D")
+		
+		# Reset the ghost skeleton to prevent T-pose flicker before override takes effect
 		for i in range(orig_skel.get_bone_count()):
+			ghost_skel.set_bone_pose_position(i, orig_skel.get_bone_pose_position(i))
+			ghost_skel.set_bone_pose_rotation(i, orig_skel.get_bone_pose_rotation(i))
+			ghost_skel.set_bone_pose_scale(i, orig_skel.get_bone_pose_scale(i))
+			
+			# Force the global pose override
 			ghost_skel.set_bone_global_pose_override(i, orig_skel.get_bone_global_pose(i), 1.0, true)
 
 	if ghost.has_node("AnimationPlayer"):
 		ghost.get_node("AnimationPlayer").stop()
 
+	# 4. Apply Material Override (Much faster than per-surface iteration)
 	var mesh_list: Array[MeshInstance3D] = []
 	_find_meshes_recursively(ghost, mesh_list)
 
@@ -619,25 +633,30 @@ func create_afterimage() -> void:
 		ghost.queue_free()
 		return
 
-	var ghost_tween: Tween = create_tween()
-	for mesh: MeshInstance3D in mesh_list:
-		for surface in range(mesh.get_surface_override_material_count()):
-			var active_material: Material = mesh.get_active_material(surface)
-			if active_material == null: continue
-			
-			var fade_mat: BaseMaterial3D = active_material.duplicate()
-			mesh.set_surface_override_material(surface, fade_mat)
-			fade_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-			fade_mat.flags_transparent = true
-			
-			var start_color: Color = fade_mat.albedo_color.lerp(afterimage_color, 0.7)
-			start_color.a = afterimage_color.a
-			fade_mat.albedo_color = start_color
-			
-			var end_color: Color = start_color
-			end_color.a = 0.0
-			ghost_tween.tween_property(fade_mat, "albedo_color", end_color, afterimage_fade_time)
+	# Create ONE unique material instance for this specific ghost event
+	# Since base_ghost_material is ALREADY transparent, no shader compile stutter!
+	var instance_mat = base_ghost_material.duplicate()
+	instance_mat.albedo_color = afterimage_color
+	
+	# Optional: Copy the texture from the original player if you want the details
+	# (Assumes the first mesh has the main texture)
+	if not mesh_list.is_empty():
+		var original_surface = mesh_list[0].get_active_material(0)
+		if original_surface and original_surface is StandardMaterial3D:
+			instance_mat.albedo_texture = original_surface.albedo_texture
 
+	var ghost_tween: Tween = create_tween()
+	
+	for mesh: MeshInstance3D in mesh_list:
+		# Use material_override! It overrides all surfaces at once.
+		# This is much cheaper than looping through every surface.
+		mesh.material_override = instance_mat
+	
+	# Tween the alpha of the SINGLE material instance
+	var end_color: Color = afterimage_color
+	end_color.a = 0.0
+	
+	ghost_tween.tween_property(instance_mat, "albedo_color", end_color, afterimage_fade_time)
 	ghost_tween.finished.connect(func(): if is_instance_valid(ghost): ghost.queue_free())
 
 func _find_meshes_recursively(node: Node, mesh_list: Array[MeshInstance3D]) -> void:
@@ -645,6 +664,15 @@ func _find_meshes_recursively(node: Node, mesh_list: Array[MeshInstance3D]) -> v
 		if child is MeshInstance3D:
 			mesh_list.append(child)
 		_find_meshes_recursively(child, mesh_list)
+
+func _clean_ghost_logic(node: Node):
+	# Strip scripts from the duplicate so it doesn't try to run physics or input
+	node.set_script(null)
+	node.set_process(false)
+	node.set_physics_process(false)
+	node.set_process_input(false)
+	for child in node.get_children():
+		_clean_ghost_logic(child)
 
 #endregion
 
@@ -657,7 +685,7 @@ func get_max_stamina() -> float: return max_stamina
 #endregion
 
 func play_footstep():
-	var sfx_array:=[STONE_CHAIN_WALK_1,STONE_CHAIN_WALK_3,STONE_CHAIN_WALK_4,STONE_CHAIN_WALK_5, STONE_CHAIN_WALK_2]
+	var sfx_array:=[STONE_CHAIN_WALK_1,STONE_CHAIN_WALK_3]
 	footstep.stream = sfx_array.pick_random()
 	footstep.pitch_scale = randf_range(0.8, 1.2)
 	footstep.play()
