@@ -9,15 +9,36 @@ extends Control
 @export var player_camera_3d: Camera3D 
 @export var plyer_animation_player:AnimationPlayer
 
+@export var pan_amount := 2.0      # how far camera pans from center
+@export var pan_speed := 5.0  
+
 @export var boss:Boss
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-
+	base_position = menu_camera_3d.position
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 
+	 # how fast it follows the mouse
 
+var base_position:Vector3
+var target_offset:Vector3 = Vector3.ZERO
+
+	
+func _process(delta: float) -> void:
+	var mouse_pos = get_local_mouse_position()
+	var screen_size = get_viewport_rect().size
+	# Normalize mouse position to range [-1, 1]
+	var normalized_mouse = (mouse_pos / screen_size) * 2.0 - Vector2(1, 1)
+	
+	# Compute target offset (how far from base to pan)
+	target_offset.z = -normalized_mouse.x * pan_amount
+	target_offset.y= -normalized_mouse.y * pan_amount
+	
+	# Smoothly interpolate the camera position around its base
+	var desired_position = target_offset + base_position
+	menu_camera_3d.position = menu_camera_3d.position.lerp(desired_position, pan_speed*delta)
 
 func _on_start_pressed() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED

@@ -234,8 +234,7 @@ func handle_targeting_rotation(delta: float) -> void:
 func handle_gravity_and_jump(delta: float) -> void:
 	if not is_on_floor():
 		velocity.y -= (gravity * gravity_multiplier) * delta
-	elif Input.is_action_just_pressed("Jump"):
-		velocity.y = jump_velocity
+
 
 func handle_movement(delta: float) -> void:
 	if state == STATE.DASH:

@@ -1904,6 +1904,8 @@ mouse_filter = 1
 script = ExtResource("11_ikia7")
 player_camera_3d = NodePath("../Player/Camera Mount/Camera3D")
 plyer_animation_player = NodePath("../Player/visuals/AnimationPlayer")
+pan_amount = 0.2
+pan_speed = 2.36
 boss = NodePath("../im_fuckin_done")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="Main Menu"]
